@@ -6,14 +6,15 @@
 	define("API_ID","jp1bOeyTtDNts");				//API ID
 	define("BOT_NO","1686949");						//BotNo
 	
-	//コンシュマーキー：いずれかを有効化すること（デフォルト：サーバーコンシュマーキー
+	//コンシュマーキー：{}内いずれかを有効化すること（デフォルト：サーバーコンシュマーキー
+	define("SERVICE_CONSUMER_KEY","");                     //サーバーコンシュマーの権限で認証
+	define("SERVER_CONSUMER_KEY","1s2i9GNFmIujbAyaQO9Z");  //サーバーコンシュマーの権限で認証
+	define("SERVER_TOKEN","56907308ab094d119da932afd7c5dd56");//サーバートークン
 	{
 	    //define("CONSUMER_KEY","{$GLOBALS['DEF'](SERVICE_CONSUMER_KEY)}");//サービスコンシュマーの権限で認証
 	   define("CONSUMER_KEY","{$GLOBALS['DEF'](SERVER_CONSUMER_KEY)}");//サーバーコンシュマーの権限で認証
 	}
-	define("SERVICE_CONSUMER_KEY","");                     //サーバーコンシュマーの権限で認証
-	define("SERVER_CONSUMER_KEY","1s2i9GNFmIujbAyaQO9Z");  //サーバーコンシュマーの権限で認証
-	define("SERVER_TOKEN","");                             //サーバートークン
+
 	
 	//HTTP ヘッダー情報
 	define("HTTP_H_CONTENT_TYPE","application/json;charset=UTF-8");                             //ヘッダー情報:コンテンツタイプ
