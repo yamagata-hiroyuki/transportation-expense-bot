@@ -1,18 +1,25 @@
 <?php
 echo "hallo php";
-	require_once 'LineWorksCfg.php';
- 	require_once 'HTTPSClientCommon.php';
- 	require_once 'LineWorksHTTPSReqs.php';
+	require_once 'LineWorks/LineWorksCfg.php';
+ 	require_once 'HTTP/HTTPSClientCommon.php';
+ 	require_once 'LineWorks/LineWorksHTTPSReqs.php';
+ 	require_once 'JWT/JWTFuncs.php';
  	//require_once '';
  	//require_once '';
  	//require_once '';
-	
- 	//クライアントの作成
- 	$clientInstance = new LineWorksReqs();
- 	$client = $clientInstance->BotListReq;
- 	//プロパティの設定
- 	$propatyInstance = new BotListReqStruct();
- 	$propaty = $propatyInstance->propaty;
- 	$client->SendBotListReq($propaty);
+ 	
+ 	//LineWorks クライアントの作成
+ 	$client = new LineWorksReqs();
+ 	
+ 	//JWT Token生成
+ 	$JWTToken = CreateJWT();
+ 	DEBUG_LOG("JWTToken = ",$JWTToken);
+ 	
+ 	//Server Token 要求
+ 	$serverToken = $client->ServerTokenReq($JWTToken);
+ 	DEBUG_LOG("serverToken = ",$serverToken);
+
+ 	//Bot List要求
+ 	$client->SendBotListReq($serverToken);
 
 ?>

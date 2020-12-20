@@ -1,5 +1,5 @@
 <?php
-    require_once 'Lamdas.php';
+    require_once 'Common/Lamdas.php';
 
     //User modify params  --start--
     define("APP_NAME","chat-bot-upload-test");      //heroku application name
@@ -17,9 +17,10 @@
 
 	
 	//HTTP ヘッダー情報
-	define("HTTP_H_CONTENT_TYPE","application/json;charset=UTF-8");                             //ヘッダー情報:コンテンツタイプ
-	define("HTTP_H_AUTH","Bearer {$GLOBALS['DEF'](SERVER_TOKEN)}");                            //ヘッダー情報:サーバートークン
-	define("HTTP_H_CONSUMER_KEY","{$GLOBALS['DEF'](CONSUMER_KEY)}");                           //ヘッダー情報:コンシュマーキー
+	define("HTTP_H_CONTENT_TYPE","application/json");                             //ヘッダー情報:コンテンツタイプ
+	define("HTTP_H_CHARSET","UTF-8");                                             //ヘッダー情報:文字コード
+	define("HTTP_H_AUTH","Bearer {$GLOBALS['DEF'](SERVER_TOKEN)}");              //ヘッダー情報:サーバートークン
+	define("HTTP_H_CONSUMER_KEY","{$GLOBALS['DEF'](CONSUMER_KEY)}");             //ヘッダー情報:コンシュマーキー
 	
 	//以下使うか不明
 	define("SERVER_LIST_ID","56907308ab094d119da932afd7c5dd56");					//Server List ID
