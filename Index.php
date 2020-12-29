@@ -13,11 +13,11 @@ echo "hallo php";
  	
  	//JWT Token生成
  	$JWTToken = CreateJWT();
- 	DEBUG_LOG("JWTToken = ",$JWTToken);
+ 	DEBUG_LOG(basename(__FILE__),__FUNCTION__,__LINE__,"JWTToken = ".$JWTToken);
  	
  	//Server Token 要求
  	$serverToken = $client->ServerTokenReq($JWTToken);
- 	DEBUG_LOG("serverToken = ",$serverToken);
+ 	DEBUG_LOG(basename(__FILE__),__FUNCTION__,__LINE__,"serverToken = ".$serverToken);
 
  	//Bot List要求
  	$client->SendBotListReq($serverToken);

@@ -3,12 +3,12 @@
 
 	$DEF = function($defName){return $defName;};
 
-	function DEBUG_LOG(string $str,$ary = NULL){
+	function DEBUG_LOG(string $file, string $func, string $line, string $str,$ary = NULL){
 	    if(DEBUG_LOG_OUT){
 	        if($ary == NULL){
-	           echo $str."\n";
+	            echo $file."::".$func."()::".$line."::".$str."\n";
 	        }else{
-	           echo $str."\n";
+	            echo $file."::".$func."()::".$line."::".$str."\n";
 	           print_r($ary);
 	           echo "\n";
 	        }

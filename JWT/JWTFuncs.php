@@ -12,7 +12,7 @@ require_once 'JWT/JWTJsonStructs.php';
 $_private_key = file_get_contents(JWT_P_KEY_PATH,FILE_USE_INCLUDE_PATH) ;//秘密鍵全内容
 function GetJWTPrivateKey(){
     global $_private_key;
-    DEBUG_LOG("privateKey = ".$_private_key);
+    DEBUG_LOG(basename(__FILE__),__FUNCTION__,__LINE__,"privateKey = ".$_private_key);
     return $_private_key;
 }
 
@@ -69,7 +69,7 @@ function CreateJWT()
     $JWTStruct->propaty["iss"] = JWT_SERVER_ID;
     $JWTStruct->propaty["iat"] = $currentTime;
     $JWTStruct->propaty["exp"] = $expireTime;
-    DEBUG_LOG(basename(__FILE__).":".__FUNCTION__."[".__LINE__."]"."JWTStruct->protaty = ",$JWTStruct->propaty);
+    DEBUG_LOG(basename(__FILE__),__FUNCTION__,__LINE__,"JWTStruct->protaty = ",$JWTStruct->propaty);
     
     // 秘密鍵の内容取得
     $privateKey = GetJWTPrivateKey();
