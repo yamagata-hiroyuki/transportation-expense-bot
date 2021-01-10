@@ -25,4 +25,3 @@
 	//以下使うか不明
 	define("SERVER_LIST_ID","56907308ab094d119da932afd7c5dd56");					//Server List ID
 
-?>

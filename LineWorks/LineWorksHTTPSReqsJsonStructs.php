@@ -5,8 +5,8 @@
         public $header = Array(
             "Content-Type" => "",
             "charset" => "",
-            "consumerKey" => CONSUMER_KEY,
-            "Authorization" => HTTP_H_AUTH
+            "consumerKey" => "",
+            "Authorization" => ""
         );
     }
 
@@ -28,4 +28,4 @@
 
 
 
-?>
+
