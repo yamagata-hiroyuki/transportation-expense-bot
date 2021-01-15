@@ -34,7 +34,8 @@
 	            $printStr = $file."::".$func."()::".$line."::".$str."\n".print_r($ary,TRUE)."\n";
 	        }
 	        if(LOG_OUTPUT_HEROKU){
-	            file_put_contents("php://stdout", $printStr."\n");
+	            //file_put_contents("php://stdout", $printStr."\n");
+	            error_log($printStr);
 	        }else{
 	            echo $printStr;
 	        }
