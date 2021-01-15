@@ -1,10 +1,10 @@
 <?php
-    define("DEBUG_LOG_OUT",true);//ƒƒOo—Í‚ÌON/OFF
-    define("S_TOKEN_TEST",false);//ServerTokenæ“¾ƒeƒXƒg‚ğÀs‚·‚éê‡‚Ítrue
-    define("RCV_TEST",true);//óMƒeƒXƒg‚·‚éê‡‚Ítrue
-    define("RCV_TEST_DATA",false);//ƒ[ƒJƒ‹‚ÅóMƒeƒXƒg‚·‚éê‡‚Ítrue‚Éİ’è.Heroku‚ÅƒeƒXƒg‚·‚éê‡‚Ífalse
+    define("DEBUG_LOG_OUT",true);//ãƒ­ã‚°å‡ºåŠ›ã®ON/OFF
+    define("S_TOKEN_TEST",false);//ServerTokenå–å¾—ãƒ†ã‚¹ãƒˆã‚’å®Ÿè¡Œã™ã‚‹å ´åˆã¯true
+    define("RCV_TEST",true);//å—ä¿¡ãƒ†ã‚¹ãƒˆã™ã‚‹å ´åˆã¯true
+    define("RCV_TEST_DATA",false);//ãƒ­ãƒ¼ã‚«ãƒ«ã§å—ä¿¡ãƒ†ã‚¹ãƒˆã™ã‚‹å ´åˆã¯trueã«è¨­å®š.Herokuã§ãƒ†ã‚¹ãƒˆã™ã‚‹å ´åˆã¯false
     
-    $RCV_DATA = Array(//ƒ[ƒJƒ‹‚ÅóMƒeƒXƒg‚·‚éê‡‚Í‚±‚±‚ğ•ÏXióMƒf[ƒ^‚ğİ’è‚Å‚«‚Ü‚·j
+    $RCV_DATA = Array(//ãƒ­ãƒ¼ã‚«ãƒ«ã§å—ä¿¡ãƒ†ã‚¹ãƒˆã™ã‚‹å ´åˆã¯ã“ã“ã‚’å¤‰æ›´ï¼ˆå—ä¿¡ãƒ‡ãƒ¼ã‚¿ã‚’è¨­å®šã§ãã¾ã™ï¼‰
         "type" => "message",
         "source" => Array(
             "accountId" => "admin@example.com",
@@ -37,7 +37,7 @@
 	    }
 	}
 	
-	//PHP‚Ågetallheaders()‚ª“®‚©‚È‚¢—p‚ÌŠÖ”
+	//PHPã§getallheaders()ãŒå‹•ã‹ãªã„æ™‚ç”¨ã®é–¢æ•°
 	if (!function_exists('getallheaders')) {
 	    function getallheaders() {
 	        $headers = array();
