@@ -3,6 +3,7 @@
     define("S_TOKEN_TEST",false);//ServerToken取得テストを実行する場合はtrue
     define("RCV_TEST",true);//受信テストする場合はtrue
     define("RCV_TEST_DATA",false);//ローカルで受信テストする場合はtrueに設定.Herokuでテストする場合はfalse
+    define("LOG_OUTPUT_HEROKU",true);//Herokuでログ出力する場合はtrue,falseの時はローカルコンソールにログ出力
     
     $RCV_DATA = Array(//ローカルで受信テストする場合はここを変更（受信データを設定できます）
         "type" => "message",
@@ -28,11 +29,14 @@
 	function DEBUG_LOG(string $file, string $func, string $line, string $str,$ary = NULL){
 	    if(DEBUG_LOG_OUT){
 	        if($ary == NULL){
-	            echo $file."::".$func."()::".$line."::".$str."\n";
+	            $printStr = $file."::".$func."()::".$line."::".$str."\n";
 	        }else{
-	            echo $file."::".$func."()::".$line."::".$str."\n";
-	           print_r($ary);
-	           echo "\n";
+	            $printStr = $file."::".$func."()::".$line."::".$str."\n".print_r($ary,TRUE)."\n";
+	        }
+	        if(LOG_OUTPUT_HEROKU){
+	            file_put_contents("php://stdout", $printStr."\n");
+	        }else{
+	            echo $printStr;
 	        }
 	    }
 	}
