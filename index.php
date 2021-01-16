@@ -1,11 +1,11 @@
 <?php
 	error_log("hello php(error_log)");
-	DEBUG_LOG(basename(__FILE__),__FUNCTION__,__LINE__,"hello php(DEBUG_LOG)");
 	require_once 'LineWorks/LineWorksCfg.php';
  	require_once 'HTTP/HTTPSClientCommon.php';
  	require_once 'LineWorks/LineWorksHTTPSReqs.php';
  	require_once 'LineWorks/LineWorksHTTPSRese.php';
  	require_once 'JWT/JWTFuncs.php';
+	DEBUG_LOG(basename(__FILE__),__FUNCTION__,__LINE__,"hello php(DEBUG_LOG)");
  	//require_once '';
  	//require_once '';
  	//require_once '';
