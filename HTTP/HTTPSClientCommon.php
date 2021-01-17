@@ -39,6 +39,7 @@ function SendRequest(string $reqKind, string $url, Array $header, $param){
     curl_setopt($client,CURLOPT_HTTPHEADER, $header);//ヘッダー情報を設定
     curl_setopt($client,CURLOPT_POSTFIELDS, $jsonParam);//送信JSONデータを設定
     curl_setopt($client,CURLOPT_CUSTOMREQUEST, $reqKind);//要求タイプを設定
+    curl_setopt($client,CURLINFO_HEADER_OUT ,true);//リクエストのヘッダー情報を出力するように設定(get_info時)
     curl_setopt($client, CURLOPT_RETURNTRANSFER, true);
     DEBUG_LOG(basename(__FILE__),__FUNCTION__,__LINE__,"Done cUrl setopt()");
 //     //cURL送信情報表示
@@ -48,6 +49,13 @@ function SendRequest(string $reqKind, string $url, Array $header, $param){
     //cURL セッションを実行
     $ret = curl_exec($client);
     DEBUG_LOG(basename(__FILE__),__FUNCTION__,__LINE__,"Done cUrl curl_exec()\n");
+    //ステータスコード取得
+    //$httpStatusCode = curl_getinfo($client, CURLINFO_RESPONSE_CODE);
+    //DEBUG_LOG(basename(__FILE__),__FUNCTION__,__LINE__,"httpStatusCode = ",$httpStatusCode);
+    
+    //全情報取得
+    //$httpStatusCode = curl_getinfo($client);
+    //DEBUG_LOG(basename(__FILE__),__FUNCTION__,__LINE__,"httpStatusCode = ",$httpStatusCode);
     
     //エラーが発生したかを調べる
     if(curl_errno($client) === false )

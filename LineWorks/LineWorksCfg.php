@@ -17,8 +17,8 @@
 
 	
 	//HTTP ヘッダー情報
-	define("HTTP_H_CONTENT_TYPE","application/json");                             //ヘッダー情報:コンテンツタイプ
 	define("HTTP_H_CHARSET","UTF-8");                                             //ヘッダー情報:文字コード
+	define("HTTP_H_CONTENT_TYPE","application/json; charset=".HTTP_H_CHARSET);    //ヘッダー情報:コンテンツタイプ
 	define("HTTP_H_AUTH","Bearer {$GLOBALS['DEF'](SERVER_TOKEN)}");              //ヘッダー情報:サーバートークン
 	define("HTTP_H_CONSUMER_KEY","{$GLOBALS['DEF'](CONSUMER_KEY)}");             //ヘッダー情報:コンシュマーキー
 	

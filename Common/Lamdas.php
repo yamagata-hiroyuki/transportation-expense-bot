@@ -1,9 +1,10 @@
 <?php
     define("DEBUG_LOG_OUT",true);//ログ出力のON/OFF
     define("S_TOKEN_TEST",false);//ServerToken取得テストを実行する場合はtrue
-    define("RCV_TEST",true);//受信テストする場合はtrue
+    define("RCV_TEST",false);//受信テストする場合はtrue
     define("RCV_TEST_DATA",false);//ローカルで受信テストする場合はtrueに設定.Herokuでテストする場合はfalse
     define("LOG_OUTPUT_HEROKU",true);//Herokuでログ出力する場合はtrue,falseの時はローカルコンソールにログ出力
+    define("MENU_TEST",false);//メインメニュー表示をテストする場合はTrue
     
     $RCV_DATA = Array(//ローカルで受信テストする場合はここを変更（受信データを設定できます）
         "type" => "message",
@@ -34,8 +35,7 @@
 	            $printStr = $file."::".$func."()::".$line."::".$str."\n".print_r($ary,TRUE)."\n";
 	        }
 	        if(LOG_OUTPUT_HEROKU){
-	            //file_put_contents("php://stdout", $printStr."\n");
-	            error_log($printStr);
+	            file_put_contents("php://stdout", $printStr."\n");
 	        }else{
 	            echo $printStr;
 	        }
