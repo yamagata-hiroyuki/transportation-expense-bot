@@ -17,7 +17,7 @@
     
     //Server Token　要求
     define("SERVER_TOKEN_URL","https://auth.worksmobile.com/b/{$GLOBALS['DEF'](API_ID)}/server/token");
-    define("CONT_SERVER_TOKEN","multipart/form-data; charset=UTF-8");
+    define("CONT_SERVER_TOKEN","application/x-www-form-urlencoded; charset=UTF-8");
     DEBUG_LOG(basename(__FILE__),__FUNCTION__,__LINE__,"def SERVER_TOKEN_URL = {$GLOBALS['DEF'](SERVER_TOKEN_URL)}");
     DEBUG_LOG(basename(__FILE__),__FUNCTION__,__LINE__,"def CONT_SERVER_TOKEN = {$GLOBALS['DEF'](CONT_SERVER_TOKEN)}");
     
@@ -99,7 +99,7 @@
             DEBUG_LOG(basename(__FILE__),__FUNCTION__,__LINE__,"start ServerTokenReq");
             //ヘッダー設定
             {
-                $reqStruct->header["Content-Type"] = "Content-Type: ".CONT_SERVER_TOKEN;
+                $reqStruct->header["Content-Type"] = CONT_SERVER_TOKEN;
                 
                 $header = $reqStruct->header;
             }
