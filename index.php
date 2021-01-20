@@ -30,7 +30,7 @@
      	}
  	}
  	
- 	/* 受信テスト */
+ 	/* 受信・応答テスト */
  	{
  	    if(RCV_TEST){
  	        $client = new LineWorksReses;

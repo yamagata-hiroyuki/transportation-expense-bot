@@ -2,7 +2,7 @@
 require_once 'Common/Lamdas.php';
 require_once 'LineWorks/LineWorksHTTPSResesJsonStructs.php';
 require_once 'LineWorks/LineWorksCfg.php';
-require_once 'LineWorks/LineWorksHTTPSResesJsonStructs.php';
+require_once 'LineWorks/LineWorksHTTPSReqs.php';
 
 
 
@@ -298,8 +298,26 @@ class StateEvent{
             }
             
         /* MAIN_MENU Funcs */
-            private function RecvEventContent_S01E00($recvData):bool{
+            private function RecvEventContent_S01E00(CallBackStruct $recvData):bool{
                 DEBUG_LOG(basename(__FILE__),__FUNCTION__,__LINE__,"state event called(RecvEventContent_S01E00()).");
+                //LineWorks クライアントの作成
+                $client = new LineWorksReqs();
+                //TODO Server Token 要求(DBから取得するように修正すること)
+                {
+                    //JWT Token生成
+                    $JWTToken = CreateJWT();
+                    DEBUG_LOG(basename(__FILE__),__FUNCTION__,__LINE__,"JWTToken = ".$JWTToken);
+                    
+                    
+                    $serverToken = $client->ServerTokenReq($JWTToken);
+                    DEBUG_LOG(basename(__FILE__),__FUNCTION__,__LINE__,"serverToken = ".$serverToken);
+                }
+                
+                //メッセージを送付したいユーザーIDを取得
+                $accountId = $recvData->baseInfo["source"]["accountId"];
+                
+                $client->DispMainMenuReq($accountId,$serverToken);
+                
                 return true;
             }
             
