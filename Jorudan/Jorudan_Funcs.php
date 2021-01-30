@@ -142,6 +142,7 @@ class Jorudan_Funcs{
             }else{
                 $retDetails->Price = 0;
             }
+            if(false !== mb_strpos($text[$i],"片道") )$i++;
             $retDetails->timeTo = preg_replace('/[^0-9:]/','',$text[$i]);;$i++;
             $retDetails->sectionTo = $text[$i];
             
