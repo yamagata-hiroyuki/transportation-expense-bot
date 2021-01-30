@@ -131,17 +131,21 @@ class Jorudan_Funcs{
             $retDetails->timeFrom = preg_replace('/[^0-9:]/','',$text[$i]);$i++;
             $retDetails->sectionFrom = $text[$i];$i++;
             if(false !== mb_strpos($text[$i],"番線" ))$i++;
+            if(false !== mb_strpos($text[$i],"当駅始発" ))$i++;
             $retDetails->trainName = preg_replace('/≪.+≫/','',$text[$i]);$i++;
             $i++;
             if(false !== mb_strpos($text[$i],"運賃" ) or false !== mb_strpos($text[$i],"指定席") ){
-                $retDetails->Price = preg_replace('/[^0-9]/', '', $text[$i]);
-                $i++;
+                $retDetails->Price = preg_replace('/[^0-9]/', '', $text[$i]);$i++;
+                if(false !== mb_strpos($text[$i],"運賃" ) or false !== mb_strpos($text[$i],"指定席") ){
+                    $retDetails->Price = $retDetails->Price + preg_replace('/[^0-9]/', '', $text[$i]);$i++;
+                }
             }else{
                 $retDetails->Price = 0;
             }
             $retDetails->timeTo = preg_replace('/[^0-9:]/','',$text[$i]);;$i++;
             $retDetails->sectionTo = $text[$i];
             
+            if($retDetails->Price === ""){$retDetails->Price = 0;}
 //             $retDetails->sectionTo = $text[$i - 1];
 //             $retDetails->timeTo = preg_replace('/[^0-9:]/','',$text[$i - 2]);
 //             if(false !== mb_strpos($text[$i - 3],"運賃" ) or false !== mb_strpos($text[$i - 3],"指定席") ){
