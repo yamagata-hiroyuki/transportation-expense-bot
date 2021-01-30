@@ -3,6 +3,7 @@ require_once 'Common/Lamdas.php';
 require_once 'LineWorks/LineWorksHTTPSResesJsonStructs.php';
 require_once 'LineWorks/LineWorksCfg.php';
 require_once 'LineWorks/LineWorksHTTPSReqs.php';
+require_once 'Jorudan/Jorudan_Funcs.php';
 
 
 
@@ -315,6 +316,31 @@ class StateEvent{
                 
                 //メッセージを送付したいユーザーIDを取得
                 $accountId = $recvData->baseInfo["source"]["accountId"];
+                //ジョルダン乗り換え案内より情報取得（テスト用：DB整備後は適切なステータスイベントへ移動）
+                do{
+                    $jorudanInstance = new Jorudan_Funcs();
+                    $jorudanInfo = new Jorudan_Info();
+                    //受信データがジョルダン情報か判断
+                    if(!$jorudanInstance->IsJorudanInfo($recvData->propaty["content"]["text"]))
+                    {
+                        DEBUG_LOG(basename(__FILE__),__FUNCTION__,__LINE__,"Not Jorudan Information.");
+                        break;
+                    }
+                
+                    //データを構造体に格納
+                    if(!$jorudanInstance->GetInfo($recvData->propaty["content"]["text"],$jorudanInfo)){
+                        DEBUG_LOG(basename(__FILE__),__FUNCTION__,__LINE__,"failed to exchange raw data into struct.");
+                        break;
+                    }
+                
+                    //以下テスト用
+                    $tmpArray = print_r($jorudanInfo,true);
+                    $client->SendMessageReq($accountId,$serverToken,$tmpArray);
+                
+                
+                
+                
+                }while(false);
                 
                 $client->DispMainMenuReq($accountId,$serverToken);
                 

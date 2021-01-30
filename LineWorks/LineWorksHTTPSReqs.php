@@ -25,6 +25,10 @@
     define("DISP_MAIN_MENU_URL","https://apis.worksmobile.com/r/".API_ID."/message/v1/bot/".BOT_NO."/message/push");
     DEBUG_LOG(basename(__FILE__),__FUNCTION__,__LINE__,"def DISP_MAIN_MENU_URL = ".DISP_MAIN_MENU_URL);
     
+    //メッセージ送信要求
+    define("SEND_MESSAGE_URL","https://apis.worksmobile.com/r/".API_ID."/message/v1/bot/".BOT_NO."/message/push");
+    DEBUG_LOG(basename(__FILE__),__FUNCTION__,__LINE__,"def SEND_MESSAGE_URL = ".SEND_MESSAGE_URL);
+    
     class LineWorksReqs{
         function __construct()
         {
@@ -183,6 +187,56 @@
             
             //リクエストの送信
             $result = SendRequest("POST", DISP_MAIN_MENU_URL, $header, $propaty);
+            if($result != false){
+                //応答が得られた場合
+                //応答JSONを連想配列にデコード
+                $ret = json_decode($result,true);
+                DEBUG_LOG(basename(__FILE__),__FUNCTION__,__LINE__,"Res Json = ",$ret);
+            }else{
+                //リクエストが出来なかった場合
+                //TODO 何かしらのエラー処理
+            }
+            
+            return $ret;
+        }
+        
+        //メッセージ送信
+        //Direction
+        //REQ:BOT -> LineWorks
+        //RES:-
+        function SendMessageReq(string $accountId = "",string $serverToken = "", string $msgText = "")
+        {
+            $reqStruct = new SendMessageReqStruct();
+            $propaty = null;
+            $header = null;
+            $ret = false;
+            
+            DEBUG_LOG(basename(__FILE__),__FUNCTION__,__LINE__,"start DispMainMenuReq");
+            //ヘッダー設定
+            {
+                $reqStruct->header["Content-Type"] = "Content-Type: ".HTTP_H_CONTENT_TYPE;
+                $reqStruct->header["consumerKey"] = "consumerKey: ".CONSUMER_KEY;
+                $reqStruct->header["Authorization"] = "Authorization: "."Bearer ${serverToken}";
+                $header = $reqStruct->header;
+            }
+            
+            //プロパティー設定
+            {
+                $reqStruct->propaty["accountId"] = $accountId;
+                
+                $tmpMessage_TextStruct = new Message_TextStruct();
+                
+                $tmpMessage_TextStruct->propaty["text"] = $msgText;
+                
+                $reqStruct->propaty["content"] = $tmpMessage_TextStruct->propaty;
+                
+                DEBUG_LOG(basename(__FILE__),__FUNCTION__,__LINE__,"reqStruct->propaty = ",$reqStruct->propaty);
+                //プロパティーのJSONエンコード
+                $propaty = json_encode($reqStruct->propaty);
+            }
+            
+            //リクエストの送信
+            $result = SendRequest("POST", SEND_MESSAGE_URL, $header, $propaty);
             if($result != false){
                 //応答が得られた場合
                 //応答JSONを連想配列にデコード
