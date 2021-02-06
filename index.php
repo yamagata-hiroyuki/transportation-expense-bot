@@ -4,10 +4,9 @@
 	require_once 'LineWorks/LineWorksHTTPSReqs.php';
 	require_once 'LineWorks/LineWorksHTTPSRese.php';
 	require_once 'JWT/JWTFuncs.php';
-	require_once 'DB/DB_basic.php';
 	require_once 'DB/DB_test_sql.php';
 
-	DEBUG_LOG(basename(__FILE__),__FUNCTION__,__LINE__,"hello php");
+	DEBUG_LOG(basename(__FILE__),__FUNCTION__,__LINE__,">>>DBG hello php");
 	//require_once '';
 	//require_once '';
 	//require_once '';
@@ -67,7 +66,8 @@
 		if(DB_TEST){
 			DEBUG_LOG(basename(__FILE__),__FUNCTION__,__LINE__,">>>DBG DB Test Start");
 			$userId = "test_user";
-			$result = registerUser($userId);
+			$status = Enum_CallBack_userState::USER_NOT_REGISTED;
+			registerUser($userId, $status);
 			DEBUG_LOG(basename(__FILE__),__FUNCTION__,__LINE__,"regist UserId = ".$userId);
 			DEBUG_LOG(basename(__FILE__),__FUNCTION__,__LINE__,">>>DBG DB Test End");
 		}
