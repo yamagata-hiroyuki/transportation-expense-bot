@@ -1,6 +1,6 @@
 <?php
     define("DEBUG_LOG_OUT",true);//ログ出力のON/OFF
-    define("S_TOKEN_TEST",false);//ServerToken取得テストを実行する場合はtrue
+    define("S_TOKEN_TEST",true);//ServerToken取得テストを実行する場合はtrue
     define("RCV_TEST",false);//受信テストする場合はtrue
     define("RCV_TEST_DATA",false);//ローカルで受信テストする場合はtrueに設定.Herokuでテストする場合はfalse
     define("DB_TEST",true);//DBテストする場合はtrue

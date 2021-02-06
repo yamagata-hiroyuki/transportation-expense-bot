@@ -65,9 +65,11 @@
 	/* DBテスト */
 	{
 		if(DB_TEST){
+			DEBUG_LOG(basename(__FILE__),__FUNCTION__,__LINE__,">>>DBG DB Test Start");
 			$userId = "test_user";
 			$result = registerUser($userId);
 			DEBUG_LOG(basename(__FILE__),__FUNCTION__,__LINE__,"regist UserId = ".$userId);
+			DEBUG_LOG(basename(__FILE__),__FUNCTION__,__LINE__,">>>DBG DB Test End");
 		}
 	}
 
