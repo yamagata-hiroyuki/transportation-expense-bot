@@ -4,8 +4,8 @@
 	require_once 'LineWorks/LineWorksHTTPSReqs.php';
 	require_once 'LineWorks/LineWorksHTTPSRese.php';
 	require_once 'JWT/JWTFuncs.php';
-//	require_once 'DB/DB_basic.php';
-//	require_once 'DB/DB_test_sql.php';
+	require_once 'DB/DB_basic.php';
+	require_once 'DB/DB_test_sql.php';
 
 	DEBUG_LOG(basename(__FILE__),__FUNCTION__,__LINE__,"hello php");
 	//require_once '';
@@ -62,12 +62,12 @@
 		}
 	}
 
-// 	/* DBテスト */
-// 	{
-// 		if(DB_TEST){
-// 			$dbh = dbConnection::getConnection();
-// 			$client = new LineWorksReses;
-// 			$client->RecvCallBackEvent();
-// 		}
-// 	}
+	/* DBテスト */
+	{
+		if(DB_TEST){
+			$userId = "test_user";
+			$result = registerUser($userId);
+			DEBUG_LOG(basename(__FILE__),__FUNCTION__,__LINE__,"regist UserId = ".$userId);
+		}
+	}
 
