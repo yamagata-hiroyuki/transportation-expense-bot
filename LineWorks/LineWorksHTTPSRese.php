@@ -2,7 +2,11 @@
 require_once 'LineWorks/LineWorksHTTPSResesJsonStructs.php';
 require_once 'LineWorks/LineWorksCfg.php';
 require_once 'LineWorks/LineWorksHTTPSResesStateEvents.php';
-
+require_once 'CallbackAnalyser/MessageAnalyser/MessageAnalyser.php';
+require_once 'CallbackAnalyser/JoinedAnalyser/JoinedAnalyser.php';
+require_once 'CallbackAnalyser/LeftAnalyser/LeftAnalyser.php';
+require_once 'CallbackAnalyser/PostbackAnalyser/PostbackAnalyser.php';
+require_once 'CallbackAnalyser/CallbackAnalyserCommonFuncs.php';
 
 class LineWorksReses{
     function __construct()
@@ -158,91 +162,13 @@ class LineWorksReses{
         }
         
         //ヘッダー情報取得
-        $tmpHeader = new CallBackHeaderInfoStruct();
-        $tmpHeader->header = getallheaders();
+        $tmpHeader = MA_GetHeaderInfo($tmpSorceData);
         
         //基本情報取得
-        $tmpBaseInfo = new CallBackBaseInfoStruct();
-        $tmpBaseInfo->baseInfo["type"] = $tmpSorceData["type"];
-        $tmpBaseInfo->baseInfo["source"]["accountId"] = $tmpSorceData["source"]["accountId"];
-        $tmpBaseInfo->baseInfo["source"]["roomId"] = $tmpSorceData["source"]["roomId"];
-        $tmpBaseInfo->baseInfo["createdTime"] = $tmpSorceData["createdTime"];
+        $tmpBaseInfo =MA_GetBaseInfo($tmpSorceData);
         
-        //typeを文字列からEnumへ変換
-        $tmpType = stringToEnum($tmpSorceData["content"]["type"]);
-        
-        //受信データを解析
-        switch ($tmpType)
-        {
-            case Enum_CallBack_ContentType::TEXT:
-                //ボディデータ取得
-                DEBUG_LOG(basename(__FILE__),__FUNCTION__,__LINE__,"RecvData content Type = TEXT.");
-                $tmpBody = new CallBack_MessageStruct();
-                $tmpBody->propaty["content"]["type"] = $tmpSorceData["content"]["type"];
-                
-                $tmpBodyContent = new CallBack_Message_TextStruct();
-                $tmpBodyContent->propaty["text"] = $tmpSorceData["content"]["text"];
-                $tmpBodyContent->propaty["postback"] = $tmpSorceData["content"]["postback"];
-                
-                $tmpBody->propaty["content"] = $tmpBody->propaty["content"] + $tmpBodyContent->propaty;
-                break;
-                
-            case Enum_CallBack_ContentType::LOCATION:
-                //ボディデータ取得
-                DEBUG_LOG(basename(__FILE__),__FUNCTION__,__LINE__,"RecvData content Type = LOCATION.");
-                $tmpBody = new CallBack_MessageStruct();
-                $tmpBody->propaty["content"]["type"] = $tmpSorceData["content"]["type"];
-                
-                $tmpBodyContent = new CallBack_Message_LocationStruct();
-                $tmpBodyContent->propaty["address"] = $tmpSorceData["content"]["address"];
-                $tmpBodyContent->propaty["latitude"] = $tmpSorceData["content"]["latitude"];
-                $tmpBodyContent->propaty["longitude"] = $tmpSorceData["content"]["longitude"];
-                
-                $tmpBody->propaty["content"] = $tmpBody->propaty["content"] + $tmpBodyContent->propaty;
-                break;
-                
-            case Enum_CallBack_ContentType::STICKER:
-                //ボディデータ取得
-                DEBUG_LOG(basename(__FILE__),__FUNCTION__,__LINE__,"RecvData content Type = STICKER.");
-                $tmpBody = new CallBack_MessageStruct();
-                $tmpBody->propaty["content"]["type"] = $tmpSorceData["content"]["type"];
-                
-                $tmpBodyContent = new CallBack_Message_StickerStruct();
-                $tmpBodyContent->propaty["packageId"] = $tmpSorceData["content"]["packageId"];
-                $tmpBodyContent->propaty["stickerId"] = $tmpSorceData["content"]["stickerId"];
-                
-                $tmpBody->propaty["content"] = $tmpBody->propaty["content"] + $tmpBodyContent->propaty;
-                break;
-                
-            case Enum_CallBack_ContentType::IMAGE:
-                //ボディデータ取得
-                DEBUG_LOG(basename(__FILE__),__FUNCTION__,__LINE__,"RecvData content Type = IMAGE.");
-                $tmpBody = new CallBack_MessageStruct();
-                $tmpBody->propaty["content"]["type"] = $tmpSorceData["content"]["type"];
-                
-                $tmpBodyContent = new CallBack_Message_ImageStruct();
-                $tmpBodyContent->propaty["resourceId"] = $tmpSorceData["content"]["resourceId"];
-                
-                $tmpBody->propaty["content"] = $tmpBody->propaty["content"] + $tmpBodyContent->propaty;
-                break;
-                
-            case Enum_CallBack_ContentType::FILE:
-                //ボディデータ取得
-                DEBUG_LOG(basename(__FILE__),__FUNCTION__,__LINE__,"RecvData content Type = FILE.");
-                $tmpBody = new CallBack_MessageStruct();
-                $tmpBody->propaty["content"]["type"] = $tmpSorceData["content"]["type"];
-                
-                $tmpBodyContent = new CallBack_Message_FileStruct();
-                $tmpBodyContent->propaty["resourceId"] = $tmpSorceData["content"]["resourceId"];
-                
-                $tmpBody->propaty["content"] = $tmpBody->propaty["content"] + $tmpBodyContent->propaty;
-                break;
-                
-            default:
-                //有り得ない
-                DEBUG_LOG(basename(__FILE__),__FUNCTION__,__LINE__,"Unexpected type.tmpSorceData[\"content\"][\"type\"] = ".$tmpSorceData["content"]["type"]);
-                $tmpBodyContent = new CallBack_Message_TextStruct();
-        }
+        //ボディーデータ取得
+        $tmpBody = MessageAnalyser::MA_GetBodyData($tmpSorceData);
         
         //取得したデータを格納
         $retRecvData->header = (array)$tmpHeader->header;
@@ -272,20 +198,13 @@ class LineWorksReses{
         }
         
         //ヘッダー情報取得
-        $tmpHeader = new CallBackHeaderInfoStruct();
-        $tmpHeader->header = getallheaders();
+        $tmpHeader = MA_GetHeaderInfo($tmpSorceData);
         
         //基本情報取得
-        $tmpBaseInfo = new CallBackBaseInfoStruct();
-        $tmpBaseInfo->baseInfo["type"] = $tmpSorceData["type"];
-        //$tmpBaseInfo->baseInfo["source"]["accountId"] = $tmpSorceData["source"]["accountId"];//※accountIdは存在しない
-        $tmpBaseInfo->baseInfo["source"]["roomId"] = $tmpSorceData["source"]["roomId"];
-        $tmpBaseInfo->baseInfo["createdTime"] = $tmpSorceData["createdTime"];
+        $tmpBaseInfo =MA_GetBaseInfo($tmpSorceData);
         
         //ボディデータ取得
-        $tmpBody = new CallBack_JoinedStruct();
-        
-        $tmpBody->propaty["memberList"] = $tmpSorceData["memberList"];
+        $tmpBody = JoinedAnalyser::JA_GetBodyData($tmpSorceData);
         
         //取得したデータを格納
         $retRecvData->header = $tmpHeader;
@@ -314,20 +233,13 @@ class LineWorksReses{
         }
         
         //ヘッダー情報取得
-        $tmpHeader = new CallBackHeaderInfoStruct();
-        $tmpHeader->header = getallheaders();
+        $tmpHeader = MA_GetHeaderInfo($tmpSorceData);
         
         //基本情報取得
-        $tmpBaseInfo = new CallBackBaseInfoStruct();
-        $tmpBaseInfo->baseInfo["type"] = $tmpSorceData["type"];
-        //$tmpBaseInfo->baseInfo["source"]["accountId"] = $tmpSorceData["source"]["accountId"];//※accountIdは存在しない
-        $tmpBaseInfo->baseInfo["source"]["roomId"] = $tmpSorceData["source"]["roomId"];
-        $tmpBaseInfo->baseInfo["createdTime"] = $tmpSorceData["createdTime"];
+        $tmpBaseInfo =MA_GetBaseInfo($tmpSorceData);
         
         //ボディデータ取得
-        $tmpBody = new CallBack_LeftStruct();
-        
-        $tmpBody->propaty["memberList"] = $tmpSorceData["memberList"];
+        $tmpBody = LeftAnalyser::LA_GetBodyData($tmpSorceData);
         
         //取得したデータを格納
         $retRecvData->header = $tmpHeader;
@@ -356,20 +268,13 @@ class LineWorksReses{
         }
         
         //ヘッダー情報取得
-        $tmpHeader = new CallBackHeaderInfoStruct();
-        $tmpHeader->header = getallheaders();
+        $tmpHeader = MA_GetHeaderInfo($tmpSorceData);
         
         //基本情報取得
-        $tmpBaseInfo = new CallBackBaseInfoStruct();
-        $tmpBaseInfo->baseInfo["type"] = $tmpSorceData["type"];
-        $tmpBaseInfo->baseInfo["source"]["accountId"] = $tmpSorceData["source"]["accountId"];
-        $tmpBaseInfo->baseInfo["source"]["roomId"] = $tmpSorceData["source"]["roomId"];
-        $tmpBaseInfo->baseInfo["createdTime"] = $tmpSorceData["createdTime"];
+        $tmpBaseInfo =MA_GetBaseInfo($tmpSorceData);
         
         //ボディデータ取得
-        $tmpBody = new CallBack_PostbackStruct();
-        
-        $tmpBody->propaty["data"] = $tmpSorceData["data"];
+        $tmpBody = PostbackAnalyser::PA_GetBodyData($tmpSorceData);
         
         //取得したデータを格納
         $retRecvData->header = $tmpHeader;

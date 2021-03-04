@@ -4,6 +4,7 @@
     require_once 'LineWorks/LineWorksHTTPSReqsJsonStructs.php';
     require_once 'Common/Lamdas.php';
     require_once 'LineWorks/LineWorksHTTPSResesJsonStructs.php';
+    require_once 'CallbackAnalyser/MessageAnalyser/MessageAnalyser.php';
     
     define("CALLBACK_URL","https://{$GLOBALS['DEF'](APP_NAME)}.herokuapp.com/callback");						//CallBack URL(Lineworks �� heroku app)
     DEBUG_LOG(basename(__FILE__),__FUNCTION__,__LINE__,"def CALLBACK_URL = {$GLOBALS['DEF'](CALLBACK_URL)}");
@@ -164,15 +165,15 @@
                 "----------------------------------------\n";
                 
                 $tmpAction_PostbackStructArray = Array(new Action_MessageStruct(),new Action_MessageStruct(),new Action_MessageStruct());
-                $tmpAction_PostbackStructArray[0]->propaty["label"] = "一件削除";
-                $tmpAction_PostbackStructArray[0]->propaty["text"] = "一件削除";
-                $tmpAction_PostbackStructArray[0]->propaty["postback"] = "postback 一件削除";
-                $tmpAction_PostbackStructArray[1]->propaty["label"] = "申請";
-                $tmpAction_PostbackStructArray[1]->propaty["text"] = "申請";
-                $tmpAction_PostbackStructArray[1]->propaty["postback"] = "postback 申請";
+                $tmpAction_PostbackStructArray[0]->propaty["label"] = MA_MessageTextList::ONE_DELETE;
+                $tmpAction_PostbackStructArray[0]->propaty["text"] = MA_MessageTextList::ONE_DELETE;
+                $tmpAction_PostbackStructArray[0]->propaty["postback"] = MA_MessagePostbackList::ONE_DELETE;
+                $tmpAction_PostbackStructArray[1]->propaty["label"] = MA_MessageTextList::PETITION;
+                $tmpAction_PostbackStructArray[1]->propaty["text"] = MA_MessageTextList::PETITION;
+                $tmpAction_PostbackStructArray[1]->propaty["postback"] = MA_MessagePostbackList::PETITION;
                 $tmpAction_PostbackStructArray[2]->propaty["label"] = "キャンセル";
                 $tmpAction_PostbackStructArray[2]->propaty["text"] = "キャンセル";
-                $tmpAction_PostbackStructArray[2]->propaty["postback"] = "postback キャンセル";
+                $tmpAction_PostbackStructArray[2]->propaty["postback"] = MA_MessagePostbackList::CANCEL;
                 //DEBUG_LOG(basename(__FILE__),__FUNCTION__,__LINE__,"tmpAction_PostbackStructArray = ",$tmpAction_PostbackStructArray);
                 //
                 $tmpMessage_ButtonTemplateStruct->propaty["actions"] = Array($tmpAction_PostbackStructArray[0]->propaty,
