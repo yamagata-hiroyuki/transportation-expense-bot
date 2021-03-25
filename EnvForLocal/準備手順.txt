@@ -1,0 +1,43 @@
+1.以下よりpleadesをダウンロードし、1_Create_Pleiadesフォルダ以下に格納する
+https://mergedoc.osdn.jp/pleiades-redirect/2021/pleiades_ultimate-win-64bit_jre.zip.html?v=20210321
+　同様にpstgreSQLもダウンロードする
+https://www.enterprisedb.com/download-postgresql-binaries
+　Versionは13.2
+
+2.「1_Create_Pleiades」フォルダの「Create_Pleiades.bat」をダブルクリックで実行
+
+3.「2_Install_PIP_to_Python」フォルダの「Install_PIP_to_Python.bat」をダブルクリックで実行
+
+4.「3_database_setting」に存在するシュートカットのパスを修正し、
+　「host_setting.bat - ショートカット」
+　「database_setting.bat - ショートカット」
+　の順で実行する。
+　尚、このショートカットは同フォルダ＞Run_as_administorに格納されている各バッチファイルを管理者権限で実行するためのものであり、
+　直接、管理者権限で実行するのであればショートカットは不要
+
+5.ここまでの作業で、本ファイルと同階層に
+　「pgsql」
+　「pleiades」
+　が展開されていることを確認する。
+
+6.pleiades\xampp\php\php.iniを編集する
+　extension=pdo_pgsql
+　のコメントアウトを外すか、追加する
+
+7.eclipseを立ち上げる。（ワークスペースの指定は自由）
+　pleiades\eclipse\eclipse.exe
+8.ウィンドウ>設定>PHP>検証
+　PHP バージョン:
+　に「7.3(flexible Heredoc/Nowdoc syntaxes,...)」を設定
+
+以上で試験環境の準備が完了です。
+GitHubよりソースをダウンロードして、ローカル用試験を実施してください。
+試験中はコマンドプロンプトにて
+pg_ctl start
+を入力して、DBサーバーを起動しておいてください。
+尚、起動時に用いたコマンドプロンプトは閉じないでください。
+閉じた場合、DBサーバーも停止します。
+
+
+
+

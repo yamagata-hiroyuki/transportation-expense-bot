@@ -1,0 +1,9 @@
+1.Copy 「get-pip.py」into pleiades/python/3(or 2)
+
+2.Run WindowsPowerShell
+　→win + R
+　→powershell
+3.cd to pleiades/python/3(or 2)
+
+4.type below command
+　→./python.exe ./get-pip.py
