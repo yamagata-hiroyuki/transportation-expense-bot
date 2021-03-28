@@ -4,15 +4,16 @@
     define("RCV_TEST",false);//受信テストする場合はtrue
     define("RCV_TEST_DATA",false);//ローカルで受信テストする場合はtrueに設定.Herokuでテストする場合はfalse
     define("DB_TEST",true);//DBテストする場合はtrue
+    define("DB_TEST_ON_LOCAL_ENV",true);//ローカル環境でDBを用いる場合はtrue
     define("LOG_OUTPUT_HEROKU",true);//Herokuでログ出力する場合はtrue,falseの時はローカルコンソールにログ出力
     define("MENU_TEST",false);//メインメニュー表示をテストする場合はTrue
-    
+
     $RCV_DATA = Array(//ローカルで受信テストする場合はここを変更（受信データを設定できます）
         "type" => "message",
         "source" => Array(
             "accountId" => "admin@example.com",
             "roomId" => "12345",
-            
+
         ),
         "createdTime" => "1470902041851",
         "content" => Array(
@@ -25,11 +26,15 @@
             //"text" => "熊本→京橋 1/31(日) 終電 19:30 - 23:51 4時間21分　乗換5回　30,386円 -------------------- ICカード利用時の運賃です。 [ 1/31] 19:30発　熊本　11番線 [当駅始発] 　つばめ342号(博多行) 　　48分 　　運賃：2,170円　指定席：3,060円 20:18着　博多 　▼10分 20:28発　博多 　福岡地下鉄空港線(福岡空港行) 　　5分 　　運賃：260円 20:33着　福岡空港 　▼42分 21:15発　福岡空港 　SKY26便 　　1時間30分 　　運賃：24,100円　片道 22:45着　羽田空港 　▼25分 23:10発　羽田空港第１ターミナル　1番線 　東京モノレール(浜松町行) 　　23分 　　運賃：492円 23:33着　浜松町 　▼5分 23:38発　浜松町　1番線 　京浜東北線(大宮行) 　　2分 　　運賃：136円 23:40着　新橋 　▼8分 23:48発　新橋　2番線 　東京メトロ銀座線(浅草行) 　　3分 　　運賃：168円 23:51着　京橋 乗換案内 https://tiny.jorudan.co.jp/kw38Uc"
         )
     );
-    
-    
-    
-    
-    
+
+	$DB_INFO = Array(//ローカル環境でDBを用いる場合のDB情報
+		"host" => "localhost",									//localhost固定
+		"dbname" => "TransportationExpenseBotDBForLocalTest",	//バッチを用いて作成した場合はTransportationExpenseBotDBForLocalTest
+		"port" => "5432",										//DBのポート番号
+		"user" => "Upload",										//バッチを用いて作成した場合はUpload
+		"pass" => "Upload"										//DB作成時のパスワード
+	);
+
 	$DEF = function($defName){return $defName;};
 
 	function DEBUG_LOG(string $file, string $func, string $line, string $str,$ary = NULL){
@@ -46,7 +51,7 @@
 	        }
 	    }
 	}
-	
+
 	//PHPでgetallheaders()が動かない時用の関数
 	if (!function_exists('getallheaders')) {
 	    function getallheaders() {
@@ -60,8 +65,8 @@
 	        return $headers;
 	    }
 	}
-	
-	
+
+
 	//$baseText中に存在する$chgFromTextを$chgToTextに置き換える(正規表現)
 	function replaceText(string &$baseText, string $chgFromText, string $chgToText){
 	    DEBUG_LOG(basename(__FILE__),__FUNCTION__,__LINE__,"baseText=".$baseText);
@@ -70,29 +75,29 @@
 	    $baseText = preg_replace($patern,$chgToText,$baseText);
 	    DEBUG_LOG(basename(__FILE__),__FUNCTION__,__LINE__,"replaced baseText=".$baseText);
 	}
-    
+
 	//$baseTextを$delimiterで分割、配列にする
 	function delimitText(string &$baseText, string $delimiter){
 	    DEBUG_LOG(basename(__FILE__),__FUNCTION__,__LINE__,"baseText=".$baseText);
 	    $baseText = explode($delimiter,$baseText);
 	    DEBUG_LOG(basename(__FILE__),__FUNCTION__,__LINE__,"delimited baseText=",$baseText);
 	}
-	
+
 	//ビットフラグオン
 	function bitFlagOn(&$option, $bitFlagValue){
 	    $option |= $bitFlagValue;
 	}
-	
+
 	//ビットフラグオフ
 	function bitFlagOff(&$option, $bitFlagValue){
 	    $option &= ~$bitFlagValue;
 	}
-	
+
 	//ビットフラグ反転（指定箇所）
 	function bitFlagXOR(&$option, $bitFlagValue){
 	    $option ^= $bitFlagValue;
 	}
-	
+
 	//ビットフラグ状態確認
 	//return:true=(対象ビット=1);false=(対象ビット=0);
 	function getBitFlagState($option, $bitFlagValue){
