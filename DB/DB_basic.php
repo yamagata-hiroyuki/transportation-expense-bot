@@ -15,11 +15,11 @@ class dbConnection{
 		$dsn = self::getPDOConstractorString(DB_DSN);
 		// 接続を確立
 		try {
-			DEBUG_LOG(basename(__FILE__),__FUNCTION__,__LINE__,"str = ".$dsn);
 			self::$db = new PDO($dsn);
 			// エラー時例外を投げるように設定
 			self::$db->setAttribute( PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION );
 			self::$dbValidity = true;
+			DEBUG_LOG(basename(__FILE__),__FUNCTION__,__LINE__,"[INFO]DB conected.");
 		}
 		catch (PDOException $e) {
 			DEBUG_LOG(basename(__FILE__),__FUNCTION__,__LINE__,"[ERROR]]Connection Error: ".$e->getMessage());
@@ -30,7 +30,7 @@ class dbConnection{
 	// シングルトン。存在しない場合のみインスタンス化
 	public static function getConnection(&$connection):bool {
 		if (!self::$db) {
-			$rslt = new dbConnection();
+			new dbConnection();
 		}
 		$connection = self::$db;
 		return self::$dbValidity;
