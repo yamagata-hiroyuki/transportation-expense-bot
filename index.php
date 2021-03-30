@@ -6,8 +6,11 @@
 	require_once 'JWT/JWTFuncs.php';
 	require_once 'DB/DB_test_sql.php';
 	require_once 'DB/DB_Storedprocedures/DB_SP_GetFunctions.php';
+	require_once 'DB/DB_Storedprocedures/DB_SP_AddFunctions.php';
+	require_once 'DB/DB_Storedprocedures/DB_SP_SetFunctions.php';
 
 	DEBUG_LOG(basename(__FILE__),__FUNCTION__,__LINE__,">>>DBG hello php");
+	date_default_timezone_set(TIME_ZONE);
 	//require_once '';
 	//require_once '';
 	//require_once '';
@@ -23,13 +26,14 @@
 			DEBUG_LOG(basename(__FILE__),__FUNCTION__,__LINE__,"JWTToken = ".$JWTToken);
 
 			//Server Token 要求
-			$serverToken = $client->ServerTokenReq($JWTToken);
-			DEBUG_LOG(basename(__FILE__),__FUNCTION__,__LINE__,"serverToken = ".$serverToken);
+			$resp = new ServerTokenRes();
 
-			//TODO $serverTokenをDBへ登録
+			$resp->propaty = $client->ServerTokenReq($JWTToken);
 
-			//Bot List要求
-			$client->SendBotListReq($serverToken);
+			//serverTokenをDBへ登録
+			$currentTime = new DateTime("now");
+			$endTime = new DateTime("now +".$resp->propaty["expires_in"]." seconds");//expires_inミリ秒アクセストークン有効
+			DB_SP_setServerToken($resp->propaty["access_token"], $currentTime->format("Y/m/d h:i:s"), $endTime->format("Y/m/d h:i:s"));
 		}
 	}
 

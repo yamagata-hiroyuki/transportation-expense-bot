@@ -21,7 +21,7 @@
         
         class Enum_CallBack_userState{
             /*ユーザー未登録*/
-            const USER_NOT_REGISTED = 0;    //ユーザー未登録状態
+            const USER_JUST_REGISTED = 0;    //ユーザー初期登録状態
             /* メインメニュー */
             const MAIN_MENU = 1;            //メインメニュー選択状態待機
             /* データ登録機能 */
