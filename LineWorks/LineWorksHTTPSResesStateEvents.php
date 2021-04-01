@@ -156,33 +156,31 @@ class StateEvent{
     /* $stateEventTable 用関数群 */
         /* USER_JUST_REGISTED Funcs */
             private function RecvEvent_S00E00($recvData):bool{
-                DEBUG_LOG(basename(__FILE__),__FUNCTION__,__LINE__,"Invalid state event called(RecvEvent_S00E00()).");
+                DEBUG_LOG(basename(__FILE__),__FUNCTION__,__LINE__,"state event called(RecvEvent_S00E00()).");
+                //ユーザーアカウントを取得
+                $accountId = $recvData->baseInfo["source"]["accountId"];
+                do{
+                	//状態更新
+                	$userStatusInfo = new DBSP_SetUserStatusStruct();
+                	$userStatusInfo->info["user_address"] = $accountId;
+                	$userStatusInfo->info["status"] = Enum_CallBack_userState::MAIN_MENU;
+                	DB_SP_setUserStatus($userStatusInfo);
+                }while(false);
                 return true;
             }
 
             private function RecvEvent_SXXE01($recvData):bool{
-                DEBUG_LOG(basename(__FILE__),__FUNCTION__,__LINE__,"Not supported state event called(RecvEvent_SXXE01()).");
+                DEBUG_LOG(basename(__FILE__),__FUNCTION__,__LINE__,"Invalid state event called(RecvEvent_SXXE01()).");
                 return true;
             }
 
             private function RecvEvent_SXXE02($recvData):bool{
-                DEBUG_LOG(basename(__FILE__),__FUNCTION__,__LINE__,"Not supported state event called(RecvEvent_SXXE02()).");
+                DEBUG_LOG(basename(__FILE__),__FUNCTION__,__LINE__,"Invalid state event called(RecvEvent_SXXE02()).");
                 return true;
             }
 
             private function RecvEvent_S00E03($recvData):bool{
-                DEBUG_LOG(basename(__FILE__),__FUNCTION__,__LINE__,"state event called(RecvEvent_S00E03()).");
-                //ユーザーアドレスを取得
-                $accountId = $recvData->baseInfo["source"]["accountId"];
-
-                //DBへユーザーを新規登録
-                IF(DB_SP_addRegisteredUser($accountId)){
-                	DEBUG_LOG(basename(__FILE__),__FUNCTION__,__LINE__,"[Info]User registered.");
-                	return true;
-                }else{
-                	DEBUG_LOG(basename(__FILE__),__FUNCTION__,__LINE__,"[WARN]User not registered.");
-                	return false;
-                }
+                DEBUG_LOG(basename(__FILE__),__FUNCTION__,__LINE__,"Invalid state event called(RecvEvent_S00E03()).");
             }
 
             private function RecvEvent_S00E04($recvData):bool{
@@ -229,7 +227,15 @@ class StateEvent{
         /* REGIST_INPUT_DIST Funcs */
             private function RecvEvent_S02E00($recvData):bool{
                 DEBUG_LOG(basename(__FILE__),__FUNCTION__,__LINE__,"state event called(RecvEvent_S02E00()).");
-                return true;
+                //コンテントのタイプごとに呼び出す関数を決定
+                $contentType = stringToEnum($recvData->propaty["content"]["type"]);
+                $targetFunc = $this->stateEventContentTypeTable[Enum_CallBack_userState::REGIST_INPUT_DIST][$contentType];
+                if($targetFunc == null){
+                	DEBUG_LOG(basename(__FILE__),__FUNCTION__,__LINE__,
+                		"Unexpected table Func Referred.\nPlease create and set func in stateEventContentTypeTable.");
+                	return true;
+                }
+                return $this->$targetFunc($recvData);
             }
 
             private function RecvEvent_S02E05($recvData):bool{
@@ -240,7 +246,15 @@ class StateEvent{
         /* REGIST_INPUT_DEMAND Funcs */
             private function RecvEvent_S03E00($recvData):bool{
                 DEBUG_LOG(basename(__FILE__),__FUNCTION__,__LINE__,"state event called(RecvEvent_S03E00()).");
-                return true;
+                //コンテントのタイプごとに呼び出す関数を決定
+                $contentType = stringToEnum($recvData->propaty["content"]["type"]);
+                $targetFunc = $this->stateEventContentTypeTable[Enum_CallBack_userState::REGIST_INPUT_DEMAND][$contentType];
+                if($targetFunc == null){
+                	DEBUG_LOG(basename(__FILE__),__FUNCTION__,__LINE__,
+                		"Unexpected table Func Referred.\nPlease create and set func in stateEventContentTypeTable.");
+                	return true;
+                }
+                return $this->$targetFunc($recvData);
             }
 
             private function RecvEvent_S03E05($recvData):bool{
@@ -251,7 +265,15 @@ class StateEvent{
         /* REGIST_INPUT_ROUND Funcs */
             private function RecvEvent_S04E00($recvData):bool{
                 DEBUG_LOG(basename(__FILE__),__FUNCTION__,__LINE__,"state event called(RecvEvent_S04E00()).");
-                return true;
+                //コンテントのタイプごとに呼び出す関数を決定
+                $contentType = stringToEnum($recvData->propaty["content"]["type"]);
+                $targetFunc = $this->stateEventContentTypeTable[Enum_CallBack_userState::REGIST_INPUT_ROUND][$contentType];
+                if($targetFunc == null){
+                	DEBUG_LOG(basename(__FILE__),__FUNCTION__,__LINE__,
+                		"Unexpected table Func Referred.\nPlease create and set func in stateEventContentTypeTable.");
+                	return true;
+                }
+                return $this->$targetFunc($recvData);
             }
 
             private function RecvEvent_S04E05($recvData):bool{
@@ -262,7 +284,15 @@ class StateEvent{
         /* REGIST_INPUT_REMARK Funcs */
             private function RecvEvent_S05E00($recvData):bool{
                 DEBUG_LOG(basename(__FILE__),__FUNCTION__,__LINE__,"state event called(RecvEvent_S05E00()).");
-                return true;
+                //コンテントのタイプごとに呼び出す関数を決定
+                $contentType = stringToEnum($recvData->propaty["content"]["type"]);
+                $targetFunc = $this->stateEventContentTypeTable[Enum_CallBack_userState::REGIST_INPUT_REMARK][$contentType];
+                if($targetFunc == null){
+                	DEBUG_LOG(basename(__FILE__),__FUNCTION__,__LINE__,
+                		"Unexpected table Func Referred.\nPlease create and set func in stateEventContentTypeTable.");
+                	return true;
+                }
+                return $this->$targetFunc($recvData);
             }
 
             private function RecvEvent_S05E05($recvData):bool{
@@ -273,7 +303,15 @@ class StateEvent{
         /* REGIST_INPUT_CONF Funcs */
             private function RecvEvent_S06E00($recvData):bool{
                 DEBUG_LOG(basename(__FILE__),__FUNCTION__,__LINE__,"state event called(RecvEvent_S06E00()).");
-                return true;
+                //コンテントのタイプごとに呼び出す関数を決定
+                $contentType = stringToEnum($recvData->propaty["content"]["type"]);
+                $targetFunc = $this->stateEventContentTypeTable[Enum_CallBack_userState::REGIST_INPUT_CONF][$contentType];
+                if($targetFunc == null){
+                	DEBUG_LOG(basename(__FILE__),__FUNCTION__,__LINE__,
+                		"Unexpected table Func Referred.\nPlease create and set func in stateEventContentTypeTable.");
+                	return true;
+                }
+                return $this->$targetFunc($recvData);
             }
 
             private function RecvEvent_S06E05($recvData):bool{
@@ -282,9 +320,9 @@ class StateEvent{
             }
 
     /* $stateEventContentTypeTable 用関数群 */
-        /* USER_NOT_REGISTED Funcs */
+        /* USER_JUST_REGISTED Funcs */
             private function RecvEventContent_S00E00($recvData):bool{
-                DEBUG_LOG(basename(__FILE__),__FUNCTION__,__LINE__,"state event called(RecvEvent_S00E00()).");
+                DEBUG_LOG(basename(__FILE__),__FUNCTION__,__LINE__,"Not supported state event called(RecvEventContent_S00E00()).");
                 return true;
             }
 
@@ -313,33 +351,36 @@ class StateEvent{
                 DEBUG_LOG(basename(__FILE__),__FUNCTION__,__LINE__,"state event called(RecvEventContent_S01E00()).");
                 //LineWorks クライアントの作成
                 $client = new LineWorksReqs();
-                //TODO Server Token 要求(DBから取得するように修正すること)
-                {
-                    //JWT Token生成
-                    $JWTToken = CreateJWT();
-                    DEBUG_LOG(basename(__FILE__),__FUNCTION__,__LINE__,"JWTToken = ".$JWTToken);
+                //Server Token 取得
+                $serverTokenInfo = new DBSP_GetServerTokenStruct();
+                DB_SP_getServerToken($serverTokenInfo);
 
-
-                    $serverToken = $client->ServerTokenReq($JWTToken);
-                    DEBUG_LOG(basename(__FILE__),__FUNCTION__,__LINE__,"serverToken = ".$serverToken);
-                }
-
-                //メッセージを送付したいユーザーIDを取得
+                //メッセージを送付したいユーザーアカウントを取得
                 $accountId = $recvData->baseInfo["source"]["accountId"];
-                //ジョルダン乗り換え案内より情報取得（テスト用：DB整備後は適切なステータスイベントへ移動）
+                //ジョルダン乗り換え案内より情報取得
                 do{
                     $jorudanInfo = new Jorudan_Info();
 
                     //ジョルダン情報取得
-                    if(false == MessageAnalyser::getJorudanInfo($jorudanInfo, $recvData))break;
+                    if(false == MessageAnalyser::getJorudanInfo($jorudanInfo, $recvData)){
+                    	DEBUG_LOG(basename(__FILE__),__FUNCTION__,__LINE__,"[INFO]Invalid Input.");
+                    	//ユーザーへ通知（入力は無効である）
+                    	$client->SendMessageReq($accountId,$serverTokenInfo->info["token"],
+                    		"無効な入力です。\n".
+                    		"メニューのボタンか、ジョルダン案内情報の内容をコピペしてください。");
+                    	break;
+                    }
                     //以下テスト用
                     $tmpArray = print_r($jorudanInfo,true);
-                    $client->SendMessageReq($accountId,$serverToken,$tmpArray);
+                    $client->SendMessageReq($accountId,$serverTokenInfo->info["token"],"デバッグ情報\n".$tmpArray);
 
                     //TODO DBへ一時データ保存
 
-                    //TODO 状態更新
-
+                    //状態更新
+                    $userStatusInfo = new DBSP_SetUserStatusStruct();
+                    $userStatusInfo->info["user_address"] = $accountId;
+                    $userStatusInfo->info["status"] = Enum_CallBack_userState::REGIST_INPUT_DIST;
+                    DB_SP_setUserStatus($userStatusInfo);
                 }while(false);
 
                 return true;
@@ -348,34 +389,204 @@ class StateEvent{
         /* REGIST_INPUT_DIST Funcs */
             private function RecvEventContent_S02E00($recvData):bool{
                 DEBUG_LOG(basename(__FILE__),__FUNCTION__,__LINE__,"state event called(RecvEventContent_S02E00()).");
+                //LineWorks クライアントの作成
+                $client = new LineWorksReqs();
+                //Server Token 取得
+                $serverTokenInfo = new DBSP_GetServerTokenStruct();
+                DB_SP_getServerToken($serverTokenInfo);
+
+                //メッセージを送付したいユーザーアカウントを取得
+                $accountId = $recvData->baseInfo["source"]["accountId"];
+                do{
+                	//文字数チェック
+                	$tmplen = mb_strlen($recvData->propaty["content"]["text"]);
+                	if(DIST_STR_MIN > $tmplen || DIST_STR_MAX < $tmplen){
+                		DEBUG_LOG(basename(__FILE__),__FUNCTION__,__LINE__,"[INFO]Invalid Input.");
+                		//ユーザーへ通知（入力は無効である）
+                		$client->SendMessageReq($accountId,$serverTokenInfo->info["token"],
+                			"無効な入力です。\n".
+                			"目的地は".DIST_STR_MIN."～".DIST_STR_MAX."文字以内となるよう再度入力してください");
+                		break;
+                	}
+                	//TODO 以下テスト用 本運用時は削除すること
+                	$tmpArray = $recvData->propaty["content"]["text"];
+                	$client->SendMessageReq($accountId,$serverTokenInfo->info["token"],"デバッグ情報\n".
+                		"入力された目的地は".$tmpArray);
+
+                	//TODO DBへ一時データ保存
+
+                	//状態更新
+                	$userStatusInfo = new DBSP_SetUserStatusStruct();
+                	$userStatusInfo->info["user_address"] = $accountId;
+                	$userStatusInfo->info["status"] = Enum_CallBack_userState::REGIST_INPUT_DEMAND;
+                	DB_SP_setUserStatus($userStatusInfo);
+                }while(false);
                 return true;
             }
 
         /* REGIST_INPUT_DEMAND Funcs */
             private function RecvEventContent_S03E00($recvData):bool{
                 DEBUG_LOG(basename(__FILE__),__FUNCTION__,__LINE__,"state event called(RecvEventContent_S03E00()).");
+                //LineWorks クライアントの作成
+                $client = new LineWorksReqs();
+                //Server Token 取得
+                $serverTokenInfo = new DBSP_GetServerTokenStruct();
+                DB_SP_getServerToken($serverTokenInfo);
+
+                //メッセージを送付したいユーザーアカウントを取得
+                $accountId = $recvData->baseInfo["source"]["accountId"];
+                do{
+                	//ボタンによる応答かチェック
+                	$bitFlags = MessageAnalyser::getPostbackKind($recvData);
+                	if(  !(getBitFlagState($bitFlags, MA_PostbackKind::REQUEST_TO_IN_HOUSE)
+                		    || getBitFlagState($bitFlags, MA_PostbackKind::REQUEST_TO_USER)
+                		   ) )
+                	{
+                		DEBUG_LOG(basename(__FILE__),__FUNCTION__,__LINE__,"[INFO]Invalid Input.");
+                		//ユーザーへ通知（入力は無効である）
+                		$client->SendMessageReq($accountId,$serverTokenInfo->info["token"],
+                			"無効な入力です。\n".
+                			"ボタンで選択するようにしてください");
+                		break;
+                	}
+
+                	//TODO 以下テスト用 本運用時は削除すること
+                	$tmpArray = $recvData->propaty["content"]["postback"];
+                	$client->SendMessageReq($accountId,$serverTokenInfo->info["token"],"デバッグ情報\n".
+                		"入力された請求先は".$tmpArray);
+
+                	//TODO DBへ一時データ保存
+
+                	//状態更新
+                	$userStatusInfo = new DBSP_SetUserStatusStruct();
+                	$userStatusInfo->info["user_address"] = $accountId;
+                	$userStatusInfo->info["status"] = Enum_CallBack_userState::REGIST_INPUT_ROUND;
+                	DB_SP_setUserStatus($userStatusInfo);
+                }while(false);
                 return true;
             }
 
         /* REGIST_INPUT_ROUND Funcs */
             private function RecvEventContent_S04E00($recvData):bool{
                 DEBUG_LOG(basename(__FILE__),__FUNCTION__,__LINE__,"state event called(RecvEventContent_S04E00()).");
+                //LineWorks クライアントの作成
+                $client = new LineWorksReqs();
+                //Server Token 取得
+                $serverTokenInfo = new DBSP_GetServerTokenStruct();
+                DB_SP_getServerToken($serverTokenInfo);
+
+                //メッセージを送付したいユーザーアカウントを取得
+                $accountId = $recvData->baseInfo["source"]["accountId"];
+                do{
+                	//ボタンによる応答かチェック
+                	$bitFlags = MessageAnalyser::getPostbackKind($recvData);
+                	if(  !(getBitFlagState($bitFlags, MA_PostbackKind::ONE_WAY)
+                		|| getBitFlagState($bitFlags, MA_PostbackKind::ROUND_TRIP)
+                		) )
+                	{
+                		DEBUG_LOG(basename(__FILE__),__FUNCTION__,__LINE__,"[INFO]Invalid Input.");
+                		//ユーザーへ通知（入力は無効である）
+                		$client->SendMessageReq($accountId,$serverTokenInfo->info["token"],
+                			"無効な入力です。\n".
+                			"ボタンで選択するようにしてください");
+                		break;
+                	}
+
+                	//TODO 以下テスト用 本運用時は削除すること
+                	$tmpArray = $recvData->propaty["content"]["postback"];
+                	$client->SendMessageReq($accountId,$serverTokenInfo->info["token"],"デバッグ情報\n".
+                		"入力された経路は".$tmpArray);
+
+                	//TODO DBへ一時データ保存
+
+                	//状態更新
+                	$userStatusInfo = new DBSP_SetUserStatusStruct();
+                	$userStatusInfo->info["user_address"] = $accountId;
+                	$userStatusInfo->info["status"] = Enum_CallBack_userState::REGIST_INPUT_REMARK;
+                	DB_SP_setUserStatus($userStatusInfo);
+                }while(false);
                 return true;
             }
 
         /* REGIST_INPUT_REMARK Funcs */
             private function RecvEventContent_S05E00($recvData):bool{
                 DEBUG_LOG(basename(__FILE__),__FUNCTION__,__LINE__,"state event called(RecvEventContent_S05E00()).");
+                //LineWorks クライアントの作成
+                $client = new LineWorksReqs();
+                //Server Token 取得
+                $serverTokenInfo = new DBSP_GetServerTokenStruct();
+                DB_SP_getServerToken($serverTokenInfo);
+
+                //メッセージを送付したいユーザーアカウントを取得
+                $accountId = $recvData->baseInfo["source"]["accountId"];
+                do{
+                	//文字数チェック
+                	$tmplen = mb_strlen($recvData->propaty["content"]["text"]);
+                	if(REMARK_STR_MIN > $tmplen || REMARK_STR_MAX < $tmplen){
+                		DEBUG_LOG(basename(__FILE__),__FUNCTION__,__LINE__,"[INFO]Invalid Input.");
+                		//ユーザーへ通知（入力は無効である）
+                		$client->SendMessageReq($accountId,$serverTokenInfo->info["token"],
+                			"無効な入力です。\n".
+                			"目的地は".REMARK_STR_MIN."～".REMARK_STR_MAX."文字以内となるよう再度入力してください");
+                		break;
+                	}
+                	//TODO 以下テスト用 本運用時は削除すること
+                	$tmpArray = $recvData->propaty["content"]["text"];
+                	$client->SendMessageReq($accountId,$serverTokenInfo->info["token"],"デバッグ情報\n".
+                		"入力された目的地は".$tmpArray);
+
+                	//TODO DBへ一時データ保存
+
+                	//状態更新
+                	$userStatusInfo = new DBSP_SetUserStatusStruct();
+                	$userStatusInfo->info["user_address"] = $accountId;
+                	$userStatusInfo->info["status"] = Enum_CallBack_userState::REGIST_INPUT_CONF;
+                	DB_SP_setUserStatus($userStatusInfo);
+                }while(false);
                 return true;
             }
 
         /* REGIST_INPUT_CONF Funcs */
             private function RecvEventContent_S06E00($recvData):bool{
                 DEBUG_LOG(basename(__FILE__),__FUNCTION__,__LINE__,"state event called(RecvEventContent_S06E00()).");
+                //LineWorks クライアントの作成
+                $client = new LineWorksReqs();
+                //Server Token 取得
+                $serverTokenInfo = new DBSP_GetServerTokenStruct();
+                DB_SP_getServerToken($serverTokenInfo);
+
+                //メッセージを送付したいユーザーアカウントを取得
+                $accountId = $recvData->baseInfo["source"]["accountId"];
+                do{
+                	//ボタンによる応答かチェック
+                	$bitFlags = MessageAnalyser::getPostbackKind($recvData);
+                	if(  !(getBitFlagState($bitFlags, MA_PostbackKind::APPLY)
+                		|| getBitFlagState($bitFlags, MA_PostbackKind::CANCEL)
+                		) )
+                	{
+                		DEBUG_LOG(basename(__FILE__),__FUNCTION__,__LINE__,"[INFO]Invalid Input.");
+                		//ユーザーへ通知（入力は無効である）
+                		$client->SendMessageReq($accountId,$serverTokenInfo->info["token"],
+                			"無効な入力です。\n".
+                			"ボタンで選択するようにしてください");
+                		break;
+                	}
+
+                	//TODO 以下テスト用 本運用時は削除すること
+                	$tmpArray = $recvData->propaty["content"]["postback"];
+                	$client->SendMessageReq($accountId,$serverTokenInfo->info["token"],"デバッグ情報\n".
+                		"入力された選択は".$tmpArray);
+
+                	//TODO DBへ一時データ保存
+
+                	//状態更新
+                	$userStatusInfo = new DBSP_SetUserStatusStruct();
+                	$userStatusInfo->info["user_address"] = $accountId;
+                	$userStatusInfo->info["status"] = Enum_CallBack_userState::MAIN_MENU;
+                	DB_SP_setUserStatus($userStatusInfo);
+                }while(false);
                 return true;
             }
-
-
 }
 
 

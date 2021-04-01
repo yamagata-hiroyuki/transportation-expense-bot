@@ -33,7 +33,12 @@
 			//serverTokenをDBへ登録
 			$currentTime = new DateTime("now");
 			$endTime = new DateTime("now +".$resp->propaty["expires_in"]." seconds");//expires_inミリ秒アクセストークン有効
-			DB_SP_setServerToken($resp->propaty["access_token"], $currentTime->format("Y/m/d h:i:s"), $endTime->format("Y/m/d h:i:s"));
+			$reqInfo = new DBSP_SetServerTokenStruct();
+			$reqInfo->info["server_token"] = $resp->propaty["access_token"];
+			$reqInfo->info["startFrom"] = $currentTime->format("Y/m/d H:i:sO");
+			$reqInfo->info["endAt"] = $endTime->format("Y/m/d H:i:sO");
+
+			DB_SP_setServerToken($reqInfo);
 		}
 	}
 
