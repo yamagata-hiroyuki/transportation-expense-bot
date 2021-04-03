@@ -96,6 +96,6 @@
 	//ビットフラグ状態確認
 	//return:true=(対象ビット=1);false=(対象ビット=0);
 	function getBitFlagState($option, $bitFlagValue){
-		if( $option & $bitFlagValue){ return true};
+		if( $option & $bitFlagValue){ return true;};
 		return false;
 	}

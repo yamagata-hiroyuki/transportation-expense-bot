@@ -58,21 +58,21 @@ class MA_MessagePostbackList{
 trait MA_ForText{
 	static public function getMessageKind(CallBackStruct $recvData){
 		$retValue = 0x0;
-		if( self::isNUMBER($recvData) ){ bitFlagOn($retValue, MA_MessageKind::NUMBER)};
-		if( self::isJORUDAN($recvData) ){ bitFlagOn($retValue, MA_MessageKind::JORUDAN)};
+		if( self::isNUMBER($recvData) ){ bitFlagOn($retValue, MA_MessageKind::NUMBER);};
+		if( self::isJORUDAN($recvData) ){ bitFlagOn($retValue, MA_MessageKind::JORUDAN);};
 		return $retValue;
 	}
 
 	static public function getPostbackKind(CallBackStruct $recvData){
 		$retValue = 0x0;
-		if( self::isAPPLY($recvData) ){ bitFlagOn($retValue, MA_PostbackKind::APPLY)};
-		if( self::isCANCEL($recvData) ){ bitFlagOn($retValue, MA_PostbackKind::CANCEL)};
-		if( self::isONE_DELETE($recvData) ){ bitFlagOn($retValue, MA_PostbackKind::ONE_DELETE)};
-		if( self::isPETITION($recvData) ){ bitFlagOn($retValue, MA_PostbackKind::PETITION)};
-		if( self::isREQUEST_TO_USER($recvData) ){ bitFlagOn($retValue, MA_PostbackKind::REQUEST_TO_USER)};
-		if( self::isREQUEST_TO_IN_HOUSE($recvData) ){ bitFlagOn($retValue, MA_PostbackKind::REQUEST_TO_IN_HOUSE)};
-		if( self::isONE_WAY($recvData) ){ bitFlagOn($retValue, MA_PostbackKind::ONE_WAY)};
-		if( self::isROUND_TRIP($recvData) ){ bitFlagOn($retValue, MA_PostbackKind::ROUND_TRIP)};
+		if( self::isAPPLY($recvData) ){ bitFlagOn($retValue, MA_PostbackKind::APPLY);};
+		if( self::isCANCEL($recvData) ){ bitFlagOn($retValue, MA_PostbackKind::CANCEL);};
+		if( self::isONE_DELETE($recvData) ){ bitFlagOn($retValue, MA_PostbackKind::ONE_DELETE);};
+		if( self::isPETITION($recvData) ){ bitFlagOn($retValue, MA_PostbackKind::PETITION);};
+		if( self::isREQUEST_TO_USER($recvData) ){ bitFlagOn($retValue, MA_PostbackKind::REQUEST_TO_USER);};
+		if( self::isREQUEST_TO_IN_HOUSE($recvData) ){ bitFlagOn($retValue, MA_PostbackKind::REQUEST_TO_IN_HOUSE);};
+		if( self::isONE_WAY($recvData) ){ bitFlagOn($retValue, MA_PostbackKind::ONE_WAY);};
+		if( self::isROUND_TRIP($recvData) ){ bitFlagOn($retValue, MA_PostbackKind::ROUND_TRIP);};
 		return $retValue;
 	}
 
@@ -109,53 +109,53 @@ trait MA_ForText{
 	}
 
 	static protected function isAPPLY(CallBackStruct $recvData):bool{
-		if( $recvData->propaty["content"]["postback"] == MA_MessagePostbackList::APPLY ){ return true};
+		if( $recvData->propaty["content"]["postback"] == MA_MessagePostbackList::APPLY ){ return true;};
 		return false;
 	}
 
 	static protected function isCANCEL(CallBackStruct $recvData):bool{
-		if( $recvData->propaty["content"]["postback"] == MA_MessagePostbackList::CANCEL ){ return true};
+		if( $recvData->propaty["content"]["postback"] == MA_MessagePostbackList::CANCEL ){ return true;};
 		return false;
 	}
 
 	static protected function isNUMBER(CallBackStruct $recvData):bool{
-		if( ctype_digit($recvData->propaty["content"]["text"]) ){return true};
+		if( ctype_digit($recvData->propaty["content"]["text"]) ){return true;};
 		return false;
 	}
 
 	static protected function isONE_DELETE(CallBackStruct $recvData):bool{
-		if ($recvData->propaty["content"]["postback"] == MA_MessagePostbackList::ONE_DELETE ){ return true};
+		if ($recvData->propaty["content"]["postback"] == MA_MessagePostbackList::ONE_DELETE ){ return true;};
 		return false;
 	}
 
 	static protected function isPETITION(CallBackStruct $recvData):bool{
-		if( $recvData->propaty["content"]["postback"] == MA_MessagePostbackList::PETITION ){ return true};
+		if( $recvData->propaty["content"]["postback"] == MA_MessagePostbackList::PETITION ){ return true;};
 		return false;
 	}
 
 	static protected function isREQUEST_TO_USER(CallBackStruct $recvData):bool{
-		if( $recvData->propaty["content"]["postback"] == MA_MessagePostbackList::REQUEST_TO_USER ){ return true};
+		if( $recvData->propaty["content"]["postback"] == MA_MessagePostbackList::REQUEST_TO_USER ){ return true;};
 		return false;
 	}
 
 	static protected function isREQUEST_TO_IN_HOUSE(CallBackStruct $recvData):bool{
-		if( $recvData->propaty["content"]["postback"] == MA_MessagePostbackList::REQUEST_TO_IN_HOUSE ){ return true};
+		if( $recvData->propaty["content"]["postback"] == MA_MessagePostbackList::REQUEST_TO_IN_HOUSE ){ return true;};
 		return false;
 	}
 
 	static protected function isONE_WAY(CallBackStruct $recvData):bool{
-		if( $recvData->propaty["content"]["postback"] == MA_MessagePostbackList::ONE_WAY ){ return true};
+		if( $recvData->propaty["content"]["postback"] == MA_MessagePostbackList::ONE_WAY ){ return true;};
 		return false;
 	}
 
 	static protected function isROUND_TRIP(CallBackStruct $recvData):bool{
-		if( $recvData->propaty["content"]["postback"] == MA_MessagePostbackList::ROUND_TRIP ){ return true;
+		if( $recvData->propaty["content"]["postback"] == MA_MessagePostbackList::ROUND_TRIP ){ return true;}
 		return false;
 	}
 
 	static protected function isJORUDAN(CallBackStruct $recvData):bool{
 		$jorudanInstance = new Jorudan_Funcs();
-		if( $jorudanInstance->IsJorudanInfo($recvData->propaty["content"]["text"]) ){ return true;
+		if( $jorudanInstance->IsJorudanInfo($recvData->propaty["content"]["text"]) ){ return true;};
 		return false;
 	}
 }

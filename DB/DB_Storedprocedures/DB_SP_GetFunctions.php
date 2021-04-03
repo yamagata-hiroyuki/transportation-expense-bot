@@ -86,7 +86,7 @@ function DB_SP_getServerToken(DBSP_GetServerTokenStruct &$output):bool{
 		$reqInfo->info["endAt"] = $endTime->format("Y/m/d H:i:sO");
 
 		$rslt = DB_SP_setServerToken($reqInfo);
-		if( $rslt){ return false};
+		if( $rslt){ return false;};
 		//新しいトークン情報でアウトプットを上書きする
 		$output->info["server_token"] = $resp->propaty["access_token"];
 		$output->info["startFrom"] = $currentTime;
