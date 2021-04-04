@@ -1,6 +1,6 @@
 <?php
 require_once "DB/DB_basic.php";
-require_once "LineWorks/LineWorksHTTPSResesJsonStructs.php";
+require_once "LineWorks/LineWorksHTTPSResiesJsonStructs.php";
 require_once "DB/DB_Storedprocedures/DB_SP_Structs.php";
 
 function DB_SP_setServerToken(DBSP_SetServerTokenStruct $setInfo):bool{

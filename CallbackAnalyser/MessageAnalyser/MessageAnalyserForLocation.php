@@ -1,5 +1,5 @@
 <?php
-require_once 'LineWorks/LineWorksHTTPSResesJsonStructs.php';
+require_once 'LineWorks/LineWorksHTTPSResiesJsonStructs.php';
 
 trait MA_ForLocation{
     //ボディデータを取得する

@@ -2,7 +2,7 @@
 	require_once 'LineWorks/LineWorksCfg.php';
 	require_once 'HTTP/HTTPSClientCommon.php';
 	require_once 'LineWorks/LineWorksHTTPSReqs.php';
-	require_once 'LineWorks/LineWorksHTTPSRese.php';
+	require_once 'LineWorks/LineWorksHTTPSResies.php';
 	require_once 'JWT/JWTFuncs.php';
 	require_once 'DB/DB_test_sql.php';
 	require_once 'DB/DB_Storedprocedures/DB_SP_GetFunctions.php';
@@ -45,7 +45,7 @@
 	/* 受信・応答テスト */
 	{
 		if(RCV_TEST){
-			$client = new LineWorksReses;
+			$client = new LineWorksResies;
 			$client->RecvCallBackEvent();
 		}
 	}

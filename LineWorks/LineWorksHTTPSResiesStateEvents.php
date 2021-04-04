@@ -1,6 +1,6 @@
 <?php
 require_once 'Common/Lamdas.php';
-require_once 'LineWorks/LineWorksHTTPSResesJsonStructs.php';
+require_once 'LineWorks/LineWorksHTTPSResiesJsonStructs.php';
 require_once 'LineWorks/LineWorksCfg.php';
 require_once 'LineWorks/LineWorksHTTPSReqs.php';
 require_once 'Jorudan/Jorudan_Funcs.php';

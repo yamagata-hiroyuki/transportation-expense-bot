@@ -1,5 +1,5 @@
 <?php
-require_once 'LineWorks/LineWorksHTTPSResesJsonStructs.php';
+require_once 'LineWorks/LineWorksHTTPSResiesJsonStructs.php';
 
 class PostbackAnalyser{
     //ボディデータを取得する

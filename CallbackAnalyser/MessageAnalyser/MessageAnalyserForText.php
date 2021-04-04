@@ -1,5 +1,5 @@
 <?php
-require_once 'LineWorks/LineWorksHTTPSResesJsonStructs.php';
+require_once 'LineWorks/LineWorksHTTPSResiesJsonStructs.php';
 require_once 'Jorudan/Jorudan_Funcs.php';
 require_once 'Jorudan/Jorudan_FuncsStruct.php';
 require_once 'Common/Lamdas.php';

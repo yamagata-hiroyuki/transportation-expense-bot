@@ -4,7 +4,7 @@ require_once 'CallbackAnalyser/MessageAnalyser/MessageAnalyserForLocation.php';
 require_once 'CallbackAnalyser/MessageAnalyser/MessageAnalyserForSticker.php';
 require_once 'CallbackAnalyser/MessageAnalyser/MessageAnalyserForImage.php';
 require_once 'CallbackAnalyser/MessageAnalyser/MessageAnalyserForFile.php';
-require_once 'LineWorks/LineWorksHTTPSResesJsonStructs.php';
+require_once 'LineWorks/LineWorksHTTPSResiesJsonStructs.php';
 
 class MessageAnalyser{
     //多重継承(trait)

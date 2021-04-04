@@ -3,7 +3,7 @@
     require_once 'HTTP/HTTPSClientCommon.php';
     require_once 'LineWorks/LineWorksHTTPSReqsJsonStructs.php';
     require_once 'Common/Lamdas.php';
-    require_once 'LineWorks/LineWorksHTTPSResesJsonStructs.php';
+    require_once 'LineWorks/LineWorksHTTPSResiesJsonStructs.php';
     require_once 'CallbackAnalyser/MessageAnalyser/MessageAnalyser.php';
 
     define("CALLBACK_URL","https://{$GLOBALS['DEF'](APP_NAME)}.herokuapp.com/callback");						//CallBack URL(Lineworks �� heroku app)

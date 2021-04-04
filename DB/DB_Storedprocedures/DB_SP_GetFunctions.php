@@ -1,7 +1,7 @@
 <?php
 require_once "DB/DB_basic.php";
 require_once "LineWorks/LineWorksHTTPSReqs.php";
-require_once "LineWorks/LineWorksHTTPSRese.php";
+require_once "LineWorks/LineWorksHTTPSResies.php";
 require_once "DB/DB_Storedprocedures/DB_SP_Structs.php";
 
 function DB_SP_getUserId(string $user_address ,DBSP_GetUserIdStruct &$output):bool{

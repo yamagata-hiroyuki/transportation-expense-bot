@@ -1,7 +1,7 @@
 <?php
-require_once 'LineWorks/LineWorksHTTPSResesJsonStructs.php';
+require_once 'LineWorks/LineWorksHTTPSResiesJsonStructs.php';
 require_once 'LineWorks/LineWorksCfg.php';
-require_once 'LineWorks/LineWorksHTTPSResesStateEvents.php';
+require_once 'LineWorks/LineWorksHTTPSResiessStateEvents.php';
 require_once 'CallbackAnalyser/MessageAnalyser/MessageAnalyser.php';
 require_once 'CallbackAnalyser/JoinedAnalyser/JoinedAnalyser.php';
 require_once 'CallbackAnalyser/LeftAnalyser/LeftAnalyser.php';
@@ -9,7 +9,7 @@ require_once 'CallbackAnalyser/PostbackAnalyser/PostbackAnalyser.php';
 require_once 'CallbackAnalyser/CallbackAnalyserCommonFuncs.php';
 require_once 'DB/DB_Storedprocedures/DB_SP_GetFunctions.php';
 
-class LineWorksReses{
+class LineWorksResies{
 	function __construct()
 	{
 		DEBUG_LOG(basename(__FILE__),__FUNCTION__,__LINE__,"Done LineWorksReses __constractor()");

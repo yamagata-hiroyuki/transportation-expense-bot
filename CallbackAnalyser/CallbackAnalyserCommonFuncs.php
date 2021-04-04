@@ -1,5 +1,5 @@
 <?php
-require_once 'LineWorks/LineWorksHTTPSResesJsonStructs.php';
+require_once 'LineWorks/LineWorksHTTPSResiesJsonStructs.php';
 
 //ヘッダー情報を取得する
 //input:file_get_contents('php://input')のデータ
