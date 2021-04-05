@@ -22,7 +22,7 @@ class dbConnection{
 			DEBUG_LOG(basename(__FILE__),__FUNCTION__,__LINE__,"[INFO]DB conected.");
 		}
 		catch (PDOException $e) {
-			DEBUG_LOG(basename(__FILE__),__FUNCTION__,__LINE__,"[ERROR]]Connection Error: ".$e->getMessage());
+			DEBUG_LOG(basename(__FILE__),__FUNCTION__,__LINE__,"[ERROR]Connection Error: ".$e->getMessage());
 			self::$dbValidity = false;
 		}
 	}

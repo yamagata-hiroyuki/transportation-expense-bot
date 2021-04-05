@@ -23,13 +23,20 @@
 			/*ユーザー未登録*/
 			const USER_JUST_REGISTED = 0;	//ユーザー初期登録状態
 			/* メインメニュー */
-			const MAIN_MENU = 1;			//メインメニュー選択状態待機
+			const MAIN_MENU = 1;			//基本状態
 			/* データ登録機能 */
-			const REGIST_INPUT_DIST = 2;	//行き先入力待機
-			const REGIST_INPUT_DEMAND = 3;	//請求先選択待機
-			const REGIST_INPUT_ROUND = 4;	//往復・片道選択待機
-			const REGIST_INPUT_REMARK = 5;	//備考入力待機
-			const REGIST_INPUT_CONF = 6;	//入力確認選択待機
+			const REGIST_INPUT_DIST		= 2;	//目的地入力待機状態
+			const REGIST_INPUT_DEMAND	= 3;	//請求先入力待機状態
+			const REGIST_INPUT_ROUND	= 4;	//片道or往復入力待機状態
+			const REGIST_INPUT_REMARK	= 5;	//備考入力待機状態
+			const REGIST_INPUT_CONF		= 6;	//入力確認待機状態
+			/* 機能選択 */
+			const SELECT_MENU			= 7;	//機能選択待機状態
+			/* 削除機能 */
+			const DELETE_SELECT_ID		= 8;	//削除対象ID入力待機状態
+			const DELETE_CONF			= 9;	//削除確認待機状態
+			/* 申請機能 */
+			const PETITION_CONF			=10;	//申請確認待機状態
 		}
 	}
 
@@ -37,7 +44,7 @@
 	class CallBackStruct{
 		public $baseInfo = Array();			//CallBackBaseInfoStruct参照
 		public $propaty = Array();			//CallBack_XXXXStruct参照
-		public $header = Array();			//ヘッダー情報
+		public $header = Array();				//ヘッダー情報
 	}
 
 	/* CallBackイベント */
@@ -50,28 +57,28 @@
 		}
 
 		class CallBack_JoinStruct{					//トークルームに Bot が招待された際に生じる Callback イベント
-			public $propaty = Array();				//なし
+			public $propaty = Array();			//なし
 		}
 
-		class CallBack_LeaveStruct{					//トークルームから Bot が退室した際に生じる Callback イベント
-			public $propaty = Array();				//なし
+		class CallBack_LeaveStruct{				//トークルームから Bot が退室した際に生じる Callback イベント
+			public $propaty = Array();			//なし
 		}
 
-		class CallBack_JoinedStruct{			//Bot が属するトークルームに新たにメンバーが招待された際に生じる Callback イベント
+		class CallBack_JoinedStruct{				//Bot が属するトークルームに新たにメンバーが招待された際に生じる Callback イベント
 			public $propaty = Array(
-				"memberList" => Array()			//招待されたメンバーリスト
+				"memberList" => Array()				//招待されたメンバーリスト
 			);
 		}
 
-		class CallBack_LeftStruct{				//Bot が属するトークルームに新たにメンバーが退室した際に生じる Callback イベント
+		class CallBack_LeftStruct{					//Bot が属するトークルームに新たにメンバーが退室した際に生じる Callback イベント
 			public $propaty = Array(
-				"memberList" => Array()			//トークルームから退室したメンバーリスト
+				"memberList" => Array()				//トークルームから退室したメンバーリスト
 				);
 		}
 
-		class CallBack_PostbackStruct{			//Action Object(ボタン等)の postback action に対する応答のイベント
+		class CallBack_PostbackStruct{				//Action Object(ボタン等)の postback action に対する応答のイベント
 			public $propaty = Array(
-				"data" => ""					//postback データ
+				"data" => ""						//postback データ
 			);
 		}
 	}

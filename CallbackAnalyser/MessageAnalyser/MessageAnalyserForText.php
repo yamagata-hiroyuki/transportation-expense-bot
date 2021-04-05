@@ -7,8 +7,8 @@ require_once 'Common/Lamdas.php';
 class MA_MessageKind{
 	//共通
 	const NUMBER		= 0x00000001;//数字列
-	//ジョルダン乗換案内
-	const JORUDAN		= 0x00000002;
+	const JORUDAN		= 0x00000002;//ジョルダン乗換案内
+	const SELECT_MENU	= 0x00000004;//機能選択
 }
 
 class MA_MessageTextList{
@@ -60,6 +60,7 @@ trait MA_ForText{
 		$retValue = 0x0;
 		if( self::isNUMBER($recvData) ){ bitFlagOn($retValue, MA_MessageKind::NUMBER);};
 		if( self::isJORUDAN($recvData) ){ bitFlagOn($retValue, MA_MessageKind::JORUDAN);};
+		if( self::isSELECT_MENU($recvData) ){ bitFlagOn($retValue, MA_MessageKind::SELECT_MENU);};
 		return $retValue;
 	}
 
@@ -89,7 +90,7 @@ trait MA_ForText{
 
 		//データを構造体に格納
 		if( !$jorudanInstance->GetInfo($recvData->propaty["content"]["text"] ,$output) ){
-			DEBUG_LOG(basename(__FILE__),__FUNCTION__,__LINE__,"failed to exchange raw data into struct.");
+			DEBUG_LOG(basename(__FILE__),__FUNCTION__,__LINE__,"[ERROR]failed to exchange raw data into struct.");
 			return false;
 		}
 		return true;
@@ -156,6 +157,11 @@ trait MA_ForText{
 	static protected function isJORUDAN(CallBackStruct $recvData):bool{
 		$jorudanInstance = new Jorudan_Funcs();
 		if( $jorudanInstance->IsJorudanInfo($recvData->propaty["content"]["text"]) ){ return true;};
+		return false;
+	}
+
+	static protected function isSELECT_MENU(CallBackStruct $recvData):bool{
+		if( $recvData["content"]["text"] == MA_MessageTextList::MENU ){ return true;};
 		return false;
 	}
 }
