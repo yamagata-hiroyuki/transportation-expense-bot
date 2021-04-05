@@ -8,12 +8,10 @@ https://www.enterprisedb.com/download-postgresql-binaries
 
 3.「2_Install_PIP_to_Python」フォルダの「Install_PIP_to_Python.bat」をダブルクリックで実行
 
-4.「3_database_setting」に存在するシュートカットのパスを修正し、
+4.「3_database_setting」に存在するシュートカットを
 　「host_setting.bat - ショートカット」
 　「database_setting.bat - ショートカット」
 　の順で実行する。
-　尚、このショートカットは同フォルダ＞Run_as_administorに格納されている各バッチファイルを管理者権限で実行するためのものであり、
-　直接、管理者権限で実行するのであればショートカットは不要
 
 5.ここまでの作業で、本ファイルと同階層に
 　「pgsql」
