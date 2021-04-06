@@ -23,7 +23,8 @@ BEGIN			-- Exec part
 		_max
 	);
 
-	-- Add new user into USER_STATUS
+	-- Add new user into USER_STATUS,TEMP_ROUTE_INFO
 	PERFORM transportation_expense_bot."AddUserStatus"(_max);
+	PERFORM transportation_expense_bot."AddTempRouteInfo"(_max);
 END;
 $function$

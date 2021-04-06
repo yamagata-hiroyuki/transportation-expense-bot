@@ -198,8 +198,43 @@ class StateEvent{
 			Enum_CallBack_ContentType::STICKER => 'RecvEvent_Nope',
 			Enum_CallBack_ContentType::IMAGE => 'RecvEvent_Nope',
 			Enum_CallBack_ContentType::FILE => 'RecvEvent_Nope'
-		)
+		),
 
+		/* SELECT_MENU */
+		Enum_CallBack_userState::SELECT_MENU => Array(
+			Enum_CallBack_ContentType::TEXT => 'RecvEventContent_S07E00',
+			Enum_CallBack_ContentType::LOCATION => 'RecvEvent_Nope',
+			Enum_CallBack_ContentType::STICKER => 'RecvEvent_Nope',
+			Enum_CallBack_ContentType::IMAGE => 'RecvEvent_Nope',
+			Enum_CallBack_ContentType::FILE => 'RecvEvent_Nope'
+		),
+
+		/* DELETE_SELECT_ID */
+		Enum_CallBack_userState::DELETE_SELECT_ID => Array(
+			Enum_CallBack_ContentType::TEXT => 'RecvEventContent_S08E00',
+			Enum_CallBack_ContentType::LOCATION => 'RecvEvent_Nope',
+			Enum_CallBack_ContentType::STICKER => 'RecvEvent_Nope',
+			Enum_CallBack_ContentType::IMAGE => 'RecvEvent_Nope',
+			Enum_CallBack_ContentType::FILE => 'RecvEvent_Nope'
+		),
+
+		/* DELETE_CONF */
+		Enum_CallBack_userState::DELETE_CONF => Array(
+			Enum_CallBack_ContentType::TEXT => 'RecvEventContent_S09E00',
+			Enum_CallBack_ContentType::LOCATION => 'RecvEvent_Nope',
+			Enum_CallBack_ContentType::STICKER => 'RecvEvent_Nope',
+			Enum_CallBack_ContentType::IMAGE => 'RecvEvent_Nope',
+			Enum_CallBack_ContentType::FILE => 'RecvEvent_Nope'
+		),
+
+		/* PETITION_CONF */
+		Enum_CallBack_userState::PETITION_CONF => Array(
+			Enum_CallBack_ContentType::TEXT => 'RecvEventContent_S10E00',
+			Enum_CallBack_ContentType::LOCATION => 'RecvEvent_Nope',
+			Enum_CallBack_ContentType::STICKER => 'RecvEvent_Nope',
+			Enum_CallBack_ContentType::IMAGE => 'RecvEvent_Nope',
+			Enum_CallBack_ContentType::FILE => 'RecvEvent_Nope'
+		)
 	);
 
 	/* $stateEventTable 用関数群 */
