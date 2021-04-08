@@ -1,5 +1,5 @@
 CREATE OR REPLACE FUNCTION transportation_expense_bot."GetServerToken"()
- RETURNS TABLE(token VARCHAR, startFrom TIMESTAMP WITH TIME ZONE, endAt TIMESTAMP WITH TIME ZONE)
+ RETURNS TABLE("token" VARCHAR, "startFrom" TIMESTAMP WITH TIME ZONE, "endAt" TIMESTAMP WITH TIME ZONE)
  LANGUAGE plpgsql
 AS $function$
 BEGIN			--実行部

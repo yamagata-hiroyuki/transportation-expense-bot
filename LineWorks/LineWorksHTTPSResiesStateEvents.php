@@ -328,7 +328,20 @@ class StateEvent{
 							$tmpArray = print_r($jorudanInfo,true);
 							$client->SendMessageReq($accountId,$serverTokenInfo->info["token"],"デバッグ情報\n".$tmpArray);
 
-							//TODO DBへ一時データ保存
+							//DBへ一時データ保存
+							$tempRouteInfo = new DBSP_SetTempRouteInfo_JorudanInfoStruct();
+							$tempRouteInfo->info["user_address"] = $accountId;
+							$tempRouteInfo->info["route"] = $jorudanInfo->details[0]->sectionFrom."～".$jorudanInfo->details[$jorudanInfo->transferNum ]->sectionTo;
+							replaceText($jorudanInfo->date,"\(.*","");
+							$tempRouteInfo->info["route_date"] = date("Y")."/".$jorudanInfo->date;
+							$tempRouteInfo->info["price"] = $jorudanInfo->amountPrice;
+							if( false == DB_SP_setTempRouteInfo_JorudanInfo($tempRouteInfo) ){
+								DEBUG_LOG(basename(__FILE__),__FUNCTION__,__LINE__,"[ERROR]Failed to save JorudanInfo into DB..");
+								//ユーザーへ通知
+								$client->SendMessageReq($accountId,$serverTokenInfo->info["token"],
+									"予期せぬエラーが発生しました。開発者へ連絡してください。");
+								break;
+							}
 
 							//状態更新
 							$userStatusInfo = new DBSP_SetUserStatusStruct();
@@ -383,7 +396,11 @@ class StateEvent{
 					$client->SendMessageReq($accountId,$serverTokenInfo->info["token"],"デバッグ情報\n".
 						"入力された目的地は".$tmpArray);
 
-					//TODO DBへ一時データ保存
+					//DBへ一時データ保存
+					$tempRouteInfo = new DBSP_SetTempRouteInfo_DestinationStruct();
+					$tempRouteInfo->info["user_address"] = $accountId;
+					$tempRouteInfo->info["destination"] = $recvData->propaty["content"]["text"];
+					DB_SP_setTempRouteInfo_Destination($tempRouteInfo);
 
 					//状態更新
 					$userStatusInfo = new DBSP_SetUserStatusStruct();
@@ -425,7 +442,15 @@ class StateEvent{
 					$client->SendMessageReq($accountId,$serverTokenInfo->info["token"],"デバッグ情報\n".
 						"入力された請求先は".$tmpArray);
 
-					//TODO DBへ一時データ保存
+					//DBへ一時データ保存
+					$tempRouteInfo = new DBSP_SetTempRouteInfo_UserPriceStruct();
+					$tempRouteInfo->info["user_address"] = $accountId;
+					if(MA_MessagePostbackList::REQUEST_TO_USER == $recvData->propaty["content"]["postback"]){
+						$tempRouteInfo->info["user_price"] = TRUE;
+					}else{
+						$tempRouteInfo->info["user_price"] = FALSE;
+					}
+					DB_SP_setTempRouteInfo_UserPrice($tempRouteInfo);
 
 					//状態更新
 					$userStatusInfo = new DBSP_SetUserStatusStruct();
@@ -467,7 +492,15 @@ class StateEvent{
 					$client->SendMessageReq($accountId,$serverTokenInfo->info["token"],"デバッグ情報\n".
 						"入力された経路は".$tmpArray);
 
-					//TODO DBへ一時データ保存
+					//DBへ一時データ保存
+					$tempRouteInfo = new DBSP_SetTempRouteInfo_RoundsStruct();
+					$tempRouteInfo->info["user_address"] = $accountId;
+					if(MA_MessagePostbackList::ROUND_TRIP == $recvData->propaty["content"]["postback"]){
+						$tempRouteInfo->info["rounds"] = TRUE;
+					}else{
+						$tempRouteInfo->info["rounds"] = FALSE;
+					}
+					DB_SP_setTempRouteInfo_Rounds($tempRouteInfo);
 
 					//状態更新
 					$userStatusInfo = new DBSP_SetUserStatusStruct();
@@ -493,19 +526,23 @@ class StateEvent{
 					//文字数チェック
 					$tmplen = mb_strlen($recvData->propaty["content"]["text"]);
 					if(REMARK_STR_MIN > $tmplen || REMARK_STR_MAX < $tmplen){
-						DEBUG_LOG(basename(__FILE__),__FUNCTION__,__LINE__,"[INFO]Invalid Input.");
+						DEBUG_LOG(basename(__FILE__),__FUNCTION__,__LINE__,"[WARN]Invalid Input.");
 						//ユーザーへ通知（入力は無効である）
 						$client->SendMessageReq($accountId,$serverTokenInfo->info["token"],
 							"無効な入力です。\n".
-							"目的地は".REMARK_STR_MIN."～".REMARK_STR_MAX."文字以内となるよう再度入力してください。");
+							"備考は".REMARK_STR_MIN."～".REMARK_STR_MAX."文字以内となるよう再度入力してください。");
 						break;
 					}
 					//TODO 以下テスト用 本運用時は削除すること
 					$tmpArray = $recvData->propaty["content"]["text"];
 					$client->SendMessageReq($accountId,$serverTokenInfo->info["token"],"デバッグ情報\n".
-						"入力された目的地は".$tmpArray);
+						"入力された備考は".$tmpArray);
 
-					//TODO DBへ一時データ保存
+					//DBへ一時データ保存
+					$tempRouteInfo = new DBSP_SetTempRouteInfo_RemarksStruct();
+					$tempRouteInfo->info["user_address"] = $accountId;
+					$tempRouteInfo->info["remarks"] = $recvData->propaty["content"]["text"];
+					DB_SP_setTempRouteInfo_Remarks($tempRouteInfo);
 
 					//状態更新
 					$userStatusInfo = new DBSP_SetUserStatusStruct();
@@ -547,7 +584,20 @@ class StateEvent{
 					$client->SendMessageReq($accountId,$serverTokenInfo->info["token"],"デバッグ情報\n".
 						"入力された選択は".$tmpArray);
 
-					//TODO DBへ一時データ保存
+					if(MA_MessagePostbackList::APPLY == $recvData->propaty["content"]["postback"]){
+						//一時データを正式なデータとしてDBへ保存
+						$tempRouteInfo = new DBSP_AddRouteInfoStruct();
+						$tempRouteInfo->info["user_address"] = $accountId;
+						if( false == DB_SP_addRouteInfo($tempRouteInfo) ){
+							DEBUG_LOG(basename(__FILE__),__FUNCTION__,__LINE__,"[ERROR]Failed add RouteInfo.");
+							$client->SendMessageReq($accountId,$serverTokenInfo->info["token"],
+								"予期せぬエラーが発生しました。開発者へ連絡してください。");
+							break;
+						}
+						$client->SendMessageReq($accountId,$serverTokenInfo->info["token"],"登録しました。");
+					}else{
+						$client->SendMessageReq($accountId,$serverTokenInfo->info["token"],"登録をキャンセルしました。");
+					}
 
 					//状態更新
 					$userStatusInfo = new DBSP_SetUserStatusStruct();

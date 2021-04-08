@@ -18,7 +18,7 @@ BEGIN			-- Exec part
 		"USER_ADDRESS"
 		,"USER_ID"
 	)
-	SELECT (
+	VALUES (
 		_user_address,
 		_max
 	);

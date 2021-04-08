@@ -1,7 +1,7 @@
 <?php
 require_once 'LineWorks/LineWorksHTTPSResiesJsonStructs.php';
 require_once 'LineWorks/LineWorksCfg.php';
-require_once 'LineWorks/LineWorksHTTPSResiessStateEvents.php';
+require_once 'LineWorks/LineWorksHTTPSResiesStateEvents.php';
 require_once 'CallbackAnalyser/MessageAnalyser/MessageAnalyser.php';
 require_once 'CallbackAnalyser/JoinedAnalyser/JoinedAnalyser.php';
 require_once 'CallbackAnalyser/LeftAnalyser/LeftAnalyser.php';

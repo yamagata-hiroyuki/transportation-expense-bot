@@ -7,7 +7,7 @@ BEGIN			-- Exec part
 		"USER_ID"
 		,"STATUS"
 	)
-	SELECT (
+	VALUES (
 		_user_id,
 		0
 	);

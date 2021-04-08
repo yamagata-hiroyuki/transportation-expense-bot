@@ -1,5 +1,5 @@
 CREATE OR REPLACE FUNCTION transportation_expense_bot."GetUserStatus"(_user_address VARCHAR)
- RETURNS TABLE(user_status CHAR)
+ RETURNS TABLE("user_status" CHAR)
  LANGUAGE plpgsql
 AS $function$
 DECLARE _userId INT;

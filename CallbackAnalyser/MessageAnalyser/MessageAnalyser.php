@@ -9,11 +9,11 @@ require_once 'LineWorks/LineWorksHTTPSResiesJsonStructs.php';
 class MessageAnalyser{
     //多重継承(trait)
     use MA_ForText, MA_ForFile, MA_ForImage, MA_ForSticker, MA_ForLocation;
-    
+
     //ボディデータを取得する
     //input:file_get_contents('php://input')のデータ
     //return:ボディデータ（CallBack_MessageStruct）
-    public static function MA_GetBodyData($recvData):CallBack_MessageStruct
+    static public function MA_GetBodyData($recvData):CallBack_MessageStruct
     {
         //typeを文字列からEnumへ変換
         $tmpType = stringToEnum($recvData["content"]["type"]);
@@ -29,22 +29,22 @@ class MessageAnalyser{
                 //ボディデータ取得
                 $tmpBody = self::getBodyData_Location($recvData);
                 break;
-                
+
             case Enum_CallBack_ContentType::STICKER:
                 //ボディデータ取得
                 $tmpBody = self::getBodyData_Sticker($recvData);
                 break;
-                
+
             case Enum_CallBack_ContentType::IMAGE:
                 //ボディデータ取得
                 $tmpBody = self::getBodyData_Image($recvData);
                 break;
-                
+
             case Enum_CallBack_ContentType::FILE:
                 //ボディデータ取得
                 $tmpBody = self::getBodyData_File($recvData);
                 break;
-                
+
             default:
                 //有り得ない
                 DEBUG_LOG(basename(__FILE__),__FUNCTION__,__LINE__,"Unexpected type.recvData[\"content\"][\"type\"] = ".$recvData["content"]["type"]);

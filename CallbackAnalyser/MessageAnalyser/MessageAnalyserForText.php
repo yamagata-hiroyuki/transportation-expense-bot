@@ -161,7 +161,7 @@ trait MA_ForText{
 	}
 
 	static protected function isSELECT_MENU(CallBackStruct $recvData):bool{
-		if( $recvData["content"]["text"] == MA_MessageTextList::MENU ){ return true;};
+		if( $recvData->propaty["content"]["text"] == MA_MessageTextList::MENU ){ return true;};
 		return false;
 	}
 }

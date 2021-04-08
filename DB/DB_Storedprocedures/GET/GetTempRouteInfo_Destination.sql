@@ -1,5 +1,5 @@
 CREATE OR REPLACE FUNCTION transportation_expense_bot."GetTempRouteInfo_Destination"(_user_address VARCHAR)
- RETURNS TABLE(destination VARCHAR)
+ RETURNS TABLE("destination" VARCHAR)
  LANGUAGE plpgsql
 AS $function$
 DECLARE

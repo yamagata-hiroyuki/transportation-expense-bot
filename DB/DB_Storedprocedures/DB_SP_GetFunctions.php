@@ -50,7 +50,7 @@ function DB_SP_getServerToken(DBSP_GetServerTokenStruct &$output):bool{
 		DEBUG_LOG(basename(__FILE__),__FUNCTION__,__LINE__,"[ERROR]SQL exec error: ".$e->getMessage());
 		return false;
 	}
-
+	DEBUG_LOG(basename(__FILE__),__FUNCTION__,__LINE__,"debug ",$output->info);
 	$needReissueFlag = false;
 	$currentTime = new DateTime("now");
 	if( empty($output->info["endAt"]) ){
@@ -120,4 +120,31 @@ function DB_SP_getUserStatus(string $user_address ,DBSP_GetUserStatusStruct &$ou
 	}
 	return true;
 }
+
+function DB_SP_getTempRouteInfo(string $user_address ,DBSP_GetTempRouteInfoStruct &$output):bool{
+	$dbConnection = null;
+	if( !dbConnection::getConnection($dbConnection) ){
+		return false;
+	}
+
+	$sql = 'SELECT * FROM transportation_expense_bot."GetTempRouteInfo"(:user_address)';
+	$sth = $dbConnection->prepare($sql);
+
+	$sth->bindValue(':user_address', $user_address, PDO::PARAM_STR);
+
+	try {
+		if( $sth->execute() ){
+			$output->info = $sth->fetch(PDO::FETCH_ASSOC);
+		} else {
+			DEBUG_LOG(basename(__FILE__),__FUNCTION__,__LINE__,"[ERROR]SQL exec result faild.");
+			return false;
+		}
+	}
+	catch( PDOException $e){
+		DEBUG_LOG(basename(__FILE__),__FUNCTION__,__LINE__,"[ERROR]SQL exec error: ".$e->getMessage());
+		return false;
+	}
+	return true;
+}
+
 

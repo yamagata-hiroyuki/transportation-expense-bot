@@ -6,7 +6,7 @@ BEGIN			-- Exec part
 	INSERT INTO transportation_expense_bot."TEMP_ROUTE_INFO"(
 		"USER_ID"
 	)
-	SELECT (
+	VALUES (
 		_user_id
 	);
 END;

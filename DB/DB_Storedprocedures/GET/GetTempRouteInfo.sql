@@ -1,12 +1,12 @@
 CREATE OR REPLACE FUNCTION transportation_expense_bot."GetTempRouteInfo"(_user_address VARCHAR)
  RETURNS TABLE(
-	route_date	DATE,
-	destination	VARCHAR,
-	route		VARCHAR,
-	rounds		INT,
-	price		INT,
-	user_price	INT,
-	remarks		VARCHAR
+	"route_date"	DATE,
+	"destination"	VARCHAR,
+	"route"		VARCHAR,
+	"rounds"		BOOL,
+	"price"		INT,
+	"user_price"	BOOL,
+	"remarks"		VARCHAR
 )
  LANGUAGE plpgsql
 AS $function$
@@ -14,22 +14,22 @@ DECLARE
 	_route_date		DATE;		-- Declare localÅ@variable
 	_destination	VARCHAR;
 	_route			VARCHAR;
-	_rounds			INT;
+	_rounds			BOOL;
 	_price			INT;
-	_user_price		INT;
+	_user_price		BOOL;
 	_remarks		VARCHAR;
 BEGIN					-- Exec part
 	-- create tmp table
 	CREATE TEMP TABLE _tmpTable(
-		_dummyPKey		INT DEFAULT 1 NOT NULL ,
-		_route_date		DATE,
-		_destination	VARCHAR,
-		_route			VARCHAR,
-		_rounds			INT,
-		_price			INT,
-		_user_price		INT,
-		_remarks		VARCHAR,
-		PRIMARY KEY ("_dummyPKey")
+		"_tmpTable_dummyPKey"		INT DEFAULT 1 NOT NULL,
+		"_tmpTable_route_date"		DATE,
+		"_tmpTable_destination"		VARCHAR,
+		"_tmpTable_route"			VARCHAR,
+		"_tmpTable_rounds"			BOOL,
+		"_tmpTable_price"			INT,
+		"_tmpTable_user_price"		BOOL,
+		"_tmpTable_remarks"			VARCHAR,
+		PRIMARY KEY ("_tmpTable_dummyPKey")
 	);
 
 	-- get Infos
@@ -55,8 +55,15 @@ BEGIN					-- Exec part
 	);
 
 	RETURN QUERY
-	SELECT "_route_date","_destination","_route","_rounds","_price","_user_price","_remarks"
+	SELECT
+		"_tmpTable_route_date",
+		"_tmpTable_destination",
+		"_tmpTable_route",
+		"_tmpTable_rounds",
+		"_tmpTable_price",
+		"_tmpTable_user_price",
+		"_tmpTable_remarks"
 	FROM _tmpTable
-	WHERE "_dummyPKey" = 1;
+	WHERE "_tmpTable_dummyPKey" = 1;
 END;
 $function$

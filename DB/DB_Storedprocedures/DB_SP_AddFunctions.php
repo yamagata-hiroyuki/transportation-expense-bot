@@ -27,3 +27,29 @@ function DB_SP_addRegisteredUser(DBSP_AddRegisteredUserStruct $addInfo):bool{
 	}
 	return true;
 }
+
+function DB_SP_addRouteInfo(DBSP_AddRouteInfoStruct $addInfo):bool{
+	$dbConnection = null;
+	if( !dbConnection::getConnection($dbConnection) ){
+		return false;
+	}
+
+	$sql = 'SELECT transportation_expense_bot."AddRouteInfo"(:user_address)';
+	$sth = $dbConnection->prepare($sql);
+
+	$sth->bindValue(':user_address', $addInfo->info["user_address"], PDO::PARAM_STR);
+
+	try {
+		if( $sth->execute() ){
+			//DO Nothing
+		}else{
+			DEBUG_LOG(basename(__FILE__),__FUNCTION__,__LINE__,"[ERROR]SQL exec result faild.");
+			return false;
+		}
+	}
+	catch (PDOException $e) {
+		DEBUG_LOG(basename(__FILE__),__FUNCTION__,__LINE__,"[ERROR]SQL exec error: ".$e->getMessage());
+		return false;
+	}
+	return true;
+}
