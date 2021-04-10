@@ -52,6 +52,12 @@ class DBSP_SetTempRouteInfo_RoundsStruct{
 		);
 }
 
+class DBSP_SetTempRouteInfo_ClearJorudanInfoStruct{
+	public $info = Array(
+		"user_address" => ""
+	);
+}
+
 /* GET */
 class DBSP_GetUserIdStruct{
 	public $info = Array(

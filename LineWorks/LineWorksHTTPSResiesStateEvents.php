@@ -331,7 +331,8 @@ class StateEvent{
 							//DBへ一時データ保存
 							$tempRouteInfo = new DBSP_SetTempRouteInfo_JorudanInfoStruct();
 							$tempRouteInfo->info["user_address"] = $accountId;
-							$tempRouteInfo->info["route"] = $jorudanInfo->details[0]->sectionFrom."～".$jorudanInfo->details[$jorudanInfo->transferNum ]->sectionTo;
+							//$tempRouteInfo->info["route"] = $jorudanInfo->details[0]->sectionFrom."～".$jorudanInfo->details[$jorudanInfo->transferNum ]->sectionTo;
+							$tempRouteInfo->info["route"] = $jorudanInfo->sectionFrom."～".$jorudanInfo->sectionTo;
 							replaceText($jorudanInfo->date,"\(.*","");
 							$tempRouteInfo->info["route_date"] = date("Y")."/".$jorudanInfo->date;
 							$tempRouteInfo->info["price"] = $jorudanInfo->amountPrice;
@@ -596,6 +597,15 @@ class StateEvent{
 						}
 						$client->SendMessageReq($accountId,$serverTokenInfo->info["token"],"登録しました。");
 					}else{
+						//一時データをクリア
+						$tempRouteInfo = new DBSP_SetTempRouteInfo_ClearJorudanInfoStruct();
+						$tempRouteInfo->info["user_address"] = $accountId;
+						if( false == DB_SP_setTempRouteInfo_CrearJorudanInfo($tempRouteInfo) ){
+							DEBUG_LOG(basename(__FILE__),__FUNCTION__,__LINE__,"[ERROR]Failed clear tempRouteInfo.");
+							$client->SendMessageReq($accountId,$serverTokenInfo->info["token"],
+								"予期せぬエラーが発生しました。開発者へ連絡してください。");
+							break;
+						}
 						$client->SendMessageReq($accountId,$serverTokenInfo->info["token"],"登録をキャンセルしました。");
 					}
 

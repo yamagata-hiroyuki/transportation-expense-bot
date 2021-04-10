@@ -1,4 +1,4 @@
-CREATE OR REPLACE FUNCTION transportation_expense_bot."SetTempRouteInfo_JorudanInfo"(_user_address VARCHAR)
+CREATE OR REPLACE FUNCTION transportation_expense_bot."SetTempRouteInfo_ClearJorudanInfo"(_user_address VARCHAR)
  RETURNS void
  LANGUAGE plpgsql
 AS $function$

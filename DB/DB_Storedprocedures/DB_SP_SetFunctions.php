@@ -221,3 +221,29 @@ function DB_SP_setTempRouteInfo_UserPrice(DBSP_SetTempRouteInfo_UserPriceStruct 
 	}
 	return true;
 }
+
+function DB_SP_setTempRouteInfo_CrearJorudanInfo(DBSP_SetTempRouteInfo_UserPriceStruct $setInfo):bool{
+	$dbConnection = null;
+	if( !dbConnection::getConnection($dbConnection) ){
+		return false;
+	}
+
+	$sql = 'PERFORM transportation_expense_bot."SetTempRouteInfo_CrearJorudanInfo"(:user_address)';
+	$sth = $dbConnection->prepare($sql);
+
+	$sth->bindValue(':user_address', $setInfo->info["user_address"], PDO::PARAM_STR);
+
+	try {
+		if( $sth->execute() ){
+			//DO Nothing
+		} else {
+			DEBUG_LOG(basename(__FILE__),__FUNCTION__,__LINE__,"[ERROR]SQL exec result faild.");
+			return false;
+		}
+	}
+	catch( PDOException $e){
+		DEBUG_LOG(basename(__FILE__),__FUNCTION__,__LINE__,"[ERROR]SQL exec error: ".$e->getMessage());
+		return false;
+	}
+	return true;
+}

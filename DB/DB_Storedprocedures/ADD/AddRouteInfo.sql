@@ -10,7 +10,7 @@ DECLARE
 	_route			VARCHAR;
 	_rounds			BOOL;
 	_price			INT;
-	_user_price		INT;
+	_user_price		BOOL;
 	_remarks		VARCHAR;
 	_application	BOOL;
 BEGIN			-- Exec part
@@ -46,8 +46,8 @@ BEGIN			-- Exec part
 	FROM transportation_expense_bot."GetTempRouteInfo"(_user_address);
 	_application = FALSE;
 	
-	-- Register new user into REGISTERED_USERS
-	INSERT INTO transportation_expense_bot."REGISTERED_USERS"(
+	-- Register new ROUTE_INFO
+	INSERT INTO transportation_expense_bot."ROUTE_INFO"(
 		"USER_ID"
 		,"ROUTE_NO"
 		,"ROUTE_DATE"
@@ -72,7 +72,7 @@ BEGIN			-- Exec part
 	_application
 	);
 
-	-- Crear TEMP_ROUTE_INFO
+	-- Clear TEMP_ROUTE_INFO
 	PERFORM transportation_expense_bot."SetTempRouteInfo_ClearJorudanInfo"(_user_address);
 END;
 $function$
