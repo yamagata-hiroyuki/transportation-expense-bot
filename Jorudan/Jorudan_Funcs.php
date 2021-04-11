@@ -8,17 +8,17 @@ class Jorudan_Funcs{
     {
         DEBUG_LOG(basename(__FILE__),__FUNCTION__,__LINE__,"Done Jorudan_Funcs __constractor()");
     }
-    
+
     function __destruct()
     {
-        
+
     }
-    
+
     //ジョルダン情報判断
     //渡されたテキストがジョルダン乗り換え案内の情報化を判断
     //$text：生ジョルダン情報
     //return:bool:true => ジョルダン乗り換え案内情報 false => その他
-    function IsJorudanInfo(string $text):bool
+    function IsJorudanInfo(string $text = NULL):bool
    {
         $ret = false;
         if(mb_strpos($text,"tiny.jorudan",0,"UTF-8")){
@@ -26,10 +26,10 @@ class Jorudan_Funcs{
         }else{
             $ret = false;
         }
-        
+
         return $ret;
     }
-    
+
     //生ジョルダン情報 構造体化
     //ジョルダン乗り換え案内情報を構造体にした物を返す
     //$text：生ジョルダン情報
@@ -40,31 +40,31 @@ class Jorudan_Funcs{
         $ret = false;
         replaceText($text, "( |　)+", ";");
         delimitText($text, ";");
-        
+
         //出発駅取得
         $jorudanInfo->sectionFrom = $this->getSectionFrom($text);
-        
+
         //到着駅取得
         $jorudanInfo->sectionTo = $this->getSectionTo($text);
-        
+
         //乗降日時を取得
         $jorudanInfo->date = $this->getDate($text);
-        
+
         //乗換回数を取得
         $jorudanInfo->transferNum = $this->getTransferNum($text);
-        
+
         //合計金額を取得
         $jorudanInfo->amountPrice = $this->getAmountPrice($text);
-        
+
         //乗降詳細を取得
         $jorudanInfo->details = $this->getDetailsInfo($text);
-        
-        
+
+
         $ret = true;
         DEBUG_LOG(basename(__FILE__),__FUNCTION__,__LINE__,"jorudanInfo=",$jorudanInfo);
         return $ret;
     }
-    
+
     //出発駅を取得
     private function getSectionFrom(Array $text):string
     {
@@ -107,7 +107,7 @@ class Jorudan_Funcs{
     {
         $retDetailsArray = array();
         $targetNums = array();
-        
+
         $count = 0;
         foreach( $text as $tmpStr)
         {
@@ -123,11 +123,11 @@ class Jorudan_Funcs{
 
         }
         DEBUG_LOG(basename(__FILE__),__FUNCTION__,__LINE__,"targetNums=",$targetNums);
-        
+
         foreach($targetNums as $i)
         {
             $retDetails = new Jorudan_Info_Details();
-            
+
             $retDetails->timeFrom = preg_replace('/[^0-9:]/','',$text[$i]);$i++;
             $retDetails->sectionFrom = $text[$i];$i++;
             if(false !== mb_strpos($text[$i],"番線" ))$i++;
@@ -145,7 +145,7 @@ class Jorudan_Funcs{
             if(false !== mb_strpos($text[$i],"片道") )$i++;
             $retDetails->timeTo = preg_replace('/[^0-9:]/','',$text[$i]);;$i++;
             $retDetails->sectionTo = $text[$i];
-            
+
             if($retDetails->Price === ""){$retDetails->Price = 0;}
 //             $retDetails->sectionTo = $text[$i - 1];
 //             $retDetails->timeTo = preg_replace('/[^0-9:]/','',$text[$i - 2]);
@@ -164,9 +164,9 @@ class Jorudan_Funcs{
         DEBUG_LOG(basename(__FILE__),__FUNCTION__,__LINE__,"retDetailsArray=",$retDetailsArray);
         return $retDetailsArray;
     }
-    
-    
-    
-    
-    
+
+
+
+
+
 }

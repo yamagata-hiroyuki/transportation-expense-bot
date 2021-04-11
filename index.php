@@ -45,7 +45,7 @@
 	/* 受信・応答テスト */
 	{
 		if(RCV_TEST){
-			$client = new LineWorksResies;
+			$client = new LineWorksResies();
 			$client->RecvCallBackEvent();
 		}
 	}
@@ -75,11 +75,12 @@
 	{
 		if(DB_TEST){
 			DEBUG_LOG(basename(__FILE__),__FUNCTION__,__LINE__,">>>DBG DB Test Start");
-			$userId = "test_user";
-			$status = Enum_CallBack_userState::USER_NOT_REGISTED;
-			$rsltArray = Array();
-			DB_SP_getUserId("test",$rsltArray);
-			DEBUG_LOG(basename(__FILE__),__FUNCTION__,__LINE__,"regist UserId = ".$userId);
+			$userId = "masashi-watanabe@upload-gp.co.jp";
+			$status = Enum_CallBack_userState::USER_JUST_REGISTED;
+			$rsltArray = new DBSP_GetIsRouteInfoExistStruct();
+			//$rsltArray->info["user_address"] = "masashi-watanabe@upload-gp.co.jp";
+			DB_SP_getIsRouteInfoExist($userId,$rsltArray);
+			DEBUG_LOG(basename(__FILE__),__FUNCTION__,__LINE__,"rsltArray = ",$rsltArray);
 			DEBUG_LOG(basename(__FILE__),__FUNCTION__,__LINE__,">>>DBG DB Test End");
 		}
 	}

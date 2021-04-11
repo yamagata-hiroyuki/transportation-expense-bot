@@ -86,11 +86,13 @@ function DB_SP_getServerToken(DBSP_GetServerTokenStruct &$output):bool{
 		$reqInfo->info["endAt"] = $endTime->format("Y/m/d H:i:sO");
 
 		$rslt = DB_SP_setServerToken($reqInfo);
-		if( $rslt){ return false;};
+		if( false == $rslt){ return false;};
 		//新しいトークン情報でアウトプットを上書きする
-		$output->info["server_token"] = $resp->propaty["access_token"];
+		DEBUG_LOG(basename(__FILE__),__FUNCTION__,__LINE__,"resp = ",$resp);
+		$output->info["token"] = $resp->propaty["access_token"];
 		$output->info["startFrom"] = $currentTime;
 		$output->info["endAt"] = $endTime;
+		DEBUG_LOG(basename(__FILE__),__FUNCTION__,__LINE__,"output = ",$output);
 	}
 	return true;
 }
@@ -147,4 +149,93 @@ function DB_SP_getTempRouteInfo(string $user_address ,DBSP_GetTempRouteInfoStruc
 	return true;
 }
 
+function DB_SP_getRouteInfo(string $user_address ,DBSP_GetRouteInfosStruct &$output):bool{
+	$dbConnection = null;
+	if( !dbConnection::getConnection($dbConnection) ){
+		return false;
+	}
 
+	$sql = 'SELECT * FROM transportation_expense_bot."GetRouteInfo"(:user_address)';
+	$sth = $dbConnection->prepare($sql);
+
+	$sth->bindValue(':user_address', $user_address, PDO::PARAM_STR);
+
+	try {
+		if( $sth->execute() ){
+			foreach($sth->fetchall(PDO::FETCH_ASSOC) as $row ){
+				$routeInfo = new DBSP_GetRouteInfoStruct();
+				$routeInfo->route_no	= $row["route_no"];
+				$routeInfo->route_date	= $row["route_date"];
+				$routeInfo->destination	= $row["destination"];
+				$routeInfo->route		= $row["route"];
+				$routeInfo->rounds		= $row["rounds"];
+				$routeInfo->price		= $row["price"];
+				$routeInfo->user_price	= $row["user_price"];
+				$routeInfo->remarks		= $row["remarks"];
+				array_push($output->info,$routeInfo);
+				DEBUG_LOG(basename(__FILE__),__FUNCTION__,__LINE__,"routeInfo=",$routeInfo);
+			}
+			DEBUG_LOG(basename(__FILE__),__FUNCTION__,__LINE__,"A_Break routeInfo=",$routeInfo);
+		} else {
+			DEBUG_LOG(basename(__FILE__),__FUNCTION__,__LINE__,"[ERROR]SQL exec result faild.");
+			return false;
+		}
+	}
+	catch( PDOException $e){
+		DEBUG_LOG(basename(__FILE__),__FUNCTION__,__LINE__,"[ERROR]SQL exec error: ".$e->getMessage());
+		return false;
+	}
+	return true;
+}
+
+function DB_SP_getIsRouteInfoExist(string $user_address ,DBSP_GetIsRouteInfoExistStruct &$output):bool{
+	$dbConnection = null;
+	if( !dbConnection::getConnection($dbConnection) ){
+		return false;
+	}
+
+	$sql = 'SELECT * FROM transportation_expense_bot."GetIsRouteInfoExist"(:user_address)';
+	$sth = $dbConnection->prepare($sql);
+
+	$sth->bindValue(':user_address', $user_address, PDO::PARAM_STR);
+
+	try {
+		if( $sth->execute() ){
+			$output->info = $sth->fetch(PDO::FETCH_ASSOC);
+		} else {
+			DEBUG_LOG(basename(__FILE__),__FUNCTION__,__LINE__,"[ERROR]SQL exec result faild.");
+			return false;
+		}
+	}
+	catch( PDOException $e){
+		DEBUG_LOG(basename(__FILE__),__FUNCTION__,__LINE__,"[ERROR]SQL exec error: ".$e->getMessage());
+		return false;
+	}
+	return true;
+}
+
+function DB_SP_getIsRouteInfoExistByRouteNo(string $user_address , int $route_no, DBSP_GetIsRouteInfoExistByRouteNoStruct &$output):bool{
+	$dbConnection = null;
+	if( !dbConnection::getConnection($dbConnection) ){
+		return false;
+	}
+
+	$sql = 'SELECT * FROM transportation_expense_bot."GetIsRouteInfoExistByRouteNo"(:user_address,:route_no)';
+	$sth = $dbConnection->prepare($sql);
+
+	$sth->bindValue(':user_address', $user_address, PDO::PARAM_STR);
+	$sth->bindValue(':route_no', $route_no, PDO::PARAM_INT);
+	try {
+		if( $sth->execute() ){
+			$output->info = $sth->fetch(PDO::FETCH_ASSOC);
+		} else {
+			DEBUG_LOG(basename(__FILE__),__FUNCTION__,__LINE__,"[ERROR]SQL exec result faild.");
+			return false;
+		}
+	}
+	catch( PDOException $e){
+		DEBUG_LOG(basename(__FILE__),__FUNCTION__,__LINE__,"[ERROR]SQL exec error: ".$e->getMessage());
+		return false;
+	}
+	return true;
+}

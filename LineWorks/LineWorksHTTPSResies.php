@@ -2,6 +2,7 @@
 require_once 'LineWorks/LineWorksHTTPSResiesJsonStructs.php';
 require_once 'LineWorks/LineWorksCfg.php';
 require_once 'LineWorks/LineWorksHTTPSResiesStateEvents.php';
+require_once 'LineWorks/LineWorksHTTPSReqsStateChangeMessages.php';
 require_once 'CallbackAnalyser/MessageAnalyser/MessageAnalyser.php';
 require_once 'CallbackAnalyser/JoinedAnalyser/JoinedAnalyser.php';
 require_once 'CallbackAnalyser/LeftAnalyser/LeftAnalyser.php';
@@ -68,10 +69,22 @@ class LineWorksResies{
 			}
 			$userStatus->info["user_status"]=Enum_CallBack_userState::USER_JUST_REGISTED;
 		}
+		//イベント実行前のステータスを保存
+		$beforeUserStatus = $userStatus->info["user_status"];
+
 		//ステータスより関数を呼び出し
 		$tmpSEClass = new StateEvent();
 		$callTargetFunc = $tmpSEClass->stateEventTable[$userStatus->info["user_status"]][$tmpEvent];
 		$ret = $tmpSEClass->StateEventCaller($callTargetFunc,$retRecvData);
+
+		//イベント実行後のステータスを保存
+		$ret = DB_SP_getUserStatus($tmpUser, $userStatus);
+		$afterUserStatus = $userStatus->info["user_status"];
+		DEBUG_LOG(basename(__FILE__),__FUNCTION__,__LINE__,"befor=".$beforeUserStatus."after=".$afterUserStatus);
+		//イベント前後のステータスからユーザーに表示すべきメッセージを表示
+		$tmpSCMClass = new StateChangeMessage();
+		$callTargetFunc = $tmpSCMClass->stateChangeMessageTable[$beforeUserStatus][$afterUserStatus];
+		$ret = $tmpSCMClass->StateChangeMessageCaller($callTargetFunc, $retRecvData);
 		return $ret;
 	}
 

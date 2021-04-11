@@ -23,8 +23,8 @@
     DEBUG_LOG(basename(__FILE__),__FUNCTION__,__LINE__,"def CONT_SERVER_TOKEN = {$GLOBALS['DEF'](CONT_SERVER_TOKEN)}");
 
     //メインメニュー表示
-    define("DISP_MAIN_MENU_URL","https://apis.worksmobile.com/r/".API_ID."/message/v1/bot/".BOT_NO."/message/push");
-    DEBUG_LOG(basename(__FILE__),__FUNCTION__,__LINE__,"def DISP_MAIN_MENU_URL = ".DISP_MAIN_MENU_URL);
+    define("DISP_BUTTON_TEMP_URL","https://apis.worksmobile.com/r/".API_ID."/message/v1/bot/".BOT_NO."/message/push");
+    DEBUG_LOG(basename(__FILE__),__FUNCTION__,__LINE__,"def DISP_BUTTON_TEMP_URL = ".DISP_BUTTON_TEMP_URL);
 
     //メッセージ送信要求
     define("SEND_MESSAGE_URL","https://apis.worksmobile.com/r/".API_ID."/message/v1/bot/".BOT_NO."/message/push");
@@ -137,7 +137,7 @@
             }
 
             //リクエストの送信
-            $result = SendRequest("POST", DISP_MAIN_MENU_URL, $header, $propaty);
+            $result = SendRequest("POST", DISP_BUTTON_TEMP_URL, $header, $propaty);
             if($result != false){
                 //応答が得られた場合
                 //応答JSONを連想配列にデコード
@@ -155,7 +155,7 @@
         //Direction
         //REQ:BOT -> LineWorks
         //RES:-
-        function SendMessageReq(string $accountId = "",string $serverToken = "", string $msgText = "")
+        function SendMessageReq(string $accountId = "",string $serverToken = "", string $msgText = ""):bool
         {
             $reqStruct = new SendMessageReqStruct();
             $propaty = null;
@@ -192,6 +192,7 @@
                 //応答が得られた場合
                 //応答JSONを連想配列にデコード
                 $ret = json_decode($result,true);
+                if( NULL == $ret ){$ret = false;}
                 DEBUG_LOG(basename(__FILE__),__FUNCTION__,__LINE__,"Res Json = ",$ret);
             }else{
                 //リクエストが出来なかった場合

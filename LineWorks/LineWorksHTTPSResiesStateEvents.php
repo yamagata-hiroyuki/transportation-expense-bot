@@ -633,7 +633,20 @@ class StateEvent{
 					$postbackKind = MessageAnalyser::getPostbackKind($recvData);
 					switch ($postbackKind){
 						case MA_PostbackKind::ONE_DELETE:
-							//TODO データの有無を確認
+							//データの有無を確認
+							$existInfo = new DBSP_GetIsRouteInfoExistStruct();
+							if( false == DB_SP_getIsRouteInfoExist($accountId, $existInfo) ){
+								DEBUG_LOG(basename(__FILE__),__FUNCTION__,__LINE__,"[ERROR]Failed is RouteInfo exist.");
+								$client->SendMessageReq($accountId,$serverTokenInfo->info["token"],
+									"予期せぬエラーが発生しました。開発者へ連絡してください。");
+								break;
+							}
+							if( false == $existInfo->info["GetIsRouteInfoExist"] ){
+								DEBUG_LOG(basename(__FILE__),__FUNCTION__,__LINE__,"[ERROR]RouteInfo is exist.");
+								$client->SendMessageReq($accountId,$serverTokenInfo->info["token"],
+									"削除可能なIDが存在しません。\n使用する機能を再度選択してください。");
+								break;
+							}
 
 							//状態更新
 							$userStatusInfo = new DBSP_SetUserStatusStruct();
@@ -642,8 +655,20 @@ class StateEvent{
 							DB_SP_setUserStatus($userStatusInfo);
 							break;
 						case MA_PostbackKind::PETITION:
-							//TODO データの有無を確認
-
+							// データの有無を確認
+							$existInfo = new DBSP_GetIsRouteInfoExistStruct();
+							if( false == DB_SP_getIsRouteInfoExist($accountId, $existInfo) ){
+								DEBUG_LOG(basename(__FILE__),__FUNCTION__,__LINE__,"[ERROR]Failed is RouteInfo exist.");
+								$client->SendMessageReq($accountId,$serverTokenInfo->info["token"],
+									"予期せぬエラーが発生しました。開発者へ連絡してください。");
+								break;
+							}
+							if( false == $existInfo->info["GetIsRouteInfoExist"] ){
+								DEBUG_LOG(basename(__FILE__),__FUNCTION__,__LINE__,"[ERROR]RouteInfo is not exist.");
+								$client->SendMessageReq($accountId,$serverTokenInfo->info["token"],
+									"申請可能なIDが存在しません。\n使用する機能を再度選択してください。");
+								break;
+							}
 							//状態更新
 							$userStatusInfo = new DBSP_SetUserStatusStruct();
 							$userStatusInfo->info["user_address"] = $accountId;
@@ -685,7 +710,22 @@ class StateEvent{
 					$messageKind = MessageAnalyser::getMessageKind($recvData);
 					switch ($messageKind){
 						case MA_MessageKind::NUMBER:
-							//TODO 対象IDのデータの削除対象フラグを設定(データ自体が存在するかも確認すること)
+							//データ自体が存在するか確認
+							$route_no = $recvData->propaty["content"]["text"];
+							$existInfo = new DBSP_GetIsRouteInfoExistByRouteNoStruct();
+							if( false == DB_SP_getIsRouteInfoExistByRouteNo($accountId, $route_no, $existInfo) ){
+								DEBUG_LOG(basename(__FILE__),__FUNCTION__,__LINE__,"[ERROR]Failed is RouteInfo exist by route no.");
+								$client->SendMessageReq($accountId,$serverTokenInfo->info["token"],
+									"予期せぬエラーが発生しました。開発者へ連絡してください。");
+								break;
+							}
+							if( false == $existInfo->info["GetIsRouteInfoExistByRouteNo"] ){
+								DEBUG_LOG(basename(__FILE__),__FUNCTION__,__LINE__,"[ERROR]RouteInfo is not exist by route no.");
+								$client->SendMessageReq($accountId,$serverTokenInfo->info["token"],
+									"Noが存在しません\n処理を中断します");
+								//break;
+							}
+
 
 							//状態更新
 							$userStatusInfo = new DBSP_SetUserStatusStruct();

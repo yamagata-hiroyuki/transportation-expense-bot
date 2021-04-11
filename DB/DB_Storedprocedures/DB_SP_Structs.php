@@ -91,6 +91,34 @@ class DBSP_GetTempRouteInfoStruct{
 	);
 }
 
+class DBSP_GetRouteInfosStruct{
+	public $info = Array();	//DBSP_GetRouteInfoStructが配列となって格納されている
+}
+
+class DBSP_GetRouteInfoStruct{
+		public $route_no		= "";
+		public $route_date		= "";
+		public $destination	= "";
+		public $route			= "";
+		public $rounds			= TRUE;
+		public $price			= 0;
+		public $user_price		= FALSE;
+		public $remarks		= "";
+		public $application	= FALSE;
+}
+
+class DBSP_GetIsRouteInfoExistStruct{
+	public $info = Array(
+		"GetIsRouteInfoExist" => FALSE
+	);
+}
+
+class DBSP_GetIsRouteInfoExistByRouteNoStruct{
+	public $info = Array(
+		"GetIsRouteInfoExistByRouteNo" => FALSE
+	);
+}
+
 /* ADD */
 class DBSP_AddRegisteredUserStruct{
 	public $info = Array(
