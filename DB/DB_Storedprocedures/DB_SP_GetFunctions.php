@@ -173,7 +173,6 @@ function DB_SP_getRouteInfo(string $user_address ,DBSP_GetRouteInfosStruct &$out
 				$routeInfo->user_price	= $row["user_price"];
 				$routeInfo->remarks		= $row["remarks"];
 				array_push($output->info,$routeInfo);
-				DEBUG_LOG(basename(__FILE__),__FUNCTION__,__LINE__,"routeInfo=",$routeInfo);
 			}
 			DEBUG_LOG(basename(__FILE__),__FUNCTION__,__LINE__,"A_Break routeInfo=",$routeInfo);
 		} else {
@@ -225,6 +224,59 @@ function DB_SP_getIsRouteInfoExistByRouteNo(string $user_address , int $route_no
 
 	$sth->bindValue(':user_address', $user_address, PDO::PARAM_STR);
 	$sth->bindValue(':route_no', $route_no, PDO::PARAM_INT);
+	try {
+		if( $sth->execute() ){
+			$output->info = $sth->fetch(PDO::FETCH_ASSOC);
+		} else {
+			DEBUG_LOG(basename(__FILE__),__FUNCTION__,__LINE__,"[ERROR]SQL exec result faild.");
+			return false;
+		}
+	}
+	catch( PDOException $e){
+		DEBUG_LOG(basename(__FILE__),__FUNCTION__,__LINE__,"[ERROR]SQL exec error: ".$e->getMessage());
+		return false;
+	}
+	return true;
+}
+
+function DB_SP_getRouteInfoByRouteNo(string $user_address,int $route_no, DBSP_GetRouteInfoByRouteNoStruct &$output):bool{
+	$dbConnection = null;
+	if( !dbConnection::getConnection($dbConnection) ){
+		return false;
+	}
+
+	$sql = 'SELECT * FROM transportation_expense_bot."GetRouteInfoByRouteNo"(:user_address,:route_no)';
+	$sth = $dbConnection->prepare($sql);
+
+	$sth->bindValue(':user_address', $user_address, PDO::PARAM_STR);
+	$sth->bindValue(':route_no', $route_no, PDO::PARAM_INT);
+
+	try {
+		if( $sth->execute() ){
+			$output->info = $sth->fetch(PDO::FETCH_ASSOC);
+		} else {
+			DEBUG_LOG(basename(__FILE__),__FUNCTION__,__LINE__,"[ERROR]SQL exec result faild.");
+			return false;
+		}
+	}
+	catch( PDOException $e){
+		DEBUG_LOG(basename(__FILE__),__FUNCTION__,__LINE__,"[ERROR]SQL exec error: ".$e->getMessage());
+		return false;
+	}
+	return true;
+}
+
+function DB_SP_getSelectedDeleteRouteInfo(string $user_address, DBSP_GetSelectedDeleteRouteInfoStruct &$output):bool{
+	$dbConnection = null;
+	if( !dbConnection::getConnection($dbConnection) ){
+		return false;
+	}
+
+	$sql = 'SELECT * FROM transportation_expense_bot."GetSelectedDeleteRouteInfo"(:user_address)';
+	$sth = $dbConnection->prepare($sql);
+
+	$sth->bindValue(':user_address', $user_address, PDO::PARAM_STR);
+
 	try {
 		if( $sth->execute() ){
 			$output->info = $sth->fetch(PDO::FETCH_ASSOC);

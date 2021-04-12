@@ -58,6 +58,13 @@ class DBSP_SetTempRouteInfo_ClearJorudanInfoStruct{
 	);
 }
 
+class DBSP_SetSelectedDeleteRouteInfoStruct{
+	public $info = Array(
+		"user_address" => "",
+		"route_no" => ""
+	);
+}
+
 /* GET */
 class DBSP_GetUserIdStruct{
 	public $info = Array(
@@ -119,6 +126,26 @@ class DBSP_GetIsRouteInfoExistByRouteNoStruct{
 	);
 }
 
+class DBSP_GetRouteInfoByRouteNoStruct{
+	public $info = Array(
+		"route_no" => 0,
+		"route_date" => "",
+		"destination" => "",
+		"route" => "",
+		"rounds" => TRUE,
+		"price" => 0,
+		"user_price" => FALSE,
+		"remarks" => "",
+		"application" => FALSE
+	);
+}
+
+class DBSP_GetSelectedDeleteRouteInfoStruct{
+	public $info = Array(
+		"selected_delete_route_info" => 0,
+	);
+}
+
 /* ADD */
 class DBSP_AddRegisteredUserStruct{
 	public $info = Array(
@@ -130,4 +157,12 @@ class DBSP_AddRouteInfoStruct{
 	public $info = Array(
 		"user_address" => ""
 		);
+}
+
+/* DELETE */
+class DBSP_DelRouteInfoByRouteNoStruct{
+	public $info = Array(
+		"user_address"	=> "",
+		"route_no"		=> 0
+	);
 }

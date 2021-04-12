@@ -222,16 +222,43 @@ function DB_SP_setTempRouteInfo_UserPrice(DBSP_SetTempRouteInfo_UserPriceStruct 
 	return true;
 }
 
-function DB_SP_setTempRouteInfo_CrearJorudanInfo(DBSP_SetTempRouteInfo_UserPriceStruct $setInfo):bool{
+function DB_SP_setTempRouteInfo_CrearJorudanInfo(DBSP_SetTempRouteInfo_ClearJorudanInfoStruct $setInfo):bool{
 	$dbConnection = null;
 	if( !dbConnection::getConnection($dbConnection) ){
 		return false;
 	}
 
-	$sql = 'PERFORM transportation_expense_bot."SetTempRouteInfo_CrearJorudanInfo"(:user_address)';
+	$sql = 'SELECT transportation_expense_bot."SetTempRouteInfo_ClearJorudanInfo"(:user_address)';
 	$sth = $dbConnection->prepare($sql);
 
 	$sth->bindValue(':user_address', $setInfo->info["user_address"], PDO::PARAM_STR);
+
+	try {
+		if( $sth->execute() ){
+			//DO Nothing
+		} else {
+			DEBUG_LOG(basename(__FILE__),__FUNCTION__,__LINE__,"[ERROR]SQL exec result faild.");
+			return false;
+		}
+	}
+	catch( PDOException $e){
+		DEBUG_LOG(basename(__FILE__),__FUNCTION__,__LINE__,"[ERROR]SQL exec error: ".$e->getMessage());
+		return false;
+	}
+	return true;
+}
+
+function DB_SP_setSelectedDeleteRouteInfo(DBSP_SetSelectedDeleteRouteInfoStruct $setInfo):bool{
+	$dbConnection = null;
+	if( !dbConnection::getConnection($dbConnection) ){
+		return false;
+	}
+	DEBUG_LOG(basename(__FILE__),__FUNCTION__,__LINE__,"delInfo=",$setInfo);
+	$sql = 'SELECT transportation_expense_bot."SetSelectedDeleteRouteInfo"(:user_address,:route_no)';
+	$sth = $dbConnection->prepare($sql);
+
+	$sth->bindValue(':user_address', $setInfo->info["user_address"], PDO::PARAM_STR);
+	$sth->bindValue(':route_no', $setInfo->info["route_no"], PDO::PARAM_INT);
 
 	try {
 		if( $sth->execute() ){

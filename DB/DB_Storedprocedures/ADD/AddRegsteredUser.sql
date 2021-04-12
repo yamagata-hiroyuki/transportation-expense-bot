@@ -26,5 +26,6 @@ BEGIN			-- Exec part
 	-- Add new user into USER_STATUS,TEMP_ROUTE_INFO
 	PERFORM transportation_expense_bot."AddUserStatus"(_max);
 	PERFORM transportation_expense_bot."AddTempRouteInfo"(_max);
+	PERFORM transportation_expense_bot."AddSelectedDeleteRouteInfo"(_max);
 END;
 $function$

@@ -8,6 +8,7 @@ require_once 'CallbackAnalyser/MessageAnalyser/MessageAnalyser.php';
 require_once 'DB/DB_Storedprocedures/DB_SP_SetFunctions.php';
 require_once 'DB/DB_Storedprocedures/DB_SP_GetFunctions.php';
 require_once 'DB/DB_Storedprocedures/DB_SP_AddFunctions.php';
+require_once 'DB/DB_Storedprocedures/DB_SP_DelFunctions.php';
 
 /* 関数テーブル */
 /* イベントテーブル定義 */
@@ -710,6 +711,7 @@ class StateEvent{
 					$messageKind = MessageAnalyser::getMessageKind($recvData);
 					switch ($messageKind){
 						case MA_MessageKind::NUMBER:
+							$abordFlag = false;
 							//データ自体が存在するか確認
 							$route_no = $recvData->propaty["content"]["text"];
 							$existInfo = new DBSP_GetIsRouteInfoExistByRouteNoStruct();
@@ -723,14 +725,32 @@ class StateEvent{
 								DEBUG_LOG(basename(__FILE__),__FUNCTION__,__LINE__,"[ERROR]RouteInfo is not exist by route no.");
 								$client->SendMessageReq($accountId,$serverTokenInfo->info["token"],
 									"Noが存在しません\n処理を中断します");
+									$abordFlag = true;
 								//break;
+							}else{
+								$setInfo = new DBSP_SetSelectedDeleteRouteInfoStruct();
+								$setInfo->info["user_address"] = $accountId;
+								$setInfo->info["route_no"] = $route_no;
+								if ( false == DB_SP_setSelectedDeleteRouteInfo($setInfo) ){
+									DEBUG_LOG(basename(__FILE__),__FUNCTION__,__LINE__,"[ERROR]Failed is RouteInfo exist by route no.");
+									$client->SendMessageReq($accountId,$serverTokenInfo->info["token"],
+										"予期せぬエラーが発生しました。開発者へ連絡してください。");
+									break;
+								}
+
+
+
 							}
 
 
 							//状態更新
 							$userStatusInfo = new DBSP_SetUserStatusStruct();
 							$userStatusInfo->info["user_address"] = $accountId;
-							$userStatusInfo->info["status"] = Enum_CallBack_userState::DELETE_CONF;
+							if ( true == $abordFlag ){
+								$userStatusInfo->info["status"] = Enum_CallBack_userState::MAIN_MENU;
+							}else{
+								$userStatusInfo->info["status"] = Enum_CallBack_userState::DELETE_CONF;
+							}
 							DB_SP_setUserStatus($userStatusInfo);
 							break;
 						default:
@@ -768,8 +788,23 @@ class StateEvent{
 					$postbackKind = MessageAnalyser::getPostbackKind($recvData);
 					switch ($postbackKind){
 						case MA_PostbackKind::APPLY:
-							//TODO 対象IDのデータの削除を行う
-
+							//対象IDのデータの削除を行う
+							$selectedNo = new DBSP_GetSelectedDeleteRouteInfoStruct();
+							if( false == DB_SP_getSelectedDeleteRouteInfo($accountId,$selectedNo) ){
+								DEBUG_LOG(basename(__FILE__),__FUNCTION__,__LINE__,"[ERROR]Failed to get selected delete RouteInfo.");
+								$client->SendMessageReq($accountId,$serverTokenInfo->info["token"],
+									"予期せぬエラーが発生しました。開発者へ連絡してください。");
+								break;
+							}
+							$delInfo = new DBSP_DelRouteInfoByRouteNoStruct();
+							$delInfo->info["user_address"]	= $accountId;
+							$delInfo->info["route_no"]	= $selectedNo->info["selected_delete_route_info"];
+							if( false == DB_SP_delRouteInfoByRouteNo($delInfo) ){
+								DEBUG_LOG(basename(__FILE__),__FUNCTION__,__LINE__,"[ERROR]Failed delete RouteInfo by route no.");
+								$client->SendMessageReq($accountId,$serverTokenInfo->info["token"],
+									"予期せぬエラーが発生しました。開発者へ連絡してください。");
+								break;
+							}
 							//ユーザーへ通知
 							$client->SendMessageReq($accountId,$serverTokenInfo->info["token"],
 							"指定されたデータを削除しました。");

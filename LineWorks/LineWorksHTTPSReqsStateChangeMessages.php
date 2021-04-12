@@ -140,7 +140,7 @@ class StateChangeMessage{
 			Enum_CallBack_userState::REGIST_INPUT_CONF		=> 'ChangeMessage_Nope',
 			Enum_CallBack_userState::SELECT_MENU			=> 'ChangeMessage_Nope',
 			Enum_CallBack_userState::DELETE_SELECT_ID		=> 'ChangeMessage_Nope',
-			Enum_CallBack_userState::DELETE_CONF			=> 'ChangeMessage_Nope',
+			Enum_CallBack_userState::DELETE_CONF			=> 'ChangeMessage_B8A9',
 			Enum_CallBack_userState::PETITION_CONF			=> 'ChangeMessage_Nope'
 		),
 		/* DELETE_CONF */
@@ -245,7 +245,8 @@ class StateChangeMessage{
 										$destination,
 										$route,
 										$user_price,
-										$rounds
+										$rounds,
+										$price
 									);
 
 				$tmpStr = $tmpStr.$routeInfo;
@@ -467,11 +468,19 @@ class StateChangeMessage{
 			$route_date = $date->format("m/d");
 			$destination = $tempRouteInfo->info["destination"];
 			$route = $tempRouteInfo->info["route"];
-			$rounds = $tempRouteInfo->info["rounds"];
+			if(  true == $tempRouteInfo->info["rounds"] ){
+				$rounds = "あり";
+			}else{
+				$rounds = "なし";
+			}
 			$price = $tempRouteInfo->info["price"];
-			$user_price = $tempRouteInfo->info["user_price"];
+			if( true == $tempRouteInfo->info["user_price"] ){
+				$user_price = $price;
+			}else{
+				$user_price = 0;
+			}
 			$remarks = $tempRouteInfo->info["remarks"];
-			$tmpStr = sprintf("・%s\n・%s\n・%s\n・%s\n・%s\n・%s\n・%s\n",
+			$tmpStr = sprintf("乗車日%20s\n行先%22s\n経路%22s\n往復の有無%16s\n合計運賃%18s円\nユーザー請求額%12s円\n備考%22s\n",
 								$route_date,
 								$destination,
 								$route,
@@ -482,7 +491,7 @@ class StateChangeMessage{
 							);
 			$tmpStr = $tmpStr."----------------------------------------\n"."以上の内容を登録しますか？";
 
-			$tmpMessage_ButtonTemplateStruct->propaty["contentText"] = "往復経路で登録しますか？";
+			$tmpMessage_ButtonTemplateStruct->propaty["contentText"] = $tmpStr;
 			$tmpAction_PostbackStructArray = Array(new Action_MessageStruct(),new Action_MessageStruct(),new Action_MessageStruct());
 			$tmpAction_PostbackStructArray[0]->propaty["label"] = MA_MessageTextList::APPLY;
 			$tmpAction_PostbackStructArray[0]->propaty["text"] = MA_MessageTextList::APPLY;
@@ -525,6 +534,97 @@ class StateChangeMessage{
 		DB_SP_getServerToken($serverTokenInfo);
 		$ret = $client->SendMessageReq($userAddress,$serverTokenInfo->info["token"],
 			"削除する経路データの番号を入力してください");
+		return $ret;
+	}
+
+	private function ChangeMessage_B8A9(CallBackStruct $recvData):bool{
+		//ユーザーアドレスを取得
+		$userAddress = $recvData->baseInfo["source"]["accountId"];
+		//LineWorks クライアントの作成
+		$client = new LineWorksReqs();
+		//Server Token 取得
+		$serverTokenInfo = new DBSP_GetServerTokenStruct();
+		DB_SP_getServerToken($serverTokenInfo);
+
+
+		$reqStruct = new DispMainMenuReqStruct();
+		$propaty = null;
+		$header = null;
+		$ret = false;
+
+		//ヘッダー設定
+		{
+			$reqStruct->header["Content-Type"] = "Content-Type: ".HTTP_H_CONTENT_TYPE;
+			$reqStruct->header["consumerKey"] = "consumerKey: ".CONSUMER_KEY;
+			$reqStruct->header["Authorization"] = "Authorization: "."Bearer ".$serverTokenInfo->info["token"];
+			$header = $reqStruct->header;
+		}
+
+		//プロパティー設定
+		{
+			$reqStruct->propaty["accountId"] = $userAddress;
+
+			$tmpMessage_ButtonTemplateStruct = new Message_ButtonTemplateStruct();
+			//DBからROUTE_INFOを取得
+			$RouteInfo = new DBSP_GetRouteInfoByRouteNoStruct();
+			DB_SP_getRouteInfoByRouteNo($userAddress, $recvData->propaty["content"]["text"], $RouteInfo);
+
+			$date = new DateTime($RouteInfo->info["route_date"]);
+			$route_date = $date->format("m/d");
+			$destination = $RouteInfo->info["destination"];
+			$route = $RouteInfo->info["route"];
+			if(  true == $RouteInfo->info["rounds"] ){
+				$rounds = "あり";
+			}else{
+				$rounds = "なし";
+			}
+			$price = $RouteInfo->info["price"];
+			if( true == $RouteInfo->info["user_price"] ){
+				$user_price = $price;
+			}else{
+				$user_price = 0;
+			}
+			$remarks = $RouteInfo->info["remarks"];
+			$tmpStr = sprintf("乗車日%20s\n行先%22s\n経路%22s\n往復の有無%16s\n合計運賃%18s円\nユーザー請求額%12s円\n備考%22s\n",
+				$route_date,
+				$destination,
+				$route,
+				$rounds,
+				$price,
+				$user_price,
+				$remarks
+				);
+			$tmpStr = $tmpStr."----------------------------------------\n"."以上のデータを削除しますか？";
+
+			$tmpMessage_ButtonTemplateStruct->propaty["contentText"] = $tmpStr;
+			$tmpAction_PostbackStructArray = Array(new Action_MessageStruct(),new Action_MessageStruct(),new Action_MessageStruct());
+			$tmpAction_PostbackStructArray[0]->propaty["label"] = MA_MessageTextList::APPLY;
+			$tmpAction_PostbackStructArray[0]->propaty["text"] = MA_MessageTextList::APPLY;
+			$tmpAction_PostbackStructArray[0]->propaty["postback"] = MA_MessagePostbackList::APPLY;
+			$tmpAction_PostbackStructArray[1]->propaty["label"] = MA_MessageTextList::CANCEL;
+			$tmpAction_PostbackStructArray[1]->propaty["text"] = MA_MessageTextList::CANCEL;
+			$tmpAction_PostbackStructArray[1]->propaty["postback"] = MA_MessagePostbackList::CANCEL;
+			$tmpMessage_ButtonTemplateStruct->propaty["actions"] = Array($tmpAction_PostbackStructArray[0]->propaty,
+				$tmpAction_PostbackStructArray[1]->propaty);
+			$reqStruct->propaty["content"] = $tmpMessage_ButtonTemplateStruct->propaty;
+			DEBUG_LOG(basename(__FILE__),__FUNCTION__,__LINE__,"reqStruct->propaty = ",$reqStruct->propaty);
+			//プロパティーのJSONエンコード
+			$propaty = json_encode($reqStruct->propaty);
+		}
+
+		//リクエストの送信
+		$result = SendRequest("POST", DISP_BUTTON_TEMP_URL, $header, $propaty);
+		if($result != false){
+			//応答が得られた場合
+			//応答JSONを連想配列にデコード
+			$ret = json_decode($result,true);
+			if( $ret == NULL ){ $ret = false;}
+			DEBUG_LOG(basename(__FILE__),__FUNCTION__,__LINE__,"Res Json = ",$ret);
+		}else{
+			//リクエストが出来なかった場合
+			//TODO 何かしらのエラー処理
+		}
+
 		return $ret;
 	}
 }
