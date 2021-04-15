@@ -1,4 +1,4 @@
-CREATE OR REPLACE FUNCTION transportation_expense_bot."GetRouteInfoByRouteNo"(_user_address VARCHAR, _route_no INT)
+CREATE OR REPLACE FUNCTION transportation_expense_bot."GetNotRequestedRouteInfoByApplication"(_user_address VARCHAR)
  RETURNS TABLE(
 	"route_no"		INT,
 	"route_date"	DATE,
@@ -30,8 +30,8 @@ BEGIN						-- Exec part
 		,"USER_PRICE"
 		,"REMARKS"
 		,"APPLICATION"
-		,"docs_id"
+		,"DOCS_ID"
 	FROM transportation_expense_bot."ROUTE_INFO"
-	WHERE "USER_ID" = _user_id AND "ROUTE_NO" = _route_no;
+	WHERE "USER_ID" = _user_id AND "APPLICATION" = FALSE;
 END;
 $function$

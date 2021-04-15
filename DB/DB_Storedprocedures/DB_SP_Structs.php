@@ -65,6 +65,15 @@ class DBSP_SetSelectedDeleteRouteInfoStruct{
 	);
 }
 
+class DBSP_SetRouteInfo_DocsIdStruct{
+	public $info = Array(
+		"user_address" => "",
+		"route_no" => 0,
+		"docs_id" => 0,
+		"application_date" => ""
+	);
+}
+
 /* GET */
 class DBSP_GetUserIdStruct{
 	public $info = Array(
@@ -112,6 +121,7 @@ class DBSP_GetRouteInfoStruct{
 		public $user_price		= FALSE;
 		public $remarks		= "";
 		public $application	= FALSE;
+		public $docs_id		= 0;
 }
 
 class DBSP_GetIsRouteInfoExistStruct{
@@ -136,7 +146,8 @@ class DBSP_GetRouteInfoByRouteNoStruct{
 		"price" => 0,
 		"user_price" => FALSE,
 		"remarks" => "",
-		"application" => FALSE
+		"application" => FALSE,
+		"docs_id" => 0
 	);
 }
 
@@ -144,6 +155,37 @@ class DBSP_GetSelectedDeleteRouteInfoStruct{
 	public $info = Array(
 		"selected_delete_route_info" => 0,
 	);
+}
+
+class DBSP_GetIsNotRequestedRouteInfoExistByApplicationStruct{
+	public $info = Array(
+		"GetIsNotRequestedRouteInfoExistByApplication" => FALSE
+	);
+}
+
+class DBSP_GetNotRequestedRouteInfosByApplicationStruct{
+	public $info = Array();	//DBSP_GetNotRequestedRouteInfoByApplicationStructが配列となって格納されている
+}
+
+class DBSP_GetNotRequestedRouteInfoByApplicationStruct{
+	public $route_no		= "";
+	public $route_date		= "";
+	public $destination	= "";
+	public $route			= "";
+	public $rounds			= TRUE;
+	public $price			= 0;
+	public $user_price		= FALSE;
+	public $remarks		= "";
+	public $application	= FALSE;
+	public $docs_id		= 0;
+}
+
+class DBSP_GetDocsMS_DocsIDsStruct{
+	public $info = Array();	//DBSP_GetDocsMS_DocsIDStructが配列となって格納される
+}
+
+class DBSP_GetDocsMS_DocsIDStruct{
+	public $docs_id;
 }
 
 /* ADD */

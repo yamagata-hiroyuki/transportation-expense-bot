@@ -127,7 +127,7 @@ class StateChangeMessage{
 			Enum_CallBack_userState::SELECT_MENU			=> 'ChangeMessage_Nope',
 			Enum_CallBack_userState::DELETE_SELECT_ID		=> 'ChangeMessage_B7A8',
 			Enum_CallBack_userState::DELETE_CONF			=> 'ChangeMessage_Nope',
-			Enum_CallBack_userState::PETITION_CONF			=> 'ChangeMessage_Nope'
+			Enum_CallBack_userState::PETITION_CONF			=> 'ChangeMessage_B7A10'
 		),
 		/* DELETE_SELECT_ID */
 		Enum_CallBack_userState::DELETE_SELECT_ID => Array(
@@ -606,6 +606,107 @@ class StateChangeMessage{
 			$tmpAction_PostbackStructArray[1]->propaty["postback"] = MA_MessagePostbackList::CANCEL;
 			$tmpMessage_ButtonTemplateStruct->propaty["actions"] = Array($tmpAction_PostbackStructArray[0]->propaty,
 				$tmpAction_PostbackStructArray[1]->propaty);
+			$reqStruct->propaty["content"] = $tmpMessage_ButtonTemplateStruct->propaty;
+			DEBUG_LOG(basename(__FILE__),__FUNCTION__,__LINE__,"reqStruct->propaty = ",$reqStruct->propaty);
+			//プロパティーのJSONエンコード
+			$propaty = json_encode($reqStruct->propaty);
+		}
+
+		//リクエストの送信
+		$result = SendRequest("POST", DISP_BUTTON_TEMP_URL, $header, $propaty);
+		if($result != false){
+			//応答が得られた場合
+			//応答JSONを連想配列にデコード
+			$ret = json_decode($result,true);
+			if( $ret == NULL ){ $ret = false;}
+			DEBUG_LOG(basename(__FILE__),__FUNCTION__,__LINE__,"Res Json = ",$ret);
+		}else{
+			//リクエストが出来なかった場合
+			//TODO 何かしらのエラー処理
+		}
+
+		return $ret;
+	}
+
+	private function ChangeMessage_B7A10(CallBackStruct $recvData):bool{
+		//ユーザーアドレスを取得
+		$userAddress = $recvData->baseInfo["source"]["accountId"];
+		//LineWorks クライアントの作成
+		$client = new LineWorksReqs();
+		//Server Token 取得
+		$serverTokenInfo = new DBSP_GetServerTokenStruct();
+		DB_SP_getServerToken($serverTokenInfo);
+
+
+		$reqStruct = new DispMainMenuReqStruct();
+		$propaty = null;
+		$header = null;
+		$ret = false;
+
+		//ヘッダー設定
+		{
+			$reqStruct->header["Content-Type"] = "Content-Type: ".HTTP_H_CONTENT_TYPE;
+			$reqStruct->header["consumerKey"] = "consumerKey: ".CONSUMER_KEY;
+			$reqStruct->header["Authorization"] = "Authorization: "."Bearer ".$serverTokenInfo->info["token"];
+			$header = $reqStruct->header;
+		}
+
+		//プロパティー設定
+		{
+			$reqStruct->propaty["accountId"] = $userAddress;
+
+			$tmpMessage_ButtonTemplateStruct = new Message_ButtonTemplateStruct();
+			$tmpStr = "申請内容確認\n".
+				"----------------------------------------\n";
+			//DBからRouteInfoを取得
+			$routeInfos = new DBSP_GetNotRequestedRouteInfosByApplicationStruct();
+			DB_SP_getNotRequestedRouteInfoByApplication($userAddress,$routeInfos);
+			$amountPrice = 0;
+			foreach( $routeInfos->info as $value ){
+				//$route_no		= $value->route_no;
+				$date = new DateTime($value->route_date);
+				$route_date = $date->format("m/d");
+				$destination	= $value->destination;
+				$route			= $value->route;
+				$rounds			= "";
+				if( true == $value->rounds ){ $rounds = "復"; }
+				$price			= $value->price;
+				$user_price = "";
+				if( true == $value->user_price ){ $user_price = "仮"; }
+				$routeInfo = sprintf("%5s %22s\n     %-18s %1s%1s \n                             ￥%5d\n",
+					//$route_no,
+					$route_date,
+					$destination,
+					$route,
+					$user_price,
+					$rounds,
+					$price
+					);
+
+				$tmpStr = $tmpStr.$routeInfo;
+				$amountPrice = $amountPrice + $price;
+			}
+
+			if( 0 < $amountPrice ){
+				$amountPriceStr = sprintf("%s\n%s￥%5s\n","                              ----------","                             ",$amountPrice);
+				$tmpStr = $tmpStr.$amountPriceStr;
+			}
+			$tmpStr = $tmpStr."----------------------------------------\n";
+			$tmpStr = $tmpStr."以上の内容を申請しますか？";
+
+			$tmpMessage_ButtonTemplateStruct->propaty["contentText"] = $tmpStr;
+			$tmpAction_PostbackStructArray = Array(new Action_MessageStruct(),new Action_MessageStruct(),new Action_MessageStruct());
+			$tmpAction_PostbackStructArray[0]->propaty["label"] = MA_MessageTextList::APPLY;
+			$tmpAction_PostbackStructArray[0]->propaty["text"] = MA_MessageTextList::APPLY;
+			$tmpAction_PostbackStructArray[0]->propaty["postback"] = MA_MessagePostbackList::APPLY;
+			$tmpAction_PostbackStructArray[1]->propaty["label"] = MA_MessageTextList::CANCEL;
+			$tmpAction_PostbackStructArray[1]->propaty["text"] = MA_MessageTextList::CANCEL;
+			$tmpAction_PostbackStructArray[1]->propaty["postback"] = MA_MessagePostbackList::CANCEL;
+			//DEBUG_LOG(basename(__FILE__),__FUNCTION__,__LINE__,"tmpAction_PostbackStructArray = ",$tmpAction_PostbackStructArray);
+			//
+			$tmpMessage_ButtonTemplateStruct->propaty["actions"] = Array($tmpAction_PostbackStructArray[0]->propaty,
+				$tmpAction_PostbackStructArray[1]->propaty);
+			//DEBUG_LOG(basename(__FILE__),__FUNCTION__,__LINE__,"tmpMessage_ButtonTemplateStruct->propaty[\"actions\"] = ",$tmpMessage_ButtonTemplateStruct->propaty["actions"]);
 			$reqStruct->propaty["content"] = $tmpMessage_ButtonTemplateStruct->propaty;
 			DEBUG_LOG(basename(__FILE__),__FUNCTION__,__LINE__,"reqStruct->propaty = ",$reqStruct->propaty);
 			//プロパティーのJSONエンコード

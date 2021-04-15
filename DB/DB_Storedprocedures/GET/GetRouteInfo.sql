@@ -8,7 +8,8 @@ CREATE OR REPLACE FUNCTION transportation_expense_bot."GetRouteInfo"(_user_addre
 	"price"			INT,
 	"user_price"	BOOL,
 	"remarks"		VARCHAR,
-	"application"	BOOL
+	"application"	BOOL,
+	"docs_id"		INT
 )
  LANGUAGE plpgsql
 AS $function$
@@ -29,6 +30,7 @@ BEGIN						-- Exec part
 		,"USER_PRICE"
 		,"REMARKS"
 		,"APPLICATION"
+		,"DOCS_ID"
 	FROM transportation_expense_bot."ROUTE_INFO"
 	WHERE "USER_ID" = _user_id;
 END;

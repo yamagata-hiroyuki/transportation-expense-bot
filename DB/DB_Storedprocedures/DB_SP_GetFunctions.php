@@ -291,3 +291,94 @@ function DB_SP_getSelectedDeleteRouteInfo(string $user_address, DBSP_GetSelected
 	}
 	return true;
 }
+
+function DB_SP_getNotRequestedRouteInfoByApplication(string $user_address ,DBSP_GetNotRequestedRouteInfosByApplicationStruct &$output):bool{
+	$dbConnection = null;
+	if( !dbConnection::getConnection($dbConnection) ){
+		return false;
+	}
+
+	$sql = 'SELECT * FROM transportation_expense_bot."GetNotRequestedRouteInfoByApplication"(:user_address)';
+	$sth = $dbConnection->prepare($sql);
+
+	$sth->bindValue(':user_address', $user_address, PDO::PARAM_STR);
+
+	try {
+		if( $sth->execute() ){
+			foreach($sth->fetchall(PDO::FETCH_ASSOC) as $row ){
+				$routeInfo = new DBSP_GetNotRequestedRouteInfoByApplicationStruct();
+				$routeInfo->route_no	= $row["route_no"];
+				$routeInfo->route_date	= $row["route_date"];
+				$routeInfo->destination	= $row["destination"];
+				$routeInfo->route		= $row["route"];
+				$routeInfo->rounds		= $row["rounds"];
+				$routeInfo->price		= $row["price"];
+				$routeInfo->user_price	= $row["user_price"];
+				$routeInfo->remarks		= $row["remarks"];
+				array_push($output->info,$routeInfo);
+			}
+		} else {
+			DEBUG_LOG(basename(__FILE__),__FUNCTION__,__LINE__,"[ERROR]SQL exec result faild.");
+			return false;
+		}
+	}
+	catch( PDOException $e){
+		DEBUG_LOG(basename(__FILE__),__FUNCTION__,__LINE__,"[ERROR]SQL exec error: ".$e->getMessage());
+		return false;
+	}
+	return true;
+}
+
+function DB_SP_getIsNotRequestedRouteInfoExistByApplication(string $user_address , DBSP_GetIsNotRequestedRouteInfoExistByApplicationStruct &$output):bool{
+	$dbConnection = null;
+	if( !dbConnection::getConnection($dbConnection) ){
+		return false;
+	}
+
+	$sql = 'SELECT * FROM transportation_expense_bot."GetIsNotRequestedRouteInfoExistByApplication"(:user_address)';
+	$sth = $dbConnection->prepare($sql);
+
+	$sth->bindValue(':user_address', $user_address, PDO::PARAM_STR);
+	try {
+		if( $sth->execute() ){
+			$output->info = $sth->fetch(PDO::FETCH_ASSOC);
+		} else {
+			DEBUG_LOG(basename(__FILE__),__FUNCTION__,__LINE__,"[ERROR]SQL exec result faild.");
+			return false;
+		}
+	}
+	catch( PDOException $e){
+		DEBUG_LOG(basename(__FILE__),__FUNCTION__,__LINE__,"[ERROR]SQL exec error: ".$e->getMessage());
+		return false;
+	}
+	return true;
+}
+
+function DB_SP_GetDocsMS_DocsIDs(string $user_address , DBSP_GetDocsMS_DocsIDsStruct &$output):bool{
+	$dbConnection = null;
+	if( !dbConnection::getConnection($dbConnection) ){
+		return false;
+	}
+
+	$sql = 'SELECT * FROM transportation_expense_bot."GetDocsMS_DocsIDs"(:user_address)';
+	$sth = $dbConnection->prepare($sql);
+
+	$sth->bindValue(':user_address', $user_address, PDO::PARAM_STR);
+	try {
+		if( $sth->execute() ){
+			foreach($sth->fetchall(PDO::FETCH_ASSOC) as $row ){
+				$docs_id = new DBSP_GetDocsMS_DocsIDStruct();
+				$docs_id->docs_id = $row["docs_id"];
+				array_push($output->info,$docs_id);
+			}
+		} else {
+			DEBUG_LOG(basename(__FILE__),__FUNCTION__,__LINE__,"[ERROR]SQL exec result faild.");
+			return false;
+		}
+	}
+	catch( PDOException $e){
+		DEBUG_LOG(basename(__FILE__),__FUNCTION__,__LINE__,"[ERROR]SQL exec error: ".$e->getMessage());
+		return false;
+	}
+	return true;
+}

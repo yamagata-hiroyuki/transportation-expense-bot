@@ -31,5 +31,5 @@
 	//制限系
 	define("DIST_STR_MIN",1);														//最小入力文字数(目的地)
 	define("DIST_STR_MAX",22);														//最大入力文字数(目的地)
-	define("REMARK_STR_MIN",1);														//最小入力文字数(備考)
+	define("REMARK_STR_MIN",0);														//最小入力文字数(備考)
 	define("REMARK_STR_MAX",18);													//最大入力文字数(備考)

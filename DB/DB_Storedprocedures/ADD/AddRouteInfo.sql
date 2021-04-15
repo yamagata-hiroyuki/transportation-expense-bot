@@ -13,6 +13,7 @@ DECLARE
 	_user_price		BOOL;
 	_remarks		VARCHAR;
 	_application	BOOL;
+	_docs_id		INT;
 BEGIN			-- Exec part
 	-- get USER_ID
 	SELECT INTO _user_id transportation_expense_bot."GetUserId"(_user_address); 
@@ -45,6 +46,7 @@ BEGIN			-- Exec part
 		_remarks
 	FROM transportation_expense_bot."GetTempRouteInfo"(_user_address);
 	_application = FALSE;
+	_docs_id = NULL;
 	
 	-- Register new ROUTE_INFO
 	INSERT INTO transportation_expense_bot."ROUTE_INFO"(
@@ -58,6 +60,7 @@ BEGIN			-- Exec part
 		,"USER_PRICE"
 		,"REMARKS"
 		,"APPLICATION"
+		,"DOCS_ID"
 	)
 	VALUES (
 	_user_id,
@@ -69,7 +72,8 @@ BEGIN			-- Exec part
 	_price,
 	_user_price,
 	_remarks,
-	_application
+	_application,
+	_docs_id
 	);
 
 	-- Clear TEMP_ROUTE_INFO

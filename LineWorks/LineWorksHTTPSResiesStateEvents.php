@@ -657,14 +657,14 @@ class StateEvent{
 							break;
 						case MA_PostbackKind::PETITION:
 							// データの有無を確認
-							$existInfo = new DBSP_GetIsRouteInfoExistStruct();
-							if( false == DB_SP_getIsRouteInfoExist($accountId, $existInfo) ){
+							$existInfo = new DBSP_GetIsNotRequestedRouteInfoExistByApplicationStruct();
+							if( false == DB_SP_getIsNotRequestedRouteInfoExistByApplication($accountId, $existInfo) ){
 								DEBUG_LOG(basename(__FILE__),__FUNCTION__,__LINE__,"[ERROR]Failed is RouteInfo exist.");
 								$client->SendMessageReq($accountId,$serverTokenInfo->info["token"],
 									"予期せぬエラーが発生しました。開発者へ連絡してください。");
 								break;
 							}
-							if( false == $existInfo->info["GetIsRouteInfoExist"] ){
+							if( false == $existInfo->info["GetIsNotRequestedRouteInfoExistByApplication"] ){
 								DEBUG_LOG(basename(__FILE__),__FUNCTION__,__LINE__,"[ERROR]RouteInfo is not exist.");
 								$client->SendMessageReq($accountId,$serverTokenInfo->info["token"],
 									"申請可能なIDが存在しません。\n使用する機能を再度選択してください。");
@@ -855,7 +855,43 @@ class StateEvent{
 					$postbackKind = MessageAnalyser::getPostbackKind($recvData);
 					switch ($postbackKind){
 						case MA_PostbackKind::APPLY:
-							//TODO データ全てを申請する（未申請のもののみ）
+							//データ全てを申請する（未申請のもののみ）
+							$routeInfos = new DBSP_GetNotRequestedRouteInfosByApplicationStruct;
+							if( false == DB_SP_getNotRequestedRouteInfoByApplication($accountId, $routeInfos) ){
+								DEBUG_LOG(basename(__FILE__),__FUNCTION__,__LINE__,"[ERROR]Failed to get not requested RouteInfo.");
+								$client->SendMessageReq($accountId,$serverTokenInfo->info["token"],
+									"予期せぬエラーが発生しました。開発者へ連絡してください。");
+								break;
+							}
+							//清算書番号の左側４桁(年月)と右４桁（連番）を取得する
+							$docs_Ym = 0;
+							$docs_Num = 0;
+							if ( false == self::getSettableDocsId($accountId,$docs_Ym,$docs_Num) ){
+								DEBUG_LOG(basename(__FILE__),__FUNCTION__,__LINE__,"[ERROR]Failed to get docs_id");
+								$client->SendMessageReq($accountId,$serverTokenInfo->info["token"],
+									"予期せぬエラーが発生しました。開発者へ連絡してください。");
+								break;
+							}
+
+							$errorFlag = false;
+							DEBUG_LOG(basename(__FILE__),__FUNCTION__,__LINE__,"debug routInfos=",$routeInfos);
+							foreach ($routeInfos->info as $routeInfo){
+								$setInfo = new DBSP_SetRouteInfo_DocsIdStruct();
+								$setInfo->info["user_address"] = $accountId;
+								$setInfo->info["route_no"] = $routeInfo->route_no;
+								$applicationDate = new DateTime("now");
+								$setInfo->info["application_date"] = $applicationDate->format("Y/m/d");
+								$setInfo->info["docs_id"] = sprintf("%04d%04d",$docs_Ym,$docs_Num);
+								if( false == DB_SP_setRouteInfo_DocsId($setInfo) ){
+									DEBUG_LOG(basename(__FILE__),__FUNCTION__,__LINE__,"[ERROR]Failed to applicate not requested RouteInfo.RouteInfo=".$setInfo);
+									$client->SendMessageReq($accountId,$serverTokenInfo->info["token"],
+										"予期せぬエラーが発生しました。開発者へ連絡してください。");
+									$errorFlag = true;
+									break;
+								}
+								$docs_Num = $docs_Num + 1;
+							}
+							if(true == $errorFlag){break;}
 
 							//ユーザーへ通知
 							$client->SendMessageReq($accountId,$serverTokenInfo->info["token"],
@@ -888,6 +924,34 @@ class StateEvent{
 					}
 				}while(false);
 
+				return true;
+			}
+
+			private function getSettableDocsId(string $user_address, int &$docs_Ym, int &$docs_Num):bool{
+
+				$currentDate = new datetime("now");
+				$currentDateNum = (int)$currentDate->format("ym");
+
+				$docs_Ym = $currentDateNum;
+				$docs_Num = 1;
+
+				$docs_ids = new DBSP_GetDocsMS_DocsIDsStruct();
+				if( false == DB_SP_GetDocsMS_DocsIDs($user_address, $docs_ids)){
+					return false;
+				}
+
+				DEBUG_LOG(basename(__FILE__),__FUNCTION__,__LINE__,"debug docs_ids=",$docs_ids);
+				foreach( $docs_ids->info as $docs_id ){
+					DEBUG_LOG(basename(__FILE__),__FUNCTION__,__LINE__,"debug docs_id=",$docs_id);
+					$tmpDocsIdStr = sprintf("%08d",$docs_id->docs_id);
+					$cmpNum = (int)left($tmpDocsIdStr,4);
+					if( $currentDateNum == $cmpNum ){
+						$tmpNum = right($tmpDocsIdStr, 4);
+						if ( $tmpNum >=  $docs_Num ){
+							$docs_Num = $tmpNum + 1;
+						}
+					}
+				}
 				return true;
 			}
 }

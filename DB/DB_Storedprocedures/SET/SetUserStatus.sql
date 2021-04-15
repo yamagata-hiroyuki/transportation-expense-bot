@@ -1,4 +1,4 @@
-CREATE OR REPLACE FUNCTION transportation_expense_bot."SetUserStatus"(_user_address VARCHAR, _status CHAR)
+CREATE OR REPLACE FUNCTION transportation_expense_bot."SetUserStatus"(_user_address VARCHAR, _status INT)
  RETURNS void
  LANGUAGE plpgsql
 AS $function$
