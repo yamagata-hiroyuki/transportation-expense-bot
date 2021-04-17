@@ -1,4 +1,5 @@
 <?php
+	file_put_contents("php://stdout", "DEBUG Log Herro PHP 2row\n");
 	require_once 'LineWorks/LineWorksCfg.php';
 	require_once 'HTTP/HTTPSClientCommon.php';
 	require_once 'LineWorks/LineWorksHTTPSReqs.php';
