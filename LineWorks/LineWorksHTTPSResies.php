@@ -107,7 +107,7 @@ class LineWorksResies{
 		DEBUG_LOG(basename(__FILE__),__FUNCTION__,__LINE__,"signature is = ".$signature);
 
 		//X-WORKS-Signature のヘッダー値と比較
-		if( $signature != $tmpHeader->header["X-WORKS-Signature"] )
+		if( $signature != $tmpHeader->header["X-Works-Signature"] )
 		{
 			DEBUG_LOG(basename(__FILE__),__FUNCTION__,__LINE__,"signature is not match!.");
 			if( !RCV_TEST_DATA ){
