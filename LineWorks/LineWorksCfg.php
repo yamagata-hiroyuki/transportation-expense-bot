@@ -2,14 +2,14 @@
 	require_once 'Common/Lamdas.php';
 
 	//User modify params  --start--
-    define("APP_NAME","chat-bot-upload-test");      //heroku application name
+	define("APP_NAME","transportation-expense-bot");								//heroku application name
 	define("API_ID","jp1bOeyTtDNts");												//API ID
-	define("BOT_NO","1686949");						//BotNo
+	define("BOT_NO","1933144");														//BotNo
 
 	//コンシュマーキー：{}内いずれかを有効化すること（デフォルト：サーバーコンシュマーキー
 	define("SERVICE_CONSUMER_KEY","");												//サーバーコンシュマーの権限で認証
-	define("SERVER_CONSUMER_KEY","1s2i9GNFmIujbAyaQO9Z");  //サーバーコンシュマーの権限で認証
-	define("SERVER_TOKEN","56907308ab094d119da932afd7c5dd56");//サーバートークン
+	define("SERVER_CONSUMER_KEY","ibQN8RztVtJBRKyDt1GA");							//サーバーコンシュマーの権限で認証
+	define("SERVER_TOKEN","16e3e15038c24ad58c20f196e7d1745b");						//サーバートークン
 	{
 		//define("CONSUMER_KEY","{$GLOBALS['DEF'](SERVICE_CONSUMER_KEY)}");			//サービスコンシュマーの権限で認証
 		define("CONSUMER_KEY","{$GLOBALS['DEF'](SERVER_CONSUMER_KEY)}");				//サーバーコンシュマーの権限で認証
