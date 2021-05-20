@@ -327,7 +327,13 @@ class StateEvent{
 							}
 							//以下テスト用
 							$tmpArray = print_r($jorudanInfo,true);
-							$client->SendMessageReq($accountId,$serverTokenInfo->info["token"],"デバッグ情報\n".$tmpArray);
+							$tmpArray = "デバッグ情報\n".$tmpArray;
+							if(strlen("デバッグ情報\n"."入力された経路は".$tmpArray) > MESSAGE_MAX_LEN_SERVER_TO_USER){
+								$client->SendMessageReq($accountId,$serverTokenInfo->info["token"],"メッセージとして送信できる最大文字数".
+									MESSAGE_MAX_LEN_SERVER_TO_USER."文字を超えたため、デバッグ情報の出力を省略します。");
+							}else{
+								$client->SendMessageReq($accountId,$serverTokenInfo->info["token"],$tmpArray);
+							}
 
 							//DBへ一時データ保存
 							$tempRouteInfo = new DBSP_SetTempRouteInfo_JorudanInfoStruct();
@@ -682,6 +688,7 @@ class StateEvent{
 							$userStatusInfo->info["user_address"] = $accountId;
 							$userStatusInfo->info["status"] = Enum_CallBack_userState::MAIN_MENU;
 							DB_SP_setUserStatus($userStatusInfo);
+							break;
 						default:
 							DEBUG_LOG(basename(__FILE__),__FUNCTION__,__LINE__,"[ERROR]Invalid Input.");
 							//ユーザーへ通知（入力は無効である）

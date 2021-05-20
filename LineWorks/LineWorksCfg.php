@@ -33,3 +33,5 @@
 	define("DIST_STR_MAX",22);														//最大入力文字数(目的地)
 	define("REMARK_STR_MIN",0);														//最小入力文字数(備考)
 	define("REMARK_STR_MAX",18);													//最大入力文字数(備考)
+
+	define("MESSAGE_MAX_LEN_SERVER_TO_USER",2000);									//最大文字数(メッセージ)(Sever→user)

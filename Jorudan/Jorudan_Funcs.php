@@ -38,6 +38,8 @@ class Jorudan_Funcs{
     function GetInfo(string $text, Jorudan_Info &$jorudanInfo):bool
     {
         $ret = false;
+        replaceText($text, "\n|\r|\r\n", " ");
+        replaceText($text, " → ", "→");
         replaceText($text, "( |　)+", ";");
         delimitText($text, ";");
 
