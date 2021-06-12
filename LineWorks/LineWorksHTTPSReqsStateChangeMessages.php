@@ -244,8 +244,8 @@ class StateChangeMessage{
 										$route_date,
 										$destination,
 										$route,
-										$user_price,
 										$rounds,
+										$user_price,
 										$price
 									);
 
