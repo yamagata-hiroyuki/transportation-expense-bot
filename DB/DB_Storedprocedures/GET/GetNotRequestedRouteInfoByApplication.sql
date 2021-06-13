@@ -6,7 +6,7 @@ CREATE OR REPLACE FUNCTION transportation_expense_bot."GetNotRequestedRouteInfoB
 	"route"			VARCHAR,
 	"rounds"		BOOL,
 	"price"			INT,
-	"user_price"	BOOL,
+	"user_price"	INT,
 	"remarks"		VARCHAR,
 	"application"	BOOL,
 	"docs_id"		INT

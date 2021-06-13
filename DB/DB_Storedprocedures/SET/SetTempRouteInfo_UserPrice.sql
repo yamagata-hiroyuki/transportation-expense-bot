@@ -1,4 +1,4 @@
-CREATE OR REPLACE FUNCTION transportation_expense_bot."SetTempRouteInfo_UserPrice"(_user_address VARCHAR, _user_price BOOL)
+CREATE OR REPLACE FUNCTION transportation_expense_bot."SetTempRouteInfo_UserPrice"(_user_address VARCHAR, _user_price INT)
  RETURNS void
  LANGUAGE plpgsql
 AS $function$

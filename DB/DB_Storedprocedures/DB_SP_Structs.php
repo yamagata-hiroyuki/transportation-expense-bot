@@ -34,7 +34,7 @@ class DBSP_SetTempRouteInfo_DestinationStruct{
 class DBSP_SetTempRouteInfo_UserPriceStruct{
 	public $info = Array(
 		"user_address" => "",
-		"user_price" => FALSE
+		"user_price" => 0
 		);
 }
 
@@ -186,6 +186,12 @@ class DBSP_GetDocsMS_DocsIDsStruct{
 
 class DBSP_GetDocsMS_DocsIDStruct{
 	public $docs_id;
+}
+
+class DBSP_GetTempRouteInfo_PriceStruct{
+	public $info = Array(
+		"price" => 0
+	);
 }
 
 /* ADD */

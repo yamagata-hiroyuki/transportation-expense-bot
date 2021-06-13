@@ -451,12 +451,21 @@ class StateEvent{
 						"入力された請求先は".$tmpArray);
 
 					//DBへ一時データ保存
+					$tempPrice = new DBSP_GetTempRouteInfo_PriceStruct();
+					if(false == DB_SP_getTempRouteInfo_price($accountId ,$tempPrice) ){
+						DEBUG_LOG(basename(__FILE__),__FUNCTION__,__LINE__,"[ERROR]Faild to get amount price from temp route info.");
+						//ユーザーへ通知（DBからpriceの取得失敗）
+						$client->SendMessageReq($accountId,$serverTokenInfo->info["token"],
+							"予期せぬエラーが発生しました。開発者へ連絡してください。");
+						break;
+					}
+					
 					$tempRouteInfo = new DBSP_SetTempRouteInfo_UserPriceStruct();
 					$tempRouteInfo->info["user_address"] = $accountId;
 					if(MA_MessagePostbackList::REQUEST_TO_USER == $recvData->propaty["content"]["postback"]){
-						$tempRouteInfo->info["user_price"] = TRUE;
+						$tempRouteInfo->info["user_price"] = $tempPrice->info["price"];
 					}else{
-						$tempRouteInfo->info["user_price"] = FALSE;
+						$tempRouteInfo->info["user_price"] = 0;
 					}
 					DB_SP_setTempRouteInfo_UserPrice($tempRouteInfo);
 
@@ -962,23 +971,3 @@ class StateEvent{
 				return true;
 			}
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

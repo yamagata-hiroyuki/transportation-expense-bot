@@ -238,7 +238,7 @@ class StateChangeMessage{
 				if( true == $value->rounds ){ $rounds = "復"; }
 				$price			= $value->price;
 				$user_price = "";
-				if( true == $value->user_price ){ $user_price = "仮"; }
+				if( 0 < $value->user_price ){ $user_price = "仮"; }
 				$routeInfo = sprintf("[%3d]%5s %22s\n     %-18s %1s%1s \n                             ￥%5d\n",
 										$route_no,
 										$route_date,
@@ -474,11 +474,7 @@ class StateChangeMessage{
 				$rounds = "なし";
 			}
 			$price = $tempRouteInfo->info["price"];
-			if( true == $tempRouteInfo->info["user_price"] ){
-				$user_price = $price;
-			}else{
-				$user_price = 0;
-			}
+			$user_price = $tempRouteInfo->info["user_price"];
 			$remarks = $tempRouteInfo->info["remarks"];
 			$tmpStr = sprintf("乗車日%20s\n行先%22s\n経路%22s\n往復の有無%16s\n合計運賃%18s円\nユーザー請求額%12s円\n備考%22s\n",
 								$route_date,
@@ -579,11 +575,7 @@ class StateChangeMessage{
 				$rounds = "なし";
 			}
 			$price = $RouteInfo->info["price"];
-			if( true == $RouteInfo->info["user_price"] ){
-				$user_price = $price;
-			}else{
-				$user_price = 0;
-			}
+			$user_price = $RouteInfo->info["user_price"];
 			$remarks = $RouteInfo->info["remarks"];
 			$tmpStr = sprintf("乗車日%20s\n行先%22s\n経路%22s\n往復の有無%16s\n合計運賃%18s円\nユーザー請求額%12s円\n備考%22s\n",
 				$route_date,
@@ -672,7 +664,7 @@ class StateChangeMessage{
 				if( true == $value->rounds ){ $rounds = "復"; }
 				$price			= $value->price;
 				$user_price = "";
-				if( true == $value->user_price ){ $user_price = "仮"; }
+				if( 0 < $value->user_price ){ $user_price = "仮"; }
 				$routeInfo = sprintf("%5s %22s\n     %-18s %1s%1s \n                             ￥%5d\n",
 					//$route_no,
 					$route_date,

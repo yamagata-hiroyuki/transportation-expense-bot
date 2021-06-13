@@ -10,7 +10,7 @@ DECLARE
 	_route			VARCHAR;
 	_rounds			BOOL;
 	_price			INT;
-	_user_price		BOOL;
+	_user_price		INT;
 	_remarks		VARCHAR;
 	_application	BOOL;
 	_docs_id		INT;

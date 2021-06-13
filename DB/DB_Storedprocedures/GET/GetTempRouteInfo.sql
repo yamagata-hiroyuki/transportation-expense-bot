@@ -2,10 +2,10 @@ CREATE OR REPLACE FUNCTION transportation_expense_bot."GetTempRouteInfo"(_user_a
  RETURNS TABLE(
 	"route_date"	DATE,
 	"destination"	VARCHAR,
-	"route"		VARCHAR,
+	"route"			VARCHAR,
 	"rounds"		BOOL,
-	"price"		INT,
-	"user_price"	BOOL,
+	"price"			INT,
+	"user_price"	INT,
 	"remarks"		VARCHAR
 )
  LANGUAGE plpgsql
@@ -16,7 +16,7 @@ DECLARE
 	_route			VARCHAR;
 	_rounds			BOOL;
 	_price			INT;
-	_user_price		BOOL;
+	_user_price		INT;
 	_remarks		VARCHAR;
 BEGIN					-- Exec part
 	-- create tmp table
@@ -27,7 +27,7 @@ BEGIN					-- Exec part
 		"_tmpTable_route"			VARCHAR,
 		"_tmpTable_rounds"			BOOL,
 		"_tmpTable_price"			INT,
-		"_tmpTable_user_price"		BOOL,
+		"_tmpTable_user_price"		INT,
 		"_tmpTable_remarks"			VARCHAR,
 		PRIMARY KEY ("_tmpTable_dummyPKey")
 	);
