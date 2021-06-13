@@ -38,8 +38,14 @@ class Jorudan_Funcs{
     function GetInfo(string $text, Jorudan_Info &$jorudanInfo):bool
     {
         $ret = false;
+        //iphone 対策 Start
         replaceText($text, "\n|\r|\r\n", " ");
         replaceText($text, " → ", "→");
+        replaceText($text, "\) 始発 ", ") ");
+        //iphone 対策 End
+        //以降iphone / android 共通の設定
+        replaceText($text, "\) 始発 ", ") ");
+        replaceText($text, " *([0-9]+)\/ *([0-9]+)", " $1/$2");
         replaceText($text, "( |　)+", ";");
         delimitText($text, ";");
 
@@ -134,7 +140,11 @@ class Jorudan_Funcs{
             $retDetails->sectionFrom = $text[$i];$i++;
             if(false !== mb_strpos($text[$i],"番線" ))$i++;
             if(false !== mb_strpos($text[$i],"当駅始発" ))$i++;
-            $retDetails->trainName = preg_replace('/≪.+≫/','',$text[$i]);$i++;
+            if(1 == preg_match("/\[.*バス\]/", $text[$i + 1])){
+            	$retDetails->trainName = preg_replace('/≪.+≫/','',$text[$i + 1]);$i++;$i++;
+            }else{
+            	$retDetails->trainName = preg_replace('/≪.+≫/','',$text[$i]);$i++;
+            }
             $i++;
             if(false !== mb_strpos($text[$i],"運賃" ) or false !== mb_strpos($text[$i],"指定席") ){
                 $retDetails->Price = preg_replace('/[^0-9]/', '', $text[$i]);$i++;
