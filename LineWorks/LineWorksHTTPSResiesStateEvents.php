@@ -389,6 +389,19 @@ class StateEvent{
 				//メッセージを送付したいユーザーアカウントを取得
 				$accountId = $recvData->baseInfo["source"]["accountId"];
 				do{
+					//キャンセルの場合MAIN_MENUへ戻る
+					if(MA_MessageTextList::CANCEL_KANA == $recvData->propaty["content"]["text"]){
+						DEBUG_LOG(basename(__FILE__),__FUNCTION__,__LINE__,"[INFO]Cancel sequence.");
+						$client->SendMessageReq($accountId,$serverTokenInfo->info["token"],"処理を中断しました");
+
+						//状態更新
+						$userStatusInfo = new DBSP_SetUserStatusStruct();
+						$userStatusInfo->info["user_address"] = $accountId;
+						$userStatusInfo->info["status"] = Enum_CallBack_userState::MAIN_MENU;
+						DB_SP_setUserStatus($userStatusInfo);
+						break;
+					}
+
 					//文字数チェック
 					$tmplen = mb_strlen($recvData->propaty["content"]["text"]);
 					if(DIST_STR_MIN > $tmplen || DIST_STR_MAX < $tmplen){
@@ -431,6 +444,19 @@ class StateEvent{
 				//メッセージを送付したいユーザーアカウントを取得
 				$accountId = $recvData->baseInfo["source"]["accountId"];
 				do{
+					//キャンセルの場合MAIN_MENUへ戻る
+					if(MA_MessageTextList::CANCEL_KANA == $recvData->propaty["content"]["text"]){
+						DEBUG_LOG(basename(__FILE__),__FUNCTION__,__LINE__,"[INFO]Cancel sequence.");
+						$client->SendMessageReq($accountId,$serverTokenInfo->info["token"],"処理を中断しました");
+
+						//状態更新
+						$userStatusInfo = new DBSP_SetUserStatusStruct();
+						$userStatusInfo->info["user_address"] = $accountId;
+						$userStatusInfo->info["status"] = Enum_CallBack_userState::MAIN_MENU;
+						DB_SP_setUserStatus($userStatusInfo);
+						break;
+					}
+
 					//ボタンによる応答かチェック
 					$bitFlags = MessageAnalyser::getPostbackKind($recvData);
 					if(  !(getBitFlagState($bitFlags, MA_PostbackKind::REQUEST_TO_IN_HOUSE)
@@ -459,7 +485,7 @@ class StateEvent{
 							"予期せぬエラーが発生しました。開発者へ連絡してください。");
 						break;
 					}
-					
+
 					$tempRouteInfo = new DBSP_SetTempRouteInfo_UserPriceStruct();
 					$tempRouteInfo->info["user_address"] = $accountId;
 					if(MA_MessagePostbackList::REQUEST_TO_USER == $recvData->propaty["content"]["postback"]){
@@ -490,6 +516,19 @@ class StateEvent{
 				//メッセージを送付したいユーザーアカウントを取得
 				$accountId = $recvData->baseInfo["source"]["accountId"];
 				do{
+					//キャンセルの場合MAIN_MENUへ戻る
+					if(MA_MessageTextList::CANCEL_KANA == $recvData->propaty["content"]["text"]){
+						DEBUG_LOG(basename(__FILE__),__FUNCTION__,__LINE__,"[INFO]Cancel sequence.");
+						$client->SendMessageReq($accountId,$serverTokenInfo->info["token"],"処理を中断しました");
+
+						//状態更新
+						$userStatusInfo = new DBSP_SetUserStatusStruct();
+						$userStatusInfo->info["user_address"] = $accountId;
+						$userStatusInfo->info["status"] = Enum_CallBack_userState::MAIN_MENU;
+						DB_SP_setUserStatus($userStatusInfo);
+						break;
+					}
+
 					//ボタンによる応答かチェック
 					$bitFlags = MessageAnalyser::getPostbackKind($recvData);
 					if(  !(getBitFlagState($bitFlags, MA_PostbackKind::ONE_WAY)
@@ -540,6 +579,19 @@ class StateEvent{
 				//メッセージを送付したいユーザーアカウントを取得
 				$accountId = $recvData->baseInfo["source"]["accountId"];
 				do{
+					//キャンセルの場合MAIN_MENUへ戻る
+					if(MA_MessageTextList::CANCEL_KANA == $recvData->propaty["content"]["text"]){
+						DEBUG_LOG(basename(__FILE__),__FUNCTION__,__LINE__,"[INFO]Cancel sequence.");
+						$client->SendMessageReq($accountId,$serverTokenInfo->info["token"],"処理を中断しました");
+
+						//状態更新
+						$userStatusInfo = new DBSP_SetUserStatusStruct();
+						$userStatusInfo->info["user_address"] = $accountId;
+						$userStatusInfo->info["status"] = Enum_CallBack_userState::MAIN_MENU;
+						DB_SP_setUserStatus($userStatusInfo);
+						break;
+					}
+
 					//文字数チェック
 					$tmplen = mb_strlen($recvData->propaty["content"]["text"]);
 					if(REMARK_STR_MIN > $tmplen || REMARK_STR_MAX < $tmplen){
@@ -582,6 +634,19 @@ class StateEvent{
 				//メッセージを送付したいユーザーアカウントを取得
 				$accountId = $recvData->baseInfo["source"]["accountId"];
 				do{
+					//キャンセルの場合MAIN_MENUへ戻る
+					if(MA_MessageTextList::CANCEL_KANA == $recvData->propaty["content"]["text"]){
+						DEBUG_LOG(basename(__FILE__),__FUNCTION__,__LINE__,"[INFO]Cancel sequence.");
+						$client->SendMessageReq($accountId,$serverTokenInfo->info["token"],"処理を中断しました");
+
+						//状態更新
+						$userStatusInfo = new DBSP_SetUserStatusStruct();
+						$userStatusInfo->info["user_address"] = $accountId;
+						$userStatusInfo->info["status"] = Enum_CallBack_userState::MAIN_MENU;
+						DB_SP_setUserStatus($userStatusInfo);
+						break;
+					}
+
 					//ボタンによる応答かチェック
 					$bitFlags = MessageAnalyser::getPostbackKind($recvData);
 					if(  !(getBitFlagState($bitFlags, MA_PostbackKind::APPLY)
@@ -724,6 +789,19 @@ class StateEvent{
 				//メッセージを送付したいユーザーアカウントを取得
 				$accountId = $recvData->baseInfo["source"]["accountId"];
 				do{
+					//キャンセルの場合MAIN_MENUへ戻る
+					if(MA_MessageTextList::CANCEL_KANA == $recvData->propaty["content"]["text"]){
+						DEBUG_LOG(basename(__FILE__),__FUNCTION__,__LINE__,"[INFO]Cancel sequence.");
+						$client->SendMessageReq($accountId,$serverTokenInfo->info["token"],"処理を中断しました");
+
+						//状態更新
+						$userStatusInfo = new DBSP_SetUserStatusStruct();
+						$userStatusInfo->info["user_address"] = $accountId;
+						$userStatusInfo->info["status"] = Enum_CallBack_userState::MAIN_MENU;
+						DB_SP_setUserStatus($userStatusInfo);
+						break;
+					}
+
 					$messageKind = MessageAnalyser::getMessageKind($recvData);
 					switch ($messageKind){
 						case MA_MessageKind::NUMBER:
@@ -801,6 +879,19 @@ class StateEvent{
 				//メッセージを送付したいユーザーアカウントを取得
 				$accountId = $recvData->baseInfo["source"]["accountId"];
 				do{
+					//キャンセルの場合MAIN_MENUへ戻る
+					if(MA_MessageTextList::CANCEL_KANA == $recvData->propaty["content"]["text"]){
+						DEBUG_LOG(basename(__FILE__),__FUNCTION__,__LINE__,"[INFO]Cancel sequence.");
+						$client->SendMessageReq($accountId,$serverTokenInfo->info["token"],"処理を中断しました");
+
+						//状態更新
+						$userStatusInfo = new DBSP_SetUserStatusStruct();
+						$userStatusInfo->info["user_address"] = $accountId;
+						$userStatusInfo->info["status"] = Enum_CallBack_userState::MAIN_MENU;
+						DB_SP_setUserStatus($userStatusInfo);
+						break;
+					}
+
 					$postbackKind = MessageAnalyser::getPostbackKind($recvData);
 					switch ($postbackKind){
 						case MA_PostbackKind::APPLY:
@@ -868,6 +959,19 @@ class StateEvent{
 				//メッセージを送付したいユーザーアカウントを取得
 				$accountId = $recvData->baseInfo["source"]["accountId"];
 				do{
+					//キャンセルの場合MAIN_MENUへ戻る
+					if(MA_MessageTextList::CANCEL_KANA == $recvData->propaty["content"]["text"]){
+						DEBUG_LOG(basename(__FILE__),__FUNCTION__,__LINE__,"[INFO]Cancel sequence.");
+						$client->SendMessageReq($accountId,$serverTokenInfo->info["token"],"処理を中断しました");
+
+						//状態更新
+						$userStatusInfo = new DBSP_SetUserStatusStruct();
+						$userStatusInfo->info["user_address"] = $accountId;
+						$userStatusInfo->info["status"] = Enum_CallBack_userState::MAIN_MENU;
+						DB_SP_setUserStatus($userStatusInfo);
+						break;
+					}
+
 					$postbackKind = MessageAnalyser::getPostbackKind($recvData);
 					switch ($postbackKind){
 						case MA_PostbackKind::APPLY:

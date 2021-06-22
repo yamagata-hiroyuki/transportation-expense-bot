@@ -15,6 +15,7 @@ class MA_MessageTextList{
 	//共通
 	const APPLY					= "はい";
 	const CANCEL				= "いいえ";
+	const CANCEL_KANA			= "キャンセル";		//No6 対応 処理のキャンセル機能の実装
 	//メニュー
 	const MENU					= "メニュー";
 	const ONE_DELETE			= "一件削除";		//一件削除
