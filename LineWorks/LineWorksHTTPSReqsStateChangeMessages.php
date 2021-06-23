@@ -124,7 +124,7 @@ class StateChangeMessage{
 			Enum_CallBack_userState::REGIST_INPUT_ROUND		=> 'ChangeMessage_Nope',
 			Enum_CallBack_userState::REGIST_INPUT_REMARK	=> 'ChangeMessage_Nope',
 			Enum_CallBack_userState::REGIST_INPUT_CONF		=> 'ChangeMessage_Nope',
-			Enum_CallBack_userState::SELECT_MENU			=> 'ChangeMessage_Nope',
+			Enum_CallBack_userState::SELECT_MENU			=> 'ChangeMessage_B7A7',
 			Enum_CallBack_userState::DELETE_SELECT_ID		=> 'ChangeMessage_B7A8',
 			Enum_CallBack_userState::DELETE_CONF			=> 'ChangeMessage_Nope',
 			Enum_CallBack_userState::PETITION_CONF			=> 'ChangeMessage_B7A10'
@@ -224,10 +224,17 @@ class StateChangeMessage{
 			//DBからRouteInfoを取得
 			$routeInfos = new DBSP_GetRouteInfosStruct();
 			DB_SP_getRouteInfo($userAddress,$routeInfos);
+			$infoCount = count($routeInfos->info);
+			DEBUG_LOG(basename(__FILE__),__FUNCTION__,__LINE__,"[INFO]infoCount = ".$infoCount);
 			$amountPrice = 0;
 			foreach( $routeInfos->info as $index => $value ){
+				if($index >= MESSAGE_MAX_COUNT_ROUTE_INFO_DISP_ON_MENU_AT_ONE_TIME){
+					//一度に表示可能なROUT_INFO数に達したので処理を抜ける
+					break;
+				}
+
 				if( 0 == $index ){
-					$tmpStr = $tmpStr."登録済み経路一覧\n";
+					$tmpStr .= "登録済み経路一覧\n";
 				}
 				$route_no		= $value->route_no;
 				$date = new DateTime($value->route_date);
@@ -249,15 +256,17 @@ class StateChangeMessage{
 										$price
 									);
 
-				$tmpStr = $tmpStr.$routeInfo;
-				$amountPrice = $amountPrice + $price;
+				$tmpStr .= $routeInfo;
 			}
-
+			//合計金額の計算
+			foreach( $routeInfos->info as $index => $value ){
+				$amountPrice += $value->price;
+			}
 			if( 0 < $amountPrice ){
 				$amountPriceStr = sprintf("%s\n%s￥%5s\n","                              ----------","                             ",$amountPrice);
-				$tmpStr = $tmpStr.$amountPriceStr;
+				$tmpStr .= $amountPriceStr;
 			}
-			$tmpStr = $tmpStr."----------------------------------------\n";
+			$tmpStr .= "----------------------------------------\n";
 
 			$tmpMessage_ButtonTemplateStruct->propaty["contentText"] = $tmpStr;
 			$tmpAction_PostbackStructArray = Array(new Action_MessageStruct(),new Action_MessageStruct(),new Action_MessageStruct());
@@ -271,10 +280,20 @@ class StateChangeMessage{
 			$tmpAction_PostbackStructArray[2]->propaty["text"] = "キャンセル";
 			$tmpAction_PostbackStructArray[2]->propaty["postback"] = MA_MessagePostbackList::CANCEL;
 			//DEBUG_LOG(basename(__FILE__),__FUNCTION__,__LINE__,"tmpAction_PostbackStructArray = ",$tmpAction_PostbackStructArray);
-			//
 			$tmpMessage_ButtonTemplateStruct->propaty["actions"] = Array($tmpAction_PostbackStructArray[0]->propaty,
 				$tmpAction_PostbackStructArray[1]->propaty,
 				$tmpAction_PostbackStructArray[2]->propaty);
+
+			//一度に表示可能なROUT_INFO数を超えた場合は次ページボタンを追加
+			if( $infoCount > MESSAGE_MAX_COUNT_ROUTE_INFO_DISP_ON_MENU_AT_ONE_TIME){
+				$nextNumnber = 1;//ページ管理は0オーダー
+				array_push($tmpAction_PostbackStructArray,new Action_MessageStruct());
+				$tmpAction_PostbackStructArray[3]->propaty["label"] = MA_MessageTextList::NEXT;
+				$tmpAction_PostbackStructArray[3]->propaty["text"] = MA_MessageTextList::NEXT;
+				$tmpAction_PostbackStructArray[3]->propaty["postback"] = MA_MessagePostbackList::NEXT.$nextNumnber;
+				array_push($tmpMessage_ButtonTemplateStruct->propaty["actions"],$tmpAction_PostbackStructArray[3]->propaty);
+			}
+
 			//DEBUG_LOG(basename(__FILE__),__FUNCTION__,__LINE__,"tmpMessage_ButtonTemplateStruct->propaty[\"actions\"] = ",$tmpMessage_ButtonTemplateStruct->propaty["actions"]);
 			$reqStruct->propaty["content"] = $tmpMessage_ButtonTemplateStruct->propaty;
 			DEBUG_LOG(basename(__FILE__),__FUNCTION__,__LINE__,"reqStruct->propaty = ",$reqStruct->propaty);
@@ -497,6 +516,182 @@ class StateChangeMessage{
 			$tmpAction_PostbackStructArray[1]->propaty["postback"] = MA_MessagePostbackList::CANCEL;
 			$tmpMessage_ButtonTemplateStruct->propaty["actions"] = Array($tmpAction_PostbackStructArray[0]->propaty,
 				$tmpAction_PostbackStructArray[1]->propaty);
+			$reqStruct->propaty["content"] = $tmpMessage_ButtonTemplateStruct->propaty;
+			DEBUG_LOG(basename(__FILE__),__FUNCTION__,__LINE__,"reqStruct->propaty = ",$reqStruct->propaty);
+			//プロパティーのJSONエンコード
+			$propaty = json_encode($reqStruct->propaty);
+		}
+
+		//リクエストの送信
+		$result = SendRequest("POST", DISP_BUTTON_TEMP_URL, $header, $propaty);
+		if($result != false){
+			//応答が得られた場合
+			//応答JSONを連想配列にデコード
+			$ret = json_decode($result,true);
+			if( $ret == NULL ){ $ret = false;}
+			DEBUG_LOG(basename(__FILE__),__FUNCTION__,__LINE__,"Res Json = ",$ret);
+		}else{
+			//リクエストが出来なかった場合
+			//TODO 何かしらのエラー処理
+		}
+
+		return $ret;
+	}
+
+	private function ChangeMessage_B7A7(CallBackStruct $recvData):bool{
+		$postbackKind = MessageAnalyser::getPostbackKind($recvData);
+		if(! ( $postbackKind == MA_PostbackKind::NEXT
+			|| $postbackKind == MA_PostbackKind::PREVIOUS
+		)){
+			// なにも表示しない
+			return true;
+		}
+
+
+		//次/前のページを表示
+		//ユーザーアドレスを取得
+		$userAddress = $recvData->baseInfo["source"]["accountId"];
+		//LineWorks クライアントの作成
+		$client = new LineWorksReqs();
+		//Server Token 取得
+		$serverTokenInfo = new DBSP_GetServerTokenStruct();
+		DB_SP_getServerToken($serverTokenInfo);
+
+
+		$reqStruct = new DispMainMenuReqStruct();
+		$propaty = null;
+		$header = null;
+		$ret = false;
+
+		//ヘッダー設定
+		{
+			$reqStruct->header["Content-Type"] = "Content-Type: ".HTTP_H_CONTENT_TYPE;
+			$reqStruct->header["consumerKey"] = "consumerKey: ".CONSUMER_KEY;
+			$reqStruct->header["Authorization"] = "Authorization: "."Bearer ".$serverTokenInfo->info["token"];
+			$header = $reqStruct->header;
+		}
+
+		//プロパティー設定
+		{
+			$reqStruct->propaty["accountId"] = $userAddress;
+
+			$tmpMessage_ButtonTemplateStruct = new Message_ButtonTemplateStruct();
+			$tmpStr = "機能メニュー\n".
+				"----------------------------------------\n";
+			//DBからRouteInfoを取得
+			$routeInfos = new DBSP_GetRouteInfosStruct();
+			DB_SP_getRouteInfo($userAddress,$routeInfos);
+			$infoCount = count($routeInfos->info);
+			DEBUG_LOG(basename(__FILE__),__FUNCTION__,__LINE__,"[INFO]infoCount = ".$infoCount);
+			$amountPrice = 0;
+
+			//ページ番号設定
+			$postbackNumber = (int)preg_replace("/\D+/","",$recvData->propaty["content"]["postback"]);
+			$nextNumber = $postbackNumber + 1;
+			$previousNumber = $postbackNumber - 1;
+			DEBUG_LOG(basename(__FILE__),__FUNCTION__,__LINE__,"[INFO]postbackNumber = ".$postbackNumber);
+
+			//次/前ページボタン有効性判断
+			$flgNext = ($nextNumber >= ceil( $infoCount / MESSAGE_MAX_COUNT_ROUTE_INFO_DISP_ON_MENU_AT_ONE_TIME) ) ? false : true;
+			$flgPrevious = ($previousNumber < 0) ? false : true;
+
+			//ページレンジチェック
+			if (  $postbackNumber > ($infoCount / MESSAGE_MAX_COUNT_ROUTE_INFO_DISP_ON_MENU_AT_ONE_TIME)
+				|| $postbackNumber < 0
+				){
+					DEBUG_LOG(basename(__FILE__),__FUNCTION__,__LINE__,"[ERROR]Out of range.postbackNumber = ".$postbackNumber
+						.".total page count = ".$infoCount / MESSAGE_MAX_COUNT_ROUTE_INFO_DISP_ON_MENU_AT_ONE_TIME.".");
+					return false;
+			}
+
+
+
+			foreach( $routeInfos->info as $index => $value ){
+				if($index < MESSAGE_MAX_COUNT_ROUTE_INFO_DISP_ON_MENU_AT_ONE_TIME * ($postbackNumber)){
+					//ページまで進む
+					continue;
+				}
+
+				if($index >= MESSAGE_MAX_COUNT_ROUTE_INFO_DISP_ON_MENU_AT_ONE_TIME * ($postbackNumber + 1)){
+					//一度に表示可能なROUT_INFO数に達したので処理を抜ける
+					break;
+				}
+
+				if( 0 == $index ){
+					$tmpStr .= "登録済み経路一覧\n";
+				}
+				$route_no		= $value->route_no;
+				$date = new DateTime($value->route_date);
+				$route_date = $date->format("m/d");
+				$destination	= $value->destination;
+				$route			= $value->route;
+				$rounds			= "";
+				if( true == $value->rounds ){ $rounds = "復"; }
+				$price			= $value->price;
+				$user_price = "";
+				if( 0 < $value->user_price ){ $user_price = "仮"; }
+				$routeInfo = sprintf("[%3d]%5s %22s\n     %-18s %1s%1s \n                             ￥%5d\n",
+					$route_no,
+					$route_date,
+					$destination,
+					$route,
+					$rounds,
+					$user_price,
+					$price
+					);
+
+				$tmpStr .= $routeInfo;
+			}
+			//合計金額の計算
+			foreach( $routeInfos->info as $index => $value ){
+				$amountPrice += $value->price;
+			}
+			if( 0 < $amountPrice ){
+				$amountPriceStr = sprintf("%s\n%s￥%5s\n","                              ----------","                             ",$amountPrice);
+				$tmpStr .= $amountPriceStr;
+			}
+			$tmpStr .= "----------------------------------------\n";
+
+			$tmpMessage_ButtonTemplateStruct->propaty["contentText"] = $tmpStr;
+			$tmpAction_PostbackStructArray = Array(new Action_MessageStruct(),new Action_MessageStruct(),new Action_MessageStruct());
+			$arrayNumber = 0;
+			$tmpAction_PostbackStructArray[$arrayNumber]->propaty["label"] = MA_MessageTextList::ONE_DELETE;
+			$tmpAction_PostbackStructArray[$arrayNumber]->propaty["text"] = MA_MessageTextList::ONE_DELETE;
+			$tmpAction_PostbackStructArray[$arrayNumber]->propaty["postback"] = MA_MessagePostbackList::ONE_DELETE;
+			$arrayNumber += 1;
+			$tmpAction_PostbackStructArray[$arrayNumber]->propaty["label"] = MA_MessageTextList::PETITION;
+			$tmpAction_PostbackStructArray[$arrayNumber]->propaty["text"] = MA_MessageTextList::PETITION;
+			$tmpAction_PostbackStructArray[$arrayNumber]->propaty["postback"] = MA_MessagePostbackList::PETITION;
+			$arrayNumber += 1;
+			$tmpAction_PostbackStructArray[$arrayNumber]->propaty["label"] = "キャンセル";
+			$tmpAction_PostbackStructArray[$arrayNumber]->propaty["text"] = "キャンセル";
+			$tmpAction_PostbackStructArray[$arrayNumber]->propaty["postback"] = MA_MessagePostbackList::CANCEL;
+			//DEBUG_LOG(basename(__FILE__),__FUNCTION__,__LINE__,"tmpAction_PostbackStructArray = ",$tmpAction_PostbackStructArray);
+			$tmpMessage_ButtonTemplateStruct->propaty["actions"] = Array($tmpAction_PostbackStructArray[0]->propaty,
+				$tmpAction_PostbackStructArray[1]->propaty,
+				$tmpAction_PostbackStructArray[2]->propaty);
+
+			//次ページボタンを追加
+			if( $flgNext === true){
+				array_push($tmpAction_PostbackStructArray,new Action_MessageStruct());
+				$arrayNumber += 1;
+				$tmpAction_PostbackStructArray[$arrayNumber]->propaty["label"] = MA_MessageTextList::NEXT;
+				$tmpAction_PostbackStructArray[$arrayNumber]->propaty["text"] = MA_MessageTextList::NEXT;
+				$tmpAction_PostbackStructArray[$arrayNumber]->propaty["postback"] = MA_MessagePostbackList::NEXT.$nextNumber;
+				array_push($tmpMessage_ButtonTemplateStruct->propaty["actions"],$tmpAction_PostbackStructArray[$arrayNumber]->propaty);
+			}
+
+			//前ページボタンを追加
+			if( $flgPrevious === true){
+				array_push($tmpAction_PostbackStructArray,new Action_MessageStruct());
+				$arrayNumber += 1;
+				$tmpAction_PostbackStructArray[$arrayNumber]->propaty["label"] = MA_MessageTextList::PREVIOUS;
+				$tmpAction_PostbackStructArray[$arrayNumber]->propaty["text"] = MA_MessageTextList::PREVIOUS;
+				$tmpAction_PostbackStructArray[$arrayNumber]->propaty["postback"] = MA_MessagePostbackList::PREVIOUS.$previousNumber;
+				array_push($tmpMessage_ButtonTemplateStruct->propaty["actions"],$tmpAction_PostbackStructArray[$arrayNumber]->propaty);
+			}
+
+			//DEBUG_LOG(basename(__FILE__),__FUNCTION__,__LINE__,"tmpMessage_ButtonTemplateStruct->propaty[\"actions\"] = ",$tmpMessage_ButtonTemplateStruct->propaty["actions"]);
 			$reqStruct->propaty["content"] = $tmpMessage_ButtonTemplateStruct->propaty;
 			DEBUG_LOG(basename(__FILE__),__FUNCTION__,__LINE__,"reqStruct->propaty = ",$reqStruct->propaty);
 			//プロパティーのJSONエンコード

@@ -35,3 +35,4 @@
 	define("REMARK_STR_MAX",18);													//最大入力文字数(備考)
 
 	define("MESSAGE_MAX_LEN_SERVER_TO_USER",2000);									//最大文字数(メッセージ)(Sever→user)
+	define("MESSAGE_MAX_COUNT_ROUTE_INFO_DISP_ON_MENU_AT_ONE_TIME",8);				//機能メニューで一度に表示できる経路の最大数

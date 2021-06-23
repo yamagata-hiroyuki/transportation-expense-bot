@@ -32,6 +32,7 @@ BEGIN						-- Exec part
 		,"APPLICATION"
 		,"DOCS_ID"
 	FROM transportation_expense_bot."ROUTE_INFO"
-	WHERE "USER_ID" = _user_id;
+	WHERE "USER_ID" = _user_id
+	ORDER BY "ROUTE_NO";
 END;
 $function$

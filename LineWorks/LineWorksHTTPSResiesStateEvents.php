@@ -763,6 +763,10 @@ class StateEvent{
 							$userStatusInfo->info["status"] = Enum_CallBack_userState::MAIN_MENU;
 							DB_SP_setUserStatus($userStatusInfo);
 							break;
+						case MA_PostbackKind::NEXT:
+						case MA_PostbackKind::PREVIOUS:
+							//do nothing
+							break;
 						default:
 							DEBUG_LOG(basename(__FILE__),__FUNCTION__,__LINE__,"[ERROR]Invalid Input.");
 							//ユーザーへ通知（入力は無効である）

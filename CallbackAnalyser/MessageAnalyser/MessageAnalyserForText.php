@@ -20,6 +20,8 @@ class MA_MessageTextList{
 	const MENU					= "メニュー";
 	const ONE_DELETE			= "一件削除";		//一件削除
 	const PETITION				= "申請";			//申請
+	const NEXT					= "次のページ";		//次のページ
+	const PREVIOUS				= "前のページ";		//前のページ
 	//交通経路データ登録
 	const REQUEST_TO_USER		= "ユーザー請求";		//ユーザー請求
 	const REQUEST_TO_IN_HOUSE	= "自社請求";		//自社請求
@@ -35,6 +37,8 @@ class MA_PostbackKind{
 	//メニュー
 	const ONE_DELETE			= 0x00000004;//一件削除
 	const PETITION				= 0x00000008;//申請
+	const NEXT					= 0x00000100;//次のページ
+	const PREVIOUS				= 0x00000200;//前のページ
 	//交通経路データ登録
 	const REQUEST_TO_USER		= 0x00000010;//ユーザー請求
 	const REQUEST_TO_IN_HOUSE	= 0x00000020;//自社請求
@@ -49,6 +53,8 @@ class MA_MessagePostbackList{
 	//メニュー
 	const ONE_DELETE			= "postback 一件削除";		//一件削除
 	const PETITION				= "postback 申請";			//申請
+	const NEXT					= "postback 次のページ";	//次のページ
+	const PREVIOUS				= "postback 前のページ";	//前のページ
 	//交通経路データ登録
 	const REQUEST_TO_USER		= "postback ユーザー請求";	//ユーザー請求
 	const REQUEST_TO_IN_HOUSE	= "postback 自社請求";		//自社請求
@@ -75,6 +81,8 @@ trait MA_ForText{
 		if( self::isREQUEST_TO_IN_HOUSE($recvData) ){ bitFlagOn($retValue, MA_PostbackKind::REQUEST_TO_IN_HOUSE);};
 		if( self::isONE_WAY($recvData) ){ bitFlagOn($retValue, MA_PostbackKind::ONE_WAY);};
 		if( self::isROUND_TRIP($recvData) ){ bitFlagOn($retValue, MA_PostbackKind::ROUND_TRIP);};
+		if( self::isNEXT($recvData) ){ bitFlagOn($retValue, MA_PostbackKind::NEXT);};
+		if( self::isPREVIOUS($recvData) ){ bitFlagOn($retValue, MA_PostbackKind::PREVIOUS);};
 		return $retValue;
 	}
 
@@ -152,6 +160,16 @@ trait MA_ForText{
 
 	static protected function isROUND_TRIP(CallBackStruct $recvData):bool{
 		if( $recvData->propaty["content"]["postback"] == MA_MessagePostbackList::ROUND_TRIP ){ return true;}
+		return false;
+	}
+
+	static protected function isNEXT(CallBackStruct $recvData):bool{
+		if( preg_replace("/\d+/", "",$recvData->propaty["content"]["postback"]) == MA_MessagePostbackList::NEXT ){ return true;}
+		return false;
+	}
+
+	static protected function isPREVIOUS(CallBackStruct $recvData):bool{
+		if( preg_replace("/\d+/", "",$recvData->propaty["content"]["postback"]) == MA_MessagePostbackList::PREVIOUS ){ return true;}
 		return false;
 	}
 
