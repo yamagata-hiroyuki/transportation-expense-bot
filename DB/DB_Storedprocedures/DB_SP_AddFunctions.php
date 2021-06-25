@@ -8,10 +8,11 @@ function DB_SP_addRegisteredUser(DBSP_AddRegisteredUserStruct $addInfo):bool{
 		return false;
 	}
 
-	$sql = 'SELECT transportation_expense_bot."AddRegisteredUser"(:user_address)';
+	$sql = 'SELECT transportation_expense_bot."AddRegisteredUser"(:user_address,:user_name)';
 	$sth = $dbConnection->prepare($sql);
 
 	$sth->bindValue(':user_address', $addInfo->info["user_address"], PDO::PARAM_STR);
+	$sth->bindValue(':user_name', $addInfo->info["user_name"], PDO::PARAM_STR);
 
 	try {
 		if( $sth->execute() ){

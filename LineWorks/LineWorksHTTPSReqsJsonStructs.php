@@ -77,5 +77,10 @@
                 );
         }
 
+        class AccountInfoReqStruct{
+        	public $propaty = Array(
+        		"accountId" => ""           //メンバーアカウント
+        	);
+        }
 
 

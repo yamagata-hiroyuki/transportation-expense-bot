@@ -197,7 +197,8 @@ class DBSP_GetTempRouteInfo_PriceStruct{
 /* ADD */
 class DBSP_AddRegisteredUserStruct{
 	public $info = Array(
-		"user_address" => ""
+		"user_address" => "",
+		"user_name" => ""
 	);
 }
 

@@ -163,6 +163,18 @@
 				"expires_in" => ""				//Server Token の有効期限(秒)
 				);
 		}
+
+		class AccountInfoRes
+		{
+			public $propaty = Array(
+				"name" => "",							//名前
+				"organizationName" => "",				//会社名
+				"levelName" => "",						//職級
+				"representOrgUnitName" => "",			//(代表)組織
+				"representPositionName" => "",			//(代表)役職
+				"externalKey" => ""						//メンバーの ExternalKey
+				);
+		}
 	}
 
 	/* 各種応答構造体  (Server -> LineWorks(Bot)) */

@@ -61,6 +61,18 @@ class LineWorksResies{
 			//新規ユーザーをDBに登録
 			$addRegisteredUser = new DBSP_AddRegisteredUserStruct();
 			$addRegisteredUser->info["user_address"] = $tmpUser;
+
+			//LineWorks クライアントの作成
+			$client = new LineWorksReqs();
+			//Server Token 取得
+			$serverTokenInfo = new DBSP_GetServerTokenStruct();
+			DB_SP_getServerToken($serverTokenInfo);
+
+			//名前を取得
+			$accountInfo = new AccountInfoRes();
+			$accountInfo->propaty = $client->AccountInfoReq($tmpUser,$serverTokenInfo->info["token"]);
+			$addRegisteredUser->info["user_name"] = $accountInfo->propaty["name"];
+
 			$ret = DB_SP_addRegisteredUser($addRegisteredUser);
 			if( false == $ret ){
 				//登録失敗

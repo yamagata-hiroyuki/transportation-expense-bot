@@ -30,6 +30,10 @@
     define("SEND_MESSAGE_URL","https://apis.worksmobile.com/r/".API_ID."/message/v1/bot/".BOT_NO."/message/push");
     DEBUG_LOG(basename(__FILE__),__FUNCTION__,__LINE__,"def SEND_MESSAGE_URL = ".SEND_MESSAGE_URL);
 
+    //アカウント情報の照会
+    define("ACCOUNT_INFO_URL","https://apis.worksmobile.com/r/".API_ID."/contact/v2/accounts/");	//仕様時は末尾にacountIdを結合すること
+    DEBUG_LOG(basename(__FILE__),__FUNCTION__,__LINE__,"def ACCOUNT_INFO_URL = ".ACCOUNT_INFO_URL);
+
     class LineWorksReqs{
         function __construct()
         {
@@ -200,5 +204,50 @@
             }
 
             return $ret;
+        }
+
+        //アカウント情報の照会
+        //Direction
+        //REQ:BOT -> LineWorks
+        //RES:-
+        function AccountInfoReq(string $accountId = "",string $serverToken = ""):Array
+        {
+        	$reqStruct = new AccountInfoReqStruct();
+        	$propaty = null;
+        	$header = null;
+        	$ret = false;
+
+        	DEBUG_LOG(basename(__FILE__),__FUNCTION__,__LINE__,"start SendMessageReq");
+        	//ヘッダー設定
+        	{
+        		$reqStruct->header["Content-Type"] = "Content-Type: ".HTTP_H_CONTENT_TYPE;
+        		$reqStruct->header["consumerKey"] = "consumerKey: ".CONSUMER_KEY;
+        		$reqStruct->header["Authorization"] = "Authorization: "."Bearer ${serverToken}";
+        		$header = $reqStruct->header;
+        	}
+
+        	//プロパティー設定
+        	{
+        		$reqStruct->propaty["accountId"] = $accountId;
+
+        		DEBUG_LOG(basename(__FILE__),__FUNCTION__,__LINE__,"reqStruct->propaty = ",$reqStruct->propaty);
+        		//プロパティーのJSONエンコード
+        		$propaty = json_encode($reqStruct->propaty);
+        	}
+
+        	//リクエストの送信
+        	$result = SendRequest("GET", ACCOUNT_INFO_URL.$accountId, $header, $propaty);
+        	if($result != false){
+        		//応答が得られた場合
+        		//応答JSONを連想配列にデコード
+        		$ret = json_decode($result,true);
+        		if( NULL == $ret ){$ret = false;}
+        		DEBUG_LOG(basename(__FILE__),__FUNCTION__,__LINE__,"Res Json = ",$ret);
+        	}else{
+        		//リクエストが出来なかった場合
+        		//TODO 何かしらのエラー処理
+        	}
+
+        	return $ret;
         }
     }
