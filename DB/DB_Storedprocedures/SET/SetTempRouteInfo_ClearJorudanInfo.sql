@@ -9,8 +9,7 @@ BEGIN			-- Exec part
 	PERFORM transportation_expense_bot."SetTempRouteInfo_Route"(_user_address,NULL);
 	PERFORM transportation_expense_bot."SetTempRouteInfo_Rounds"(_user_address,NULL);
 	PERFORM transportation_expense_bot."SetTempRouteInfo_Price"(_user_address,NULL);
-	PERFORM transportation_expense_bot."SetTempRouteInfo_UserPrice"(_user_address,NULL);
-	PERFORM transportation_expense_bot."SetTempRouteInfo_TransExp"(_user_address,NULL);
+	PERFORM transportation_expense_bot."SetTempRouteInfo_UserPrice"(_user_address,NULL,NULL,NULL);
 	PERFORM transportation_expense_bot."SetTempRouteInfo_Remarks"(_user_address,NULL);
 END;
 $function$
