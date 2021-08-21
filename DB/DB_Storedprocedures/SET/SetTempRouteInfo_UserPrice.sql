@@ -1,4 +1,4 @@
-CREATE OR REPLACE FUNCTION transportation_expense_bot."SetTempRouteInfo_UserPrice"(_user_address VARCHAR, _user_price INT)
+CREATE OR REPLACE FUNCTION transportation_expense_bot."SetTempRouteInfo_UserPrice"(_user_address VARCHAR, _price INT, _user_price INT,_trans_exp INT)
  RETURNS void
  LANGUAGE plpgsql
 AS $function$
@@ -9,7 +9,9 @@ BEGIN			-- Exec part
 	SELECT INTO _user_id transportation_expense_bot."GetUserId"(_user_address); 
 	
 	UPDATE transportation_expense_bot."TEMP_ROUTE_INFO"
-	SET "USER_PRICE" = _user_price
+	SET "PRICE" = _price,
+		"USER_PRICE" = _user_price,
+		"TRANS_EXP" = _trans_exp
 	WHERE "USER_ID" = _user_id;
 END;
 $function$

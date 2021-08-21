@@ -34,7 +34,9 @@ class DBSP_SetTempRouteInfo_DestinationStruct{
 class DBSP_SetTempRouteInfo_UserPriceStruct{
 	public $info = Array(
 		"user_address" => "",
-		"user_price" => 0
+		"price" => 0,
+		"user_price" => 0,
+		"trans_exp" => 0
 		);
 }
 
@@ -102,7 +104,8 @@ class DBSP_GetTempRouteInfoStruct{
 		"route" => "",
 		"rounds" => TRUE,
 		"price" => 0,
-		"user_price" => FALSE,
+		"user_price" => 0,
+		"trans_exp" => 0,
 		"remarks" => ""
 	);
 }
@@ -118,7 +121,8 @@ class DBSP_GetRouteInfoStruct{
 		public $route			= "";
 		public $rounds			= TRUE;
 		public $price			= 0;
-		public $user_price		= FALSE;
+		public $user_price		= 0;
+		public $trans_exp 		= 0;
 		public $remarks		= "";
 		public $application	= FALSE;
 		public $docs_id		= 0;
@@ -144,7 +148,8 @@ class DBSP_GetRouteInfoByRouteNoStruct{
 		"route" => "",
 		"rounds" => TRUE,
 		"price" => 0,
-		"user_price" => FALSE,
+		"user_price" => 0,
+		"trans_exp" => 0,
 		"remarks" => "",
 		"application" => FALSE,
 		"docs_id" => 0
@@ -174,7 +179,8 @@ class DBSP_GetNotRequestedRouteInfoByApplicationStruct{
 	public $route			= "";
 	public $rounds			= TRUE;
 	public $price			= 0;
-	public $user_price		= FALSE;
+	public $user_price		= 0;
+	public $trans_exp 		= 0;
 	public $remarks		= "";
 	public $application	= FALSE;
 	public $docs_id		= 0;

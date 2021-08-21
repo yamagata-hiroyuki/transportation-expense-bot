@@ -171,6 +171,7 @@ function DB_SP_getRouteInfo(string $user_address ,DBSP_GetRouteInfosStruct &$out
 				$routeInfo->rounds		= $row["rounds"];
 				$routeInfo->price		= $row["price"];
 				$routeInfo->user_price	= $row["user_price"];
+				$routeInfo->trans_exp	= $row["trans_exp"];
 				$routeInfo->remarks		= $row["remarks"];
 				array_push($output->info,$routeInfo);
 			}
@@ -314,6 +315,7 @@ function DB_SP_getNotRequestedRouteInfoByApplication(string $user_address ,DBSP_
 				$routeInfo->rounds		= $row["rounds"];
 				$routeInfo->price		= $row["price"];
 				$routeInfo->user_price	= $row["user_price"];
+				$routeInfo->trans_exp	= $row["trans_exp"];
 				$routeInfo->remarks		= $row["remarks"];
 				array_push($output->info,$routeInfo);
 			}

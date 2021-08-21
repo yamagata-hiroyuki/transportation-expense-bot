@@ -9,6 +9,7 @@ CREATE TABLE transportation_expense_bot."ROUTE_INFO" (
 	,"ROUNDS"		BOOL
 	,"PRICE"		INT
 	,"USER_PRICE"	INT
+	,"TRANS_EXP"	INT
 	,"REMARKS"		VARCHAR
 	,"APPLICATION"	BOOL
 	,"DOCS_ID"		INT

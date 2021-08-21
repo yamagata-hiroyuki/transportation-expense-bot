@@ -7,6 +7,7 @@ CREATE OR REPLACE FUNCTION transportation_expense_bot."GetRouteInfo"(_user_addre
 	"rounds"		BOOL,
 	"price"			INT,
 	"user_price"	INT,
+	"trans_exp"	INT,
 	"remarks"		VARCHAR,
 	"application"	BOOL,
 	"docs_id"		INT
@@ -28,6 +29,7 @@ BEGIN						-- Exec part
 		,"ROUNDS"
 		,"PRICE"
 		,"USER_PRICE"
+		,"TRANS_EXP"
 		,"REMARKS"
 		,"APPLICATION"
 		,"DOCS_ID"

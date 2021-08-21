@@ -174,11 +174,13 @@ function DB_SP_setTempRouteInfo_UserPrice(DBSP_SetTempRouteInfo_UserPriceStruct 
 		return false;
 	}
 
-	$sql = 'SELECT transportation_expense_bot."SetTempRouteInfo_UserPrice"(:user_address,:user_price)';
+	$sql = 'SELECT transportation_expense_bot."SetTempRouteInfo_UserPrice"(:user_address,:price,:user_price,:trans_exp)';
 	$sth = $dbConnection->prepare($sql);
 
 	$sth->bindValue(':user_address', $setInfo->info["user_address"], PDO::PARAM_STR);
+	$sth->bindValue(':price', $setInfo->info["price"], PDO::PARAM_INT);
 	$sth->bindValue(':user_price', $setInfo->info["user_price"], PDO::PARAM_INT);
+	$sth->bindValue(':trans_exp', $setInfo->info["trans_exp"], PDO::PARAM_INT);
 
 	try {
 		if( $sth->execute() ){

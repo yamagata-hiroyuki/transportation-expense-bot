@@ -11,6 +11,7 @@ DECLARE
 	_rounds			BOOL;
 	_price			INT;
 	_user_price		INT;
+	_trans_exp		INT;
 	_remarks		VARCHAR;
 	_application	BOOL;
 	_docs_id		INT;
@@ -35,6 +36,7 @@ BEGIN			-- Exec part
 		"rounds",
 		"price",
 		"user_price",
+		"trans_exp",
 		"remarks"
 	INTO
 		_route_date,
@@ -43,6 +45,7 @@ BEGIN			-- Exec part
 		_rounds,
 		_price,
 		_user_price,
+		_trans_exp,
 		_remarks
 	FROM transportation_expense_bot."GetTempRouteInfo"(_user_address);
 	_application = FALSE;
@@ -58,6 +61,7 @@ BEGIN			-- Exec part
 		,"ROUNDS"
 		,"PRICE"
 		,"USER_PRICE"
+		,"TRANS_EXP"
 		,"REMARKS"
 		,"APPLICATION"
 		,"DOCS_ID"
@@ -71,6 +75,7 @@ BEGIN			-- Exec part
 	_rounds,
 	_price,
 	_user_price,
+	_trans_exp,
 	_remarks,
 	_application,
 	_docs_id

@@ -6,6 +6,7 @@ CREATE OR REPLACE FUNCTION transportation_expense_bot."GetTempRouteInfo"(_user_a
 	"rounds"		BOOL,
 	"price"			INT,
 	"user_price"	INT,
+	"trans_exp"		INT,
 	"remarks"		VARCHAR
 )
  LANGUAGE plpgsql
@@ -17,6 +18,7 @@ DECLARE
 	_rounds			BOOL;
 	_price			INT;
 	_user_price		INT;
+	_trans_exp		INT;
 	_remarks		VARCHAR;
 BEGIN					-- Exec part
 	-- create tmp table
@@ -28,6 +30,7 @@ BEGIN					-- Exec part
 		"_tmpTable_rounds"			BOOL,
 		"_tmpTable_price"			INT,
 		"_tmpTable_user_price"		INT,
+		"_tmpTable_trans_exp"		INT,
 		"_tmpTable_remarks"			VARCHAR,
 		PRIMARY KEY ("_tmpTable_dummyPKey")
 	);
@@ -39,6 +42,7 @@ BEGIN					-- Exec part
 	SELECT INTO _rounds			transportation_expense_bot."GetTempRouteInfo_Rounds"(_user_address);
 	SELECT INTO _price			transportation_expense_bot."GetTempRouteInfo_Price"(_user_address);
 	SELECT INTO _user_price		transportation_expense_bot."GetTempRouteInfo_UserPrice"(_user_address);
+	SELECT INTO _trans_exp		transportation_expense_bot."GetTempRouteInfo_TransExp"(_user_address);
 	SELECT INTO _remarks		transportation_expense_bot."GetTempRouteInfo_Remarks"(_user_address);
 
 	-- Insert Infos into table
@@ -51,6 +55,7 @@ BEGIN					-- Exec part
 		_rounds,
 		_price,
 		_user_price,
+		_trans_exp,
 		_remarks
 	);
 
@@ -62,6 +67,7 @@ BEGIN					-- Exec part
 		"_tmpTable_rounds",
 		"_tmpTable_price",
 		"_tmpTable_user_price",
+		"_tmpTable_trans_exp",
 		"_tmpTable_remarks"
 	FROM _tmpTable
 	WHERE "_tmpTable_dummyPKey" = 1;

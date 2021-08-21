@@ -461,6 +461,7 @@ class StateEvent{
 					$bitFlags = MessageAnalyser::getPostbackKind($recvData);
 					if(  !(getBitFlagState($bitFlags, MA_PostbackKind::REQUEST_TO_IN_HOUSE)
 							|| getBitFlagState($bitFlags, MA_PostbackKind::REQUEST_TO_USER)
+							|| getBitFlagState($bitFlags, MA_PostbackKind::REQUEST_AS_TRANS_EXP)
 						   ) )
 					{
 						DEBUG_LOG(basename(__FILE__),__FUNCTION__,__LINE__,"[INFO]Invalid Input.");
@@ -489,9 +490,17 @@ class StateEvent{
 					$tempRouteInfo = new DBSP_SetTempRouteInfo_UserPriceStruct();
 					$tempRouteInfo->info["user_address"] = $accountId;
 					if(MA_MessagePostbackList::REQUEST_TO_USER == $recvData->propaty["content"]["postback"]){
+						$tempRouteInfo->info["price"] = 0;
 						$tempRouteInfo->info["user_price"] = $tempPrice->info["price"];
-					}else{
+						$tempRouteInfo->info["trans_exp"] = 0;
+					}else if(MA_MessagePostbackList::REQUEST_TO_IN_HOUSE == $recvData->propaty["content"]["postback"]){
+						$tempRouteInfo->info["price"] = $tempPrice->info["price"];
 						$tempRouteInfo->info["user_price"] = 0;
+						$tempRouteInfo->info["trans_exp"] = 0;
+					}else{
+						$tempRouteInfo->info["price"] = 0;
+						$tempRouteInfo->info["user_price"] = 0;
+						$tempRouteInfo->info["trans_exp"] = $tempPrice->info["price"];
 					}
 					DB_SP_setTempRouteInfo_UserPrice($tempRouteInfo);
 
@@ -1037,6 +1046,10 @@ class StateEvent{
 							$userStatusInfo->info["user_address"] = $accountId;
 							$userStatusInfo->info["status"] = Enum_CallBack_userState::MAIN_MENU;
 							DB_SP_setUserStatus($userStatusInfo);
+							break;
+						case MA_PostbackKind::NEXT:
+						case MA_PostbackKind::PREVIOUS:
+							//do nothing
 							break;
 						default:
 							DEBUG_LOG(basename(__FILE__),__FUNCTION__,__LINE__,"[ERROR]Invalid Input.");

@@ -23,8 +23,9 @@ class MA_MessageTextList{
 	const NEXT					= "次のページ";		//次のページ
 	const PREVIOUS				= "前のページ";		//前のページ
 	//交通経路データ登録
-	const REQUEST_TO_USER		= "ユーザー請求";		//ユーザー請求
+	const REQUEST_TO_USER		= "ユーザー請求";	//ユーザー請求
 	const REQUEST_TO_IN_HOUSE	= "自社請求";		//自社請求
+	const REQUEST_AS_TRANS_EXP	= "交通費";			//交通費
 	const ONE_WAY				= "片道";			//片道
 	const ROUND_TRIP			= "往復";			//往復
 
@@ -42,8 +43,9 @@ class MA_PostbackKind{
 	//交通経路データ登録
 	const REQUEST_TO_USER		= 0x00000010;//ユーザー請求
 	const REQUEST_TO_IN_HOUSE	= 0x00000020;//自社請求
-	const ONE_WAY				= 0x00000040;//片道
-	const ROUND_TRIP			= 0x00000080;//往復
+	const REQUEST_AS_TRANS_EXP	= 0x00000040;//交通費
+	const ONE_WAY				= 0x00000080;//片道
+	const ROUND_TRIP			= 0x00000100;//往復
 }
 
 class MA_MessagePostbackList{
@@ -58,6 +60,7 @@ class MA_MessagePostbackList{
 	//交通経路データ登録
 	const REQUEST_TO_USER		= "postback ユーザー請求";	//ユーザー請求
 	const REQUEST_TO_IN_HOUSE	= "postback 自社請求";		//自社請求
+	const REQUEST_AS_TRANS_EXP	= "postback 交通費";		//交通費
 	const ONE_WAY				= "postback 片道";			//片道
 	const ROUND_TRIP			= "postback 往復";			//往復
 }
@@ -79,6 +82,7 @@ trait MA_ForText{
 		if( self::isPETITION($recvData) ){ bitFlagOn($retValue, MA_PostbackKind::PETITION);};
 		if( self::isREQUEST_TO_USER($recvData) ){ bitFlagOn($retValue, MA_PostbackKind::REQUEST_TO_USER);};
 		if( self::isREQUEST_TO_IN_HOUSE($recvData) ){ bitFlagOn($retValue, MA_PostbackKind::REQUEST_TO_IN_HOUSE);};
+		if( self::isREQUEST_AS_TRANS_EXP($recvData) ){ bitFlagOn($retValue, MA_PostbackKind::REQUEST_AS_TRANS_EXP);};
 		if( self::isONE_WAY($recvData) ){ bitFlagOn($retValue, MA_PostbackKind::ONE_WAY);};
 		if( self::isROUND_TRIP($recvData) ){ bitFlagOn($retValue, MA_PostbackKind::ROUND_TRIP);};
 		if( self::isNEXT($recvData) ){ bitFlagOn($retValue, MA_PostbackKind::NEXT);};
@@ -150,6 +154,11 @@ trait MA_ForText{
 
 	static protected function isREQUEST_TO_IN_HOUSE(CallBackStruct $recvData):bool{
 		if( $recvData->propaty["content"]["postback"] == MA_MessagePostbackList::REQUEST_TO_IN_HOUSE ){ return true;};
+		return false;
+	}
+
+	static protected function isREQUEST_AS_TRANS_EXP(CallBackStruct $recvData):bool{
+		if( $recvData->propaty["content"]["postback"] == MA_MessagePostbackList::REQUEST_AS_TRANS_EXP ){ return true;};
 		return false;
 	}
 
