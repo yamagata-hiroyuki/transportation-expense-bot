@@ -651,7 +651,7 @@ class StateChangeMessage{
 			//合計金額の計算
 			foreach( $routeInfos->info as $index => $value ){
 				$amountPrice += $value->price;
-				$amountPrice += $value->user_price;
+				//$amountPrice += $value->user_price;
 				$amountPrice += $value->transe_exp;
 			}
 			if( 0 < $amountPrice ){
