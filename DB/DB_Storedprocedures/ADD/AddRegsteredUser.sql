@@ -1,4 +1,4 @@
-CREATE OR REPLACE FUNCTION transportation_expense_bot."AddRegisteredUser"(_user_address VARCHAR, _user_name VARCHAR)
+CREATE OR REPLACE FUNCTION transportation_expense_bot."AddRegisteredUser"(_user_address VARCHAR, _user_name VARCHAR,_group_name VARCHAR)
  RETURNS void
  LANGUAGE plpgsql
 AS $function$
@@ -18,11 +18,13 @@ BEGIN			-- Exec part
 		"USER_ADDRESS"
 		,"USER_NAME"
 		,"USER_ID"
+		,"GROUP_NAME"
 	)
 	VALUES (
 		_user_address,
 		_user_name,
-		_max
+		_max,
+		_group_name
 	);
 
 	-- Add new user into USER_STATUS,TEMP_ROUTE_INFO

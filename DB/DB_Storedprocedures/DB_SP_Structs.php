@@ -8,6 +8,13 @@ class DBSP_SetServerTokenStruct{
 	);
 }
 
+class DBSP_SetGroupNameStruct{
+	public $info = Array(
+		"user_address" => "",
+		"group_name" => ""
+	);
+}
+
 class DBSP_SetUserStatusStruct{
 	public $info = Array(
 		"user_address" => "",
@@ -80,6 +87,12 @@ class DBSP_SetRouteInfo_DocsIdStruct{
 class DBSP_GetUserIdStruct{
 	public $info = Array(
 		"user_id" => 0
+	);
+}
+
+class DBSP_GetGroupNameStruct{
+	public $info = Array(
+		"group_name" => 0
 	);
 }
 
@@ -203,8 +216,9 @@ class DBSP_GetTempRouteInfo_PriceStruct{
 /* ADD */
 class DBSP_AddRegisteredUserStruct{
 	public $info = Array(
-		"user_address" => "",
-		"user_name" => ""
+		"user_address" => NULL,
+		"user_name" => NULL,
+		"group_name" => NULL
 	);
 }
 

@@ -30,6 +30,32 @@ function DB_SP_getUserId(string $user_address ,DBSP_GetUserIdStruct &$output):bo
 	return true;
 }
 
+function DB_SP_getGroupName(string $user_address ,DBSP_GetGroupNameStruct &$output):bool{
+	$dbConnection = null;
+	if( !dbConnection::getConnection($dbConnection) ){
+		return false;
+	}
+
+	$sql = 'SELECT * FROM transportation_expense_bot."GetGroupName"(:user_address)';
+	$sth = $dbConnection->prepare($sql);
+
+	$sth->bindValue(':user_address', $user_address, PDO::PARAM_STR);
+
+	try {
+		if( $sth->execute() ){
+			$output->info = $sth->fetch(PDO::FETCH_ASSOC);
+		} else {
+			DEBUG_LOG(basename(__FILE__),__FUNCTION__,__LINE__,"[ERROR]SQL exec result faild.");
+			return false;
+		}
+	}
+	catch( PDOException $e){
+		DEBUG_LOG(basename(__FILE__),__FUNCTION__,__LINE__,"[ERROR]SQL exec error: ".$e->getMessage());
+		return false;
+	}
+	return true;
+}
+
 function DB_SP_getServerToken(DBSP_GetServerTokenStruct &$output):bool{
 	$dbConnection = null;
 	if( !dbConnection::getConnection($dbConnection) ){

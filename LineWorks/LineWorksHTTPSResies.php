@@ -56,22 +56,23 @@ class LineWorksResies{
 			return $ret;
 		}
 
+		//LineWorks クライアントの作成
+		$client = new LineWorksReqs();
+		//Server Token 取得
+		$serverTokenInfo = new DBSP_GetServerTokenStruct();
+		DB_SP_getServerToken($serverTokenInfo);
+
 		DEBUG_LOG(basename(__FILE__),__FUNCTION__,__LINE__,"user status=".$userStatus->info["user_status"]);
-		if( empty($userStatus->info["user_status"]) ){
+		if( is_null($userStatus->info["user_status"]) ){
 			//新規ユーザーをDBに登録
 			$addRegisteredUser = new DBSP_AddRegisteredUserStruct();
 			$addRegisteredUser->info["user_address"] = $tmpUser;
-
-			//LineWorks クライアントの作成
-			$client = new LineWorksReqs();
-			//Server Token 取得
-			$serverTokenInfo = new DBSP_GetServerTokenStruct();
-			DB_SP_getServerToken($serverTokenInfo);
 
 			//名前を取得
 			$accountInfo = new AccountInfoRes();
 			$accountInfo->propaty = $client->AccountInfoReq($tmpUser,$serverTokenInfo->info["token"]);
 			$addRegisteredUser->info["user_name"] = $accountInfo->propaty["name"];
+			$addRegisteredUser->info["group_name"] = $accountInfo->propaty["representOrgUnitName"];
 
 			$ret = DB_SP_addRegisteredUser($addRegisteredUser);
 			if( false == $ret ){
@@ -81,6 +82,32 @@ class LineWorksResies{
 			}
 			$userStatus->info["user_status"]=Enum_CallBack_userState::USER_JUST_REGISTED;
 		}
+
+		//グループ名に変更がある場合は更新
+		$accountInfo = new AccountInfoRes();
+		$accountInfo->propaty = $client->AccountInfoReq($tmpUser,$serverTokenInfo->info["token"]);
+		$currentGroupName = $accountInfo->propaty["representOrgUnitName"];
+		$dbGroupName = new DBSP_GetGroupNameStruct();
+		$ret = DB_SP_getGroupName($tmpUser,$dbGroupName);
+		if( false == $ret ){
+			//取得失敗
+			DEBUG_LOG(basename(__FILE__),__FUNCTION__,__LINE__,"[ERROR]Failed to get user group name.user_address=".$tmpUser);
+			return $ret;
+		}
+
+		if($dbGroupName->info["group_name"] <> $currentGroupName){
+			DEBUG_LOG(basename(__FILE__),__FUNCTION__,__LINE__,"[INFO]group name changed.user_address=".$tmpUser."  from:".$dbGroupName->info["group_name"]."  to:".$currentGroupName);
+			$setGroupNameInfo = new DBSP_SetGroupNameStruct();
+			$setGroupNameInfo->info["user_address"] = $tmpUser;
+			$setGroupNameInfo->info["group_name"] = $currentGroupName;
+			$ret = DB_SP_setGroupName($setGroupNameInfo);
+			if( false == $ret ){
+				//更新失敗
+				DEBUG_LOG(basename(__FILE__),__FUNCTION__,__LINE__,"[ERROR]Failed to set user group name.user_address=".$tmpUser);
+				return $ret;
+			}
+		}
+
 		//イベント実行前のステータスを保存
 		$beforeUserStatus = $userStatus->info["user_status"];
 

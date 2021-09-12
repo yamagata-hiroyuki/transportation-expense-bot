@@ -31,6 +31,33 @@ function DB_SP_setServerToken(DBSP_SetServerTokenStruct $setInfo):bool{
 	return true;
 }
 
+function DB_SP_setGroupName(DBSP_SetGroupNameStruct $setInfo):bool{
+	$dbConnection = null;
+	if( !dbConnection::getConnection($dbConnection) ){
+		return false;
+	}
+
+	$sql = 'SELECT transportation_expense_bot."SetGroupName"(:user_address,:group_name)';
+	$sth = $dbConnection->prepare($sql);
+
+	$sth->bindValue(':user_address', $setInfo->info["user_address"], PDO::PARAM_STR);
+	$sth->bindValue(':group_name', $setInfo->info["group_name"], PDO::PARAM_STR);
+
+	try {
+		if( $sth->execute() ){
+			//DO Nothing
+		} else {
+			DEBUG_LOG(basename(__FILE__),__FUNCTION__,__LINE__,"[ERROR]SQL exec result faild.");
+			return false;
+		}
+	}
+	catch( PDOException $e){
+		DEBUG_LOG(basename(__FILE__),__FUNCTION__,__LINE__,"[ERROR]SQL exec error: ".$e->getMessage());
+		return false;
+	}
+	return true;
+}
+
 function DB_SP_setUserStatus(DBSP_SetUserStatusStruct $setInfo):bool{
 	$dbConnection = null;
 	if( !dbConnection::getConnection($dbConnection) ){
