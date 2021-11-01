@@ -242,27 +242,44 @@ class StateChangeMessage{
 				$destination	= $value->destination;
 				$route			= $value->route;
 				$rounds			= "";
-				if( true == $value->rounds ){ $rounds = "復"; }
-				$price			= $value->price + $value->trans_exp;
-				$user_price = "";
+				if( true == $value->rounds ){
+					$rounds = "復";
+					$price			= 2 * ($value->price + $value->trans_exp);
+					$user_price = "";
+					$roundsInfo = "(往復)";
+				}else{
+					$rounds = "　";
+					$price			= 1 * ($value->price + $value->trans_exp);
+					$user_price = "";
+					$roundsInfo = "(片道)";
+				}
+
 				if( 0 < $value->user_price ){ $user_price = "仮"; }
-				$routeInfo = sprintf("[%3d]%5s %22s\n     %-18s %1s%1s \n                             ￥%5d\n",
+				$routeInfo = sprintf("[%3d]%5s %22s\n     %-18s %1s%1s \n                         ￥%5d%s\n",
 										$route_no,
 										$route_date,
 										$destination,
 										$route,
 										$rounds,
 										$user_price,
-										$price
+										$price,
+										$roundsInfo
 									);
 
 				$tmpStr .= $routeInfo;
 			}
 			//合計金額の計算
 			foreach( $routeInfos->info as $index => $value ){
-				$amountPrice += $value->price;
-				//$amountPrice += $value->user_price;
-				$amountPrice += $value->trans_exp;
+				if( true == $value->rounds ){
+					$amountPrice += 2 * $value->price;
+					//$amountPrice += 2 * $value->user_price;
+					$amountPrice += 2 * $value->trans_exp;
+				}
+				else{
+					$amountPrice += 1 * $value->price;
+					//$amountPrice += 1 * $value->user_price;
+					$amountPrice += 1 * $value->trans_exp;
+				}
 			}
 			if( 0 < $amountPrice ){
 				$amountPriceStr = sprintf("%s\n%s￥%5s\n","                              ----------","                             ",$amountPrice);
@@ -347,7 +364,7 @@ class StateChangeMessage{
 			$reqStruct->propaty["accountId"] = $userAddress;
 
 			$tmpMessage_ButtonTemplateStruct = new Message_ButtonTemplateStruct();
-			$tmpMessage_ButtonTemplateStruct->propaty["contentText"] = "ユーザー請求で登録しますか？";
+			$tmpMessage_ButtonTemplateStruct->propaty["contentText"] = "請求区分を選択してください";
 			$tmpAction_PostbackStructArray = Array(new Action_MessageStruct(),new Action_MessageStruct(),new Action_MessageStruct());
 			$tmpAction_PostbackStructArray[0]->propaty["label"] = MA_MessageTextList::REQUEST_TO_USER;
 			$tmpAction_PostbackStructArray[0]->propaty["text"] = MA_MessageTextList::REQUEST_TO_USER;
@@ -411,7 +428,7 @@ class StateChangeMessage{
 			$reqStruct->propaty["accountId"] = $userAddress;
 
 			$tmpMessage_ButtonTemplateStruct = new Message_ButtonTemplateStruct();
-			$tmpMessage_ButtonTemplateStruct->propaty["contentText"] = "往復経路で登録しますか？";
+			$tmpMessage_ButtonTemplateStruct->propaty["contentText"] = "往復か片道かを選択してください。";
 			$tmpAction_PostbackStructArray = Array(new Action_MessageStruct(),new Action_MessageStruct(),new Action_MessageStruct());
 			$tmpAction_PostbackStructArray[0]->propaty["label"] = MA_MessageTextList::ROUND_TRIP;
 			$tmpAction_PostbackStructArray[0]->propaty["text"] = MA_MessageTextList::ROUND_TRIP;
@@ -495,19 +512,26 @@ class StateChangeMessage{
 			$route = $tempRouteInfo->info["route"];
 			if(  true == $tempRouteInfo->info["rounds"] ){
 				$rounds = "あり";
+				$roundsInfo = "(往復)";
+
+				$price = 2 * ($tempRouteInfo->info["price"] + $tempRouteInfo->info["trans_exp"]);
+				$user_price = 2 * $tempRouteInfo->info["user_price"];
 			}else{
 				$rounds = "なし";
+				$roundsInfo = "(片道)";
+				$price = 1 * ($tempRouteInfo->info["price"] + $tempRouteInfo->info["trans_exp"]);
+				$user_price = 1 * $tempRouteInfo->info["user_price"];
 			}
-			$price = $tempRouteInfo->info["price"] + $tempRouteInfo->info["trans_exp"];
-			$user_price = $tempRouteInfo->info["user_price"];
 			$remarks = $tempRouteInfo->info["remarks"];
-			$tmpStr = sprintf("乗車日%20s\n行先%22s\n経路%22s\n往復の有無%16s\n合計運賃%18s円\nユーザー請求額%12s円\n備考%22s\n",
+			$tmpStr = sprintf("乗車日%20s\n行先%22s\n経路%22s\n往復の有無%16s\n合計運賃%18s円%s\nユーザー請求額%12s円%s\n備考%22s\n",
 								$route_date,
 								$destination,
 								$route,
 								$rounds,
 								$price,
+								$roundsInfo,
 								$user_price,
+								$roundsInfo,
 								$remarks
 							);
 			$tmpStr = $tmpStr."----------------------------------------\n"."以上の内容を登録しますか？";
@@ -632,27 +656,42 @@ class StateChangeMessage{
 				$destination	= $value->destination;
 				$route			= $value->route;
 				$rounds			= "";
-				if( true == $value->rounds ){ $rounds = "復"; }
-				$price			= $value->price + $value->trans_exp;
-				$user_price = "";
+				if( true == $value->rounds ){
+					$rounds = "復";
+					$price			= 2 * ($value->price + $value->trans_exp);
+					$user_price = "";
+					$roundsInfo = "(往復)";
+				}else{
+					$rounds = "　";
+					$price			= 1 * ($value->price + $value->trans_exp);
+					$user_price = "";
+					$roundsInfo = "(片道)";
+				}
 				if( 0 < $value->user_price ){ $user_price = "仮"; }
-				$routeInfo = sprintf("[%3d]%5s %22s\n     %-18s %1s%1s \n                             ￥%5d\n",
+				$routeInfo = sprintf("[%3d]%5s %22s\n     %-18s %1s%1s \n                         ￥%5d%s\n",
 					$route_no,
 					$route_date,
 					$destination,
 					$route,
 					$rounds,
 					$user_price,
-					$price
+					$price,
+					$roundsInfo
 					);
 
 				$tmpStr .= $routeInfo;
 			}
 			//合計金額の計算
 			foreach( $routeInfos->info as $index => $value ){
-				$amountPrice += $value->price;
-				//$amountPrice += $value->user_price;
-				$amountPrice += $value->transe_exp;
+				if( true == $value->rounds ){
+					$amountPrice += 2 * $value->price;
+					//$amountPrice += 2 * $value->user_price;
+					$amountPrice += 2 * $value->transe_exp;
+				}else{
+					$amountPrice += 1 * $value->price;
+					//$amountPrice += 1 * $value->user_price;
+					$amountPrice += 1 * $value->transe_exp;
+				}
 			}
 			if( 0 < $amountPrice ){
 				$amountPriceStr = sprintf("%s\n%s￥%5s\n","                              ----------","                             ",$amountPrice);
@@ -774,19 +813,25 @@ class StateChangeMessage{
 			$route = $RouteInfo->info["route"];
 			if(  true == $RouteInfo->info["rounds"] ){
 				$rounds = "あり";
+				$roundsInfo = "(往復)";
+				$price = 2 * ($RouteInfo->info["price"] + $RouteInfo->info["trans_exp"]);
+				$user_price = 2 * $RouteInfo->info["user_price"];
 			}else{
 				$rounds = "なし";
+				$roundsInfo = "(片道)";
+				$price = 1 * ($RouteInfo->info["price"] + $RouteInfo->info["trans_exp"]);
+				$user_price = 1 * $RouteInfo->info["user_price"];
 			}
-			$price = $RouteInfo->info["price"] + $RouteInfo->info["trans_exp"];
-			$user_price = $RouteInfo->info["user_price"];
 			$remarks = $RouteInfo->info["remarks"];
-			$tmpStr = sprintf("乗車日%20s\n行先%22s\n経路%22s\n往復の有無%16s\n合計運賃%18s円\nユーザー請求額%12s円\n備考%22s\n",
+			$tmpStr = sprintf("乗車日%20s\n行先%22s\n経路%22s\n往復の有無%16s\n合計運賃%18s円%s\nユーザー請求額%12s円%s\n備考%22s\n",
 				$route_date,
 				$destination,
 				$route,
 				$rounds,
 				$price,
+				$$roundsInfo,
 				$user_price,
+				$$roundsInfo,
 				$remarks
 				);
 			$tmpStr = $tmpStr."----------------------------------------\n"."以上のデータを削除しますか？";
@@ -870,18 +915,28 @@ class StateChangeMessage{
 				$destination	= $value->destination;
 				$route			= $value->route;
 				$rounds			= "";
-				if( true == $value->rounds ){ $rounds = "復"; }
-				$price			= $value->price + $value->trans_exp;
-				$user_price = "";
+				if( true == $value->rounds ){
+					$rounds = "復";
+					$price			= 2 * ($value->price + $value->trans_exp);
+					$user_price = "";
+					$roundsInfo = "(往復)";
+				}else{
+					$rounds = "　";
+					$price			= 1 * ($value->price + $value->trans_exp);
+					$user_price = "";
+					$roundsInfo = "(片道)";
+				}
+
 				if( 0 < $value->user_price ){ $user_price = "仮"; }
-				$routeInfo = sprintf("%5s %22s\n     %-18s %1s%1s \n                             ￥%5d\n",
+				$routeInfo = sprintf("%5s %22s\n     %-18s %1s%1s \n                         ￥%5d%s\n",
 					//$route_no,
 					$route_date,
 					$destination,
 					$route,
 					$user_price,
 					$rounds,
-					$price
+					$price,
+					$roundsInfo
 					);
 
 				$tmpStr = $tmpStr.$routeInfo;
@@ -889,9 +944,16 @@ class StateChangeMessage{
 
 			//合計金額の計算
 			foreach( $routeInfos->info as $index => $value ){
-				$amountPrice += $value->price;
-				//$amountPrice += $value->user_price;
-				$amountPrice += $value->trans_exp;
+				if( true == $value->rounds ){
+					$amountPrice += 2 * $value->price;
+					//$amountPrice += 2 * $value->user_price;
+					$amountPrice += 2 * $value->trans_exp;
+				}else{
+					$amountPrice += 1 * $value->price;
+					//$amountPrice += 1 * $value->user_price;
+					$amountPrice += 1 * $value->trans_exp;
+				}
+
 			}
 
 			if( 0 < $amountPrice ){
@@ -1030,18 +1092,27 @@ class StateChangeMessage{
 				$destination	= $value->destination;
 				$route			= $value->route;
 				$rounds			= "";
-				if( true == $value->rounds ){ $rounds = "復"; }
-				$price			= $value->price + $value->trans_exp;
-				$user_price = "";
+				if( true == $value->rounds ){
+					$rounds = "復";
+					$price			= 2 * ($value->price + $value->trans_exp);
+					$user_price = "";
+					$roundsInfo = "(往復)";
+				}else{
+					$rounds = "　";
+					$price			= 1 * ($value->price + $value->trans_exp);
+					$user_price = "";
+					$roundsInfo = "(片道)";
+				}
 				if( 0 < $value->user_price ){ $user_price = "仮"; }
-				$routeInfo = sprintf("%5s %22s\n     %-18s %1s%1s \n                             ￥%5d\n",
+				$routeInfo = sprintf("%5s %22s\n     %-18s %1s%1s \n                         ￥%5d%s\n",
 					//$route_no,
 					$route_date,
 					$destination,
 					$route,
 					$user_price,
 					$rounds,
-					$price
+					$price,
+					$roundsInfo
 					);
 
 				$tmpStr = $tmpStr.$routeInfo;
@@ -1049,9 +1120,15 @@ class StateChangeMessage{
 
 			//合計金額の計算
 			foreach( $routeInfos->info as $index => $value ){
-				$amountPrice += $value->price;
-				//$amountPrice += $value->user_price;
-				$amountPrice += $value->trans_exp;
+				if( true == $value->rounds ){
+					$amountPrice += 2 * $value->price;
+					//$amountPrice += 2 * $value->user_price;
+					$amountPrice += 2 * $value->trans_exp;
+				}else{
+					$amountPrice += 1 * $value->price;
+					//$amountPrice += 1 * $value->user_price;
+					$amountPrice += 1 * $value->trans_exp;
+				}
 			}
 
 			if( 0 < $amountPrice ){

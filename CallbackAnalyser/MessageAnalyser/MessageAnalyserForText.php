@@ -25,7 +25,7 @@ class MA_MessageTextList{
 	//交通経路データ登録
 	const REQUEST_TO_USER		= "ユーザー請求";	//ユーザー請求
 	const REQUEST_TO_IN_HOUSE	= "自社請求";		//自社請求
-	const REQUEST_AS_TRANS_EXP	= "交通費";			//交通費
+	const REQUEST_AS_TRANS_EXP	= "通勤費";			//通勤費
 	const ONE_WAY				= "片道";			//片道
 	const ROUND_TRIP			= "往復";			//往復
 
