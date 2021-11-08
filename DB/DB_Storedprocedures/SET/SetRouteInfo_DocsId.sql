@@ -11,7 +11,7 @@ BEGIN			-- Exec part
 	
 	-- check _docs_id is exist
 	_is_exist = FALSE;
-	SELECT INTO _is_exist EXISTS(SELECT * FROM transportation_expense_bot."DOCS_MS" WHERE "DOCS_ID" = _docs_id);
+	SELECT INTO _is_exist EXISTS(SELECT * FROM transportation_expense_bot."DOCS_MS" WHERE "DOCS_ID" = _docs_id AND "USER_ID" = _user_id);
 	
 	IF _is_exist = FALSE
 	THEN
